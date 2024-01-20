@@ -1,6 +1,6 @@
-Attribute VB_Name = "Módulo1"
+Attribute VB_Name = "MÃ³dulo1"
 Sub AbrirFormulario()
-    UserForm1.Show ' Abre el formulario cuando se le da clic a la forma
+    UserForm1.Show ' Abre el formulario 
 End Sub
 
 
@@ -9,33 +9,19 @@ Private Sub UserForm_Initialize()
     ComboBox1.AddItem "Altas"
     ComboBox1.AddItem "Ausentismos"
     ComboBox1.AddItem "Bajas"
-    ComboBox1.AddItem "Cambios organizacionales (Cambio Jefe)"
-    ComboBox1.AddItem "Cambios organizacionales(Puesto)"
-    ComboBox1.AddItem "Contingente de Vacaciones 2.0"
+    ComboBox1.AddItem "Cambios organizacionales"
+    ComboBox1.AddItem "Cambios organizacionales"
+    ComboBox1.AddItem "Contingente de Vacaciones"
     ComboBox1.AddItem "Contratos Y Finiquitos"
-'    ComboBox1.AddItem "Datos Familiares"
     ComboBox1.AddItem "Horas Extras"
     ComboBox1.AddItem "Incrementos Salariales"
-    ComboBox1.AddItem "Informe de pólizas"
-'    ComboBox1.AddItem "Maestro de Estructura"
-'    ComboBox1.AddItem "Maestro de Personal"
-'    ComboBox1.AddItem "Mestro IT"
+    ComboBox1.AddItem "Informe de pÃ³lizas"
+
 
 End Sub
 
 
 Sub CommandButton1_Click()
-
-'La macro se encarga de acumular los reportes que el equipo tenga en las carpetas de cada
-'mes por medio del formulario. El reporte que se escoja en el combobox es el que la macro
-'va a buscar en cada carpeta de cada mes seleccionado del checkbox y los va a unir en un
-'documento nuevo xlsx, el cual va a ubicar en una carpeta llamada 'Reportes acumulados'.
-'Además, la macro elimina los valores duplicados de ese nuevo archivo si la persona lo desea.
-
-'NOTA: La macro debe guardarse en la misma carpeta donde se encuentran las carpetas de cada mes; de lo contrario, no funcionará correctamente
-'FECHA: Noviembre 2023
-'DESARROLLADOR: Isabel Montoya
-
 
     Application.ScreenUpdating = False  'Desactivar activacion de cambio de libro
     
@@ -45,7 +31,6 @@ Sub CommandButton1_Click()
     Dim i As Integer
 
     selectedReport = UserForm1.ComboBox1.Value 'Reporte seleccionado en el combobox
-
 
     'Veificar meses seleccionados en el checkbox --> 1=enero, 2=febrero, 3=marzo...
     
@@ -59,8 +44,7 @@ Sub CommandButton1_Click()
 
     'Ruta
     Dim basePath As String
-    basePath = ThisWorkbook.Path & "\" 'donde se encuentre este archivo de la macro
-
+    basePath = ThisWorkbook.Path & "\" 
 
     'Crear la carpeta, primero verifica si ya existe
     If Dir(basePath & "Reportes acumulados", vbDirectory) = "" Then
@@ -78,7 +62,7 @@ Sub CommandButton1_Click()
     newFileName = selectedReport & " - " & Format(Now, "yyyy-mm-dd")
 
 
-    'Formato celda A2 para colocar los meses
+    'Formato celda A2 
     newWorkbook.Sheets(1).Range("A2").Value = "Mes del reporte"
     With newWorkbook.Sheets(1).Range("A2").Font
         .Bold = True
@@ -90,7 +74,6 @@ Sub CommandButton1_Click()
 
     'Nombre del archivo y guardar
     newWorkbook.SaveAs basePath & "Reportes acumulados\" & newFileName & ".xlsx"
-
 
 
     'Proceso para buscar los reportes dentro de las carpetas
@@ -138,13 +121,12 @@ Sub CommandButton1_Click()
     newWorkbook.Save 'Guardar
     
     
-    
     'Eliminar filas de color (menos la fila 2)
         Dim lastRow_color As Long
         lastRow_color = newWorkbook.Sheets(1).Cells(newWorkbook.Sheets(1).Rows.Count, "B").End(xlUp).row
         
         Dim x As Long
-        For x = lastRow_color To 3 Step -1 ' Recorremos desde la última fila hacia arriba
+        For x = lastRow_color To 3 Step -1 ' Recorremos desde la Ãºltima fila hacia arriba
             If newWorkbook.Sheets(1).Cells(x, 2).Interior.Color <> RGB(255, 255, 255) Then  'verifica el color de fondo
                 newWorkbook.Sheets(1).Rows(x).Delete
             End If
@@ -153,12 +135,12 @@ Sub CommandButton1_Click()
         newWorkbook.Save 'Guardar
 
     
-    'Convertir a numero lo de las advertencias
+    'Convertir a numero las celdas que salen con advertencia de texto a numero
     Dim celda_num As Range
     Dim hoja_num As Worksheet
     Dim rango_num As Range
 
-    ' Definir la hoja de trabajo en la que deseas buscar
+    ' Definir la hoja de trabajo 
     Set hoja_num = newWorkbook.Sheets(1)
 
     ' Buscar todas las celdas con advertencia en la hoja
@@ -166,12 +148,12 @@ Sub CommandButton1_Click()
     Set rango_num = hoja_num.Cells.SpecialCells(xlCellTypeConstants, xlTextValues)
     On Error GoTo 0
 
-    ' Si se encuentra un rango con advertencias, convertir a formato número
+    ' Si se encuentra un rango con advertencia, convertir a formato nÃºmero
     If Not rango_num Is Nothing Then
         For Each celda_num In rango_num
-            ' Verificar si la celda no está vacía
+            ' Verificar si la celda no estÃ¡ vacÃ­a
             If Not IsEmpty(celda_num.Value) Then
-                ' Convertir el valor de la celda a número
+                ' Convertir el valor de la celda a nÃºmero
                 If IsNumeric(celda_num.Value) Then
                     celda_num.Value = CDbl(celda_num.Value)
                 End If
@@ -182,14 +164,12 @@ Sub CommandButton1_Click()
     End If
     
     
-
-    
-    'Preguntar si de deben de quitar los dopliados
+    'Preguntar si de deben de quitar los duplicados
     
         Dim respuesta As VbMsgBoxResult
         
         ' Pregunta al usuario si desea eliminar duplicados
-        respuesta = MsgBox("¿Desea eliminar filas duplicadas?", vbYesNo + vbQuestion, "Confirmación")
+        respuesta = MsgBox("Â¿Desea eliminar filas duplicadas?", vbYesNo + vbQuestion, "ConfirmaciÃ³n")
         
         ' Verifica la respuesta del usuario
         If respuesta = vbYes Then
@@ -230,9 +210,9 @@ Sub CommandButton1_Click()
                         Dim celda As Range
                         
                         Set hoja = newWorkbook.Sheets(1) 'especifica la hoja en la que se van a hacer los cambios
-                        ultimaFila = hoja.Cells(hoja.Rows.Count, "B").End(xlUp).row 'Encuentra la última fila con datos en la columna B
+                        ultimaFila = hoja.Cells(hoja.Rows.Count, "B").End(xlUp).row 'Encuentra la Ãºltima fila con datos en la columna B
                          
-                        ' Itera desde la última fila hasta la fila 3
+                        ' Itera desde la Ãºltima fila hasta la fila 3
                         For fila = ultimaFila To 3 Step -1
                             If hoja.Cells(fila, 2).Interior.ColorIndex = xlNone Then ' Verifica si la celda en la columna B no tiene color de fondo (morado)
                                 hoja.Rows(fila).Delete ' Elimina la fila si no tiene color de fondo (morado)
@@ -257,8 +237,8 @@ Sub CommandButton1_Click()
     
     Application.ScreenUpdating = True
     
-    ' y mostrar un mensaje indicando que el reporte está listo
-    MsgBox "El reporte está listo y se ha guardado en:" & vbNewLine & basePath & "Reportes acumulados\" & newFileName & ".xlsx"
+    ' y mostrar un mensaje indicando que el reporte estÃ¡ listo
+    MsgBox "El reporte estÃ¡ listo y se ha guardado en:" & vbNewLine & basePath & "Reportes acumulados\" & newFileName & ".xlsx"
     
     UserForm1.Hide
 
