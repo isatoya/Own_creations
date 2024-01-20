@@ -29,7 +29,7 @@ Sub CrearCarpetas()
     
     InicializarVariables
     
-    ' Verificar si la carpeta del país existe, si no, la crea
+    ' Verificar si la carpeta del paÃ­s existe, si no, la crea
     If Dir(ruta2, vbDirectory) = "" Then
         MkDir ruta2
     End If
@@ -59,12 +59,12 @@ Sub Abrir_activar()
         ActiveSheet.Range("A1").PasteSpecial Paste:=xlPasteValues
         Application.CutCopyMode = False ' Desactiva el modo de copia
         
-        ActiveWorkbook.SaveAs ruta2 & "\" & fecha & " SF vs SAP Address audit – " & pais & ".xlsx"
+        ActiveWorkbook.SaveAs ruta2 & "\" & fecha & " SF vs SAP Address audit â€“ " & pais & ".xlsx"
         ActiveWorkbook.Close SaveChanges:=True
         ReporteSF.Close
         
     Else
-        MsgBox "Operación cancelada por el usuario.", vbInformation
+        MsgBox "OperaciÃ³n cancelada por el usuario.", vbInformation
     End If
 End Sub
 
@@ -75,10 +75,10 @@ Sub CambiosFormato()
         InicializarVariables
         Dim wb As Workbook
         
-        If Dir(ruta2 & "\" & fecha & " SF vs SAP Address audit – " & pais & ".xlsx") <> "" Then ' Verificar si el archivo existe
+        If Dir(ruta2 & "\" & fecha & " SF vs SAP Address audit â€“ " & pais & ".xlsx") <> "" Then ' Verificar si el archivo existe
         
         ' Abrir el archivo
-        Set wb = Workbooks.Open(ruta2 & "\" & fecha & " SF vs SAP Address audit – " & pais & ".xlsx")
+        Set wb = Workbooks.Open(ruta2 & "\" & fecha & " SF vs SAP Address audit â€“ " & pais & ".xlsx")
         wb.Activate
         
         'Elimina filas y columnas
@@ -226,7 +226,7 @@ Sub CambiosFormato()
         End With
         ActiveWindow.FreezePanes = True
         
-        'Evalua los datos de la columna D y señala los que no esten en formato numero
+        'Evalua los datos de la columna D y seÃ±ala los que no esten en formato numero
         
             Dim lastRow As Long
             Dim rng As Range
@@ -384,7 +384,7 @@ Sub sap()
     
     'VA AL OTRO ARCHIVO PARA COPIAR
     Dim ult_fila As Long
-    Workbooks(fecha & " SF vs SAP Address audit – " & pais & ".xlsx").Activate
+    Workbooks(fecha & " SF vs SAP Address audit â€“ " & pais & ".xlsx").Activate
     Range("D1").Select
     ult_fila = Cells(Rows.Count, "C").End(xlUp).Row
 
@@ -404,24 +404,24 @@ Sub sap()
     session.findById("wnd[1]/usr/subSUBSCREEN_STEPLOOP:SAPLSPO5:0150/sub:SAPLSPO5:0150/radSPOPLI-SELFLAG[1,0]").SetFocus
     session.findById("wnd[1]/tbar[0]/btn[0]").press
     session.findById("wnd[1]/usr/ctxtDY_PATH").Text = ruta2
-    session.findById("wnd[1]/usr/ctxtDY_FILENAME").Text = fecha & " - SAP Address audit – " & pais & ".XLS"
+    session.findById("wnd[1]/usr/ctxtDY_FILENAME").Text = fecha & " - SAP Address audit â€“ " & pais & ".XLS"
     session.findById("wnd[1]/usr/ctxtDY_FILENAME").caretPosition = 10
     session.findById("wnd[1]/tbar[0]/btn[11]").press
 
     'Organizar formato
     Application.CutCopyMode = False
-    Workbooks.Open ruta2 & "\" & fecha & " - SAP Address audit – " & pais & ".XLS"
+    Workbooks.Open ruta2 & "\" & fecha & " - SAP Address audit â€“ " & pais & ".XLS"
     ActiveSheet.Cells.Select
     Selection.Copy
     Workbooks.Add
     ActiveSheet.Paste
-    ActiveWorkbook.SaveAs ruta2 & "\" & fecha & " - SAP Address audit – " & pais & ".XLSX"
+    ActiveWorkbook.SaveAs ruta2 & "\" & fecha & " - SAP Address audit â€“ " & pais & ".XLSX"
     ActiveWorkbook.Close SaveChanges:=True
-    Workbooks(fecha & " - SAP Address audit – " & pais & ".XLS").Close
-    Kill ruta2 & "\" & fecha & " - SAP Address audit – " & pais & ".XLS"
+    Workbooks(fecha & " - SAP Address audit â€“ " & pais & ".XLS").Close
+    Kill ruta2 & "\" & fecha & " - SAP Address audit â€“ " & pais & ".XLS"
     
     'Cambios de formato
-    Workbooks.Open ruta2 & "\" & fecha & " - SAP Address audit – " & pais & ".XLSX"
+    Workbooks.Open ruta2 & "\" & fecha & " - SAP Address audit â€“ " & pais & ".XLSX"
     organiza_doc_sap
 
 End Sub
@@ -430,7 +430,7 @@ Sub organiza_doc_sap()
 
     InicializarVariables
     
-    Workbooks(fecha & " - SAP Address audit – " & pais & ".XLSX").Activate
+    Workbooks(fecha & " - SAP Address audit â€“ " & pais & ".XLSX").Activate
     Rows("1:4").Delete
     Rows("2").Delete
     Columns("A").Delete
@@ -444,22 +444,22 @@ Sub buscarv_sap()
     InicializarVariables
     
     'Crea una hoja nueva
-    Workbooks(fecha & " SF vs SAP Address audit – " & pais & ".xlsx").Activate
+    Workbooks(fecha & " SF vs SAP Address audit â€“ " & pais & ".xlsx").Activate
     Sheets.Add(After:=Sheets(Sheets.Count)).Name = "SAP"
     Sheets.Add(After:=Sheets(Sheets.Count)).Name = "REVIEW"
     
     'Trae los datos descargados
-    Workbooks(fecha & " - SAP Address audit – " & pais & ".XLSX").Activate
+    Workbooks(fecha & " - SAP Address audit â€“ " & pais & ".XLSX").Activate
     Sheets(1).Cells.Copy
-    Workbooks(fecha & " SF vs SAP Address audit – " & pais & ".xlsx").Activate
+    Workbooks(fecha & " SF vs SAP Address audit â€“ " & pais & ".xlsx").Activate
     Sheets("SAP").Range("A1").PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks:=False, Transpose:=False
     Application.CutCopyMode = False
     
     'Cierra el reporte que se descargo de sap
-    Workbooks(fecha & " - SAP Address audit – " & pais & ".XLSX").Close
+    Workbooks(fecha & " - SAP Address audit â€“ " & pais & ".XLSX").Close
     
     'Activa el reporte original
-    Workbooks(fecha & " SF vs SAP Address audit – " & pais & ".xlsx").Activate
+    Workbooks(fecha & " SF vs SAP Address audit â€“ " & pais & ".xlsx").Activate
     Sheets(1).Activate
     
     Dim ultima As Long
@@ -551,7 +551,7 @@ Sub Hoja_revisar()
     ActiveWorkbook.Close
     
     'Elimina el archivo de sap
-    Kill ruta2 & "\" & fecha & " - SAP Address audit – " & pais & ".XLSX"
+    Kill ruta2 & "\" & fecha & " - SAP Address audit â€“ " & pais & ".XLSX"
     
 End Sub
 
