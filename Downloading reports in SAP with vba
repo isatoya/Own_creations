@@ -1,20 +1,20 @@
-Attribute VB_Name = "Módulo2"
+Attribute VB_Name = "MÃ³dulo2"
 
 Sub SAP_ZHR929()
 
-    Dim Año As Integer
+    Dim AÃ±o As Integer
     Dim fechaEnero As Date
     Dim fechaDiciembre As Date
     Dim ruta As String
     ruta = ThisWorkbook.Path
-    Año = UserForm1.ComboBox1.Value 'año seleccionado del combobox
+    AÃ±o = UserForm1.ComboBox1.Value 'aÃ±o seleccionado del combobox
     Dim ruta2 As String
-    ruta2 = ruta & "\" & CStr(Año) & "\1. PW PTU"
+    ruta2 = ruta & "\" & CStr(AÃ±o) & "\1. PW PTU"
     
 
-    'Primer y ultimo dia del año
-    fechaEnero = DateSerial(Año, 1, 1) 'Enero 1
-    fechaDiciembre = DateSerial(Año + 1, 1, 1) - 1 'Diciembre 31
+    'Primer y ultimo dia del aÃ±o
+    fechaEnero = DateSerial(AÃ±o, 1, 1) 'Enero 1
+    fechaDiciembre = DateSerial(AÃ±o + 1, 1, 1) - 1 'Diciembre 31
 
     'fecha formato para sap
     Dim fecha1 As String
@@ -87,18 +87,18 @@ End Sub
 
 Sub SAP_ZHRMX27()
 
-    Dim Año As Integer
+    Dim AÃ±o As Integer
     Dim fechaEnero As Date
     Dim fechaDiciembre As Date
     Dim ruta As String
     ruta = ThisWorkbook.Path
-    Año = UserForm1.ComboBox1.Value 'año seleccionado del combobox
+    AÃ±o = UserForm1.ComboBox1.Value 'aÃ±o seleccionado del combobox
     Dim ruta2 As String
-    ruta2 = ruta & "\" & CStr(Año) & "\1. PW PTU"
+    ruta2 = ruta & "\" & CStr(AÃ±o) & "\1. PW PTU"
 
-    'Primer y ultimo dia del año
-    fechaEnero = DateSerial(Año, 1, 1) 'Enero 1
-    fechaDiciembre = DateSerial(Año + 1, 1, 1) - 1 'Diciembre 31
+    'Primer y ultimo dia del aÃ±o
+    fechaEnero = DateSerial(AÃ±o, 1, 1) 'Enero 1
+    fechaDiciembre = DateSerial(AÃ±o + 1, 1, 1) - 1 'Diciembre 31
 
     'fecha formato para sap
     Dim fecha1 As String
@@ -139,7 +139,7 @@ Sub SAP_ZHRMX27()
         Dim lastRow As Long
         
         If Dir(ruta2 & "\ZHR929.xlsx") = "" Then
-            MsgBox "El archivo ZHR929.xlsx no se encontró en la ruta especificada.", vbExclamation
+            MsgBox "El archivo ZHR929.xlsx no se encontrÃ³ en la ruta especificada.", vbExclamation
             Exit Sub
         End If
         
@@ -170,7 +170,7 @@ Sub SAP_ZHRMX27()
     session.findById("wnd[1]/usr/ctxtDY_FILENAME").caretPosition = 6
     session.findById("wnd[1]/tbar[0]/btn[11]").press
 
-    'Organiza la información extraída de SAP en formato xlsx
+    'Organiza la informaciÃ³n extraÃ­da de SAP en formato xlsx
     Workbooks("ZHR929.xlsx").Close SaveChanges:=False
     Workbooks.Open ruta2 & "\ZHRMX27" & ".xls"
     ActiveSheet.Cells.Select
@@ -193,18 +193,18 @@ End Sub
 Sub SAP_ZPYMX025_DIASPTULG2()
 'PRIEMRA VARIANTE: DIAS PTU LG 2
 
-    Dim Año As Integer
+    Dim AÃ±o As Integer
     Dim fechaEnero As Date
     Dim fechaDiciembre As Date
     Dim ruta As String
     ruta = ThisWorkbook.Path
-    Año = UserForm1.ComboBox1.Value 'año seleccionado del combobox
+    AÃ±o = UserForm1.ComboBox1.Value 'aÃ±o seleccionado del combobox
     Dim ruta2 As String
-    ruta2 = ruta & "\" & CStr(Año) & "\1. PW PTU"
+    ruta2 = ruta & "\" & CStr(AÃ±o) & "\1. PW PTU"
 
-    'Primer y ultimo dia del año
-    fechaEnero = DateSerial(Año, 1, 1) 'Enero 1
-    fechaDiciembre = DateSerial(Año + 1, 1, 1) - 1 'Diciembre 31
+    'Primer y ultimo dia del aÃ±o
+    fechaEnero = DateSerial(AÃ±o, 1, 1) 'Enero 1
+    fechaDiciembre = DateSerial(AÃ±o + 1, 1, 1) - 1 'Diciembre 31
 
     'fecha formato para sap
     Dim fecha1 As String
@@ -251,7 +251,7 @@ Sub SAP_ZPYMX025_DIASPTULG2()
         Dim lastRow As Long
         
         If Dir(ruta2 & "\ZHR929.xlsx") = "" Then
-            MsgBox "El archivo ZHR929.xlsx no se encontró en la ruta especificada.", vbExclamation
+            MsgBox "El archivo ZHR929.xlsx no se encontrÃ³ en la ruta especificada.", vbExclamation
             Exit Sub
         End If
         
@@ -282,7 +282,7 @@ Sub SAP_ZPYMX025_DIASPTULG2()
     session.findById("wnd[1]/usr/ctxtDY_FILENAME").caretPosition = 6
     session.findById("wnd[1]/tbar[0]/btn[11]").press
 
-    'Organiza la información extraída de SAP en formato xlsx
+    'Organiza la informaciÃ³n extraÃ­da de SAP en formato xlsx
     Workbooks("ZHR929.xlsx").Close SaveChanges:=False
     Workbooks.Open ruta2 & "\ZPYMX025" & ".xls"
     ActiveSheet.Cells.Select
@@ -305,18 +305,18 @@ End Sub
 Sub SAP_ZPYMX025_PESOSPTULGV2()
 'VARIANTE 2 : PESOS PTU LC V2
 
-    Dim Año As Integer
+    Dim AÃ±o As Integer
     Dim fechaEnero As Date
     Dim fechaDiciembre As Date
     Dim ruta As String
     ruta = ThisWorkbook.Path
-    Año = UserForm1.ComboBox1.Value 'año seleccionado del combobox
+    AÃ±o = UserForm1.ComboBox1.Value 'aÃ±o seleccionado del combobox
     Dim ruta2 As String
-    ruta2 = ruta & "\" & CStr(Año) & "\1. PW PTU"
+    ruta2 = ruta & "\" & CStr(AÃ±o) & "\1. PW PTU"
 
-    'Primer y ultimo dia del año
-    fechaEnero = DateSerial(Año, 1, 1) 'Enero 1
-    fechaDiciembre = DateSerial(Año + 1, 1, 1) - 1 'Diciembre 31
+    'Primer y ultimo dia del aÃ±o
+    fechaEnero = DateSerial(AÃ±o, 1, 1) 'Enero 1
+    fechaDiciembre = DateSerial(AÃ±o + 1, 1, 1) - 1 'Diciembre 31
 
     'fecha formato para sap
     Dim fecha1 As String
@@ -363,7 +363,7 @@ Sub SAP_ZPYMX025_PESOSPTULGV2()
         Dim lastRow As Long
         
         If Dir(ruta2 & "\ZHR929.xlsx") = "" Then
-            MsgBox "El archivo ZHR929.xlsx no se encontró en la ruta especificada.", vbExclamation
+            MsgBox "El archivo ZHR929.xlsx no se encontrÃ³ en la ruta especificada.", vbExclamation
             Exit Sub
         End If
         
@@ -394,7 +394,7 @@ Sub SAP_ZPYMX025_PESOSPTULGV2()
     session.findById("wnd[1]/usr/ctxtDY_FILENAME").caretPosition = 6
     session.findById("wnd[1]/tbar[0]/btn[11]").press
      
-    'Organiza la información extraída de SAP en formato xlsx
+    'Organiza la informaciÃ³n extraÃ­da de SAP en formato xlsx
     Workbooks("ZHR929.xlsx").Close SaveChanges:=False
     Workbooks.Open ruta2 & "\ZPYMX025_V2" & ".xls"
     ActiveSheet.Cells.Select
@@ -416,18 +416,18 @@ End Sub
 Sub SAP_ZPYMX025_PTUAUSENTISMO()
 'VARIANTE 3: PTU AUSENTIMOS
 
-    Dim Año As Integer
+    Dim AÃ±o As Integer
     Dim fechaEnero As Date
     Dim fechaDiciembre As Date
     Dim ruta As String
     ruta = ThisWorkbook.Path
-    Año = UserForm1.ComboBox1.Value 'año seleccionado del combobox
+    AÃ±o = UserForm1.ComboBox1.Value 'aÃ±o seleccionado del combobox
     Dim ruta2 As String
-    ruta2 = ruta & "\" & CStr(Año) & "\1. PW PTU"
+    ruta2 = ruta & "\" & CStr(AÃ±o) & "\1. PW PTU"
 
-    'Primer y ultimo dia del año
-    fechaEnero = DateSerial(Año, 1, 1) 'Enero 1
-    fechaDiciembre = DateSerial(Año + 1, 1, 1) - 1 'Diciembre 31
+    'Primer y ultimo dia del aÃ±o
+    fechaEnero = DateSerial(AÃ±o, 1, 1) 'Enero 1
+    fechaDiciembre = DateSerial(AÃ±o + 1, 1, 1) - 1 'Diciembre 31
 
     'fecha formato para sap
     Dim fecha1 As String
@@ -474,7 +474,7 @@ Sub SAP_ZPYMX025_PTUAUSENTISMO()
         Dim lastRow As Long
         
         If Dir(ruta2 & "\ZHR929.xlsx") = "" Then
-            MsgBox "El archivo ZHR929.xlsx no se encontró en la ruta especificada.", vbExclamation
+            MsgBox "El archivo ZHR929.xlsx no se encontrÃ³ en la ruta especificada.", vbExclamation
             Exit Sub
         End If
         
@@ -505,7 +505,7 @@ Sub SAP_ZPYMX025_PTUAUSENTISMO()
     session.findById("wnd[1]/usr/ctxtDY_FILENAME").caretPosition = 6
     session.findById("wnd[1]/tbar[0]/btn[11]").press
     
-    'Organiza la información extraída de SAP en formato xlsx
+    'Organiza la informaciÃ³n extraÃ­da de SAP en formato xlsx
     Workbooks("ZHR929.xlsx").Close SaveChanges:=False
     Workbooks.Open ruta2 & "\ZPYMX025_AUSENTISMOS" & ".xls"
     ActiveSheet.Cells.Select
@@ -526,12 +526,12 @@ End Sub
 
 Sub Organizar_documentos_929()
 
-    Dim Año As Integer
+    Dim AÃ±o As Integer
     Dim ruta As String
     Dim ruta2 As String
-    Año = UserForm1.ComboBox1.Value 'año seleccionado del combobox
+    AÃ±o = UserForm1.ComboBox1.Value 'aÃ±o seleccionado del combobox
     ruta = ThisWorkbook.Path
-    ruta2 = ruta & "\" & CStr(Año) & "\1. PW PTU"
+    ruta2 = ruta & "\" & CStr(AÃ±o) & "\1. PW PTU"
     
     Rows("1:4").Delete
     Rows("2").Delete
@@ -543,12 +543,12 @@ End Sub
 
 Sub Organizar_documentos_ZPYMX025()
 
-    Dim Año As Integer
+    Dim AÃ±o As Integer
     Dim ruta As String
     Dim ruta2 As String
-    Año = UserForm1.ComboBox1.Value 'año seleccionado del combobox
+    AÃ±o = UserForm1.ComboBox1.Value 'aÃ±o seleccionado del combobox
     ruta = ThisWorkbook.Path
-    ruta2 = ruta & "\" & CStr(Año) & "\1. PW PTU"
+    ruta2 = ruta & "\" & CStr(AÃ±o) & "\1. PW PTU"
     
     Rows("1").Delete
     Rows("2").Delete
@@ -560,12 +560,12 @@ End Sub
 
 Sub Organizar_documentos_ZHRMX27()
 
-    Dim Año As Integer
+    Dim AÃ±o As Integer
     Dim ruta As String
     Dim ruta2 As String
-    Año = UserForm1.ComboBox1.Value 'año seleccionado del combobox
+    AÃ±o = UserForm1.ComboBox1.Value 'aÃ±o seleccionado del combobox
     ruta = ThisWorkbook.Path
-    ruta2 = ruta & "\" & CStr(Año) & "\1. PW PTU"
+    ruta2 = ruta & "\" & CStr(AÃ±o) & "\1. PW PTU"
     
     Rows("1:7").Delete
     Rows("2").Delete
@@ -576,31 +576,31 @@ Sub Organizar_documentos_ZHRMX27()
 End Sub
 
 Sub Crear_Carpetas()
-    Dim Año As Integer
-    Año = UserForm1.ComboBox1.Value
+    Dim AÃ±o As Integer
+    AÃ±o = UserForm1.ComboBox1.Value
 
     'ruta principal de la macro
     Dim ruta As String
     ruta = ThisWorkbook.Path
 
-    ' Crear la carpeta del año si no existe
-    If Len(Dir(ruta & "\" & CStr(Año), vbDirectory)) = 0 Then
-        MkDir ruta & "\" & CStr(Año)
+    ' Crear la carpeta del aÃ±o si no existe
+    If Len(Dir(ruta & "\" & CStr(AÃ±o), vbDirectory)) = 0 Then
+        MkDir ruta & "\" & CStr(AÃ±o)
     End If
 
-    ' Crear la subcarpeta "1. PW PTU" dentro de la carpeta del año
-    If Len(Dir(ruta & "\" & CStr(Año) & "\1. PW PTU", vbDirectory)) = 0 Then
-        MkDir ruta & "\" & CStr(Año) & "\1. PW PTU"
+    ' Crear la subcarpeta "1. PW PTU" dentro de la carpeta del aÃ±o
+    If Len(Dir(ruta & "\" & CStr(AÃ±o) & "\1. PW PTU", vbDirectory)) = 0 Then
+        MkDir ruta & "\" & CStr(AÃ±o) & "\1. PW PTU"
     End If
 
-    ' Crear la subcarpeta "3. SIND MAL ALTO - DIAS PESOS" dentro de la carpeta del año
-    If Len(Dir(ruta & "\" & CStr(Año) & "\3. SIND MAL ALTO - DIAS PESOS", vbDirectory)) = 0 Then
-        MkDir ruta & "\" & CStr(Año) & "\3. SIND MAL ALTO - DIAS PESOS"
+    ' Crear la subcarpeta "3. SIND MAL ALTO - DIAS PESOS" dentro de la carpeta del aÃ±o
+    If Len(Dir(ruta & "\" & CStr(AÃ±o) & "\3. SIND MAL ALTO - DIAS PESOS", vbDirectory)) = 0 Then
+        MkDir ruta & "\" & CStr(AÃ±o) & "\3. SIND MAL ALTO - DIAS PESOS"
     End If
     
-    ' Crear la subcarpeta "4. FACTOR DIAS PESOS" dentro de la carpeta del año
-    If Len(Dir(ruta & "\" & CStr(Año) & "\4. FACTOR DIAS PESOS", vbDirectory)) = 0 Then
-        MkDir ruta & "\" & CStr(Año) & "\4. FACTOR DIAS PESOS"
+    ' Crear la subcarpeta "4. FACTOR DIAS PESOS" dentro de la carpeta del aÃ±o
+    If Len(Dir(ruta & "\" & CStr(AÃ±o) & "\4. FACTOR DIAS PESOS", vbDirectory)) = 0 Then
+        MkDir ruta & "\" & CStr(AÃ±o) & "\4. FACTOR DIAS PESOS"
     End If
     
 End Sub
