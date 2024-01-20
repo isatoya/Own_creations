@@ -1,7 +1,7 @@
-Attribute VB_Name = "Módulo1"
+Attribute VB_Name = "MÃ³dulo1"
 Option Explicit
 
-    Dim Año As Integer
+    Dim AÃ±o As Integer
     Dim ruta As String
     Dim ruta2 As String
     Dim ruta3 As String
@@ -10,10 +10,10 @@ Option Explicit
 Sub InicializarVariables()
 
     ruta = ThisWorkbook.Path
-    Año = UserForm1.ComboBox1.Value
-    ruta2 = ruta & "\" & CStr(Año) & "\1. PW PTU"
-    ruta3 = ruta & "\" & CStr(Año) & "\3. SIND MAL ALTO - DIAS PESOS"
-    ruta4 = ruta & "\" & CStr(Año) & "\4. FACTOR DIAS PESOS"
+    AÃ±o = UserForm1.ComboBox1.Value
+    ruta2 = ruta & "\" & CStr(AÃ±o) & "\1. PW PTU"
+    ruta3 = ruta & "\" & CStr(AÃ±o) & "\3. SIND MAL ALTO - DIAS PESOS"
+    ruta4 = ruta & "\" & CStr(AÃ±o) & "\4. FACTOR DIAS PESOS"
     
 End Sub
 
@@ -35,7 +35,7 @@ Sub PW_PTU()
     NuevoLibro.Sheets("Hoja1").Delete
     Application.DisplayAlerts = True
     
-    NuevoLibro.SaveAs ruta2 & "\PW PTU " & Año & ".xlsx" 'Guardar libro
+    NuevoLibro.SaveAs ruta2 & "\PW PTU " & AÃ±o & ".xlsx" 'Guardar libro
 
 End Sub
 
@@ -49,7 +49,7 @@ Sub Organizar_paginas()
     Workbooks.Open ruta2 & "\ZHR929" & ".xlsx"
     ActiveSheet.Cells.Select
     Selection.Copy
-    Workbooks("PW PTU " & Año & ".xlsx").Activate
+    Workbooks("PW PTU " & AÃ±o & ".xlsx").Activate
     Sheets("Sheet1").Activate
     Range("A1").PasteSpecial xlPasteAll
     ActiveSheet.Name = "ZHR929 FLEX Y CCTO"
@@ -61,7 +61,7 @@ Sub Organizar_paginas()
     Workbooks.Open ruta2 & "\ZHRMX27" & ".xlsx"
     ActiveSheet.Cells.Select
     Selection.Copy
-    Workbooks("PW PTU " & Año & ".xlsx").Activate
+    Workbooks("PW PTU " & AÃ±o & ".xlsx").Activate
     Sheets("Sheet2").Activate
     Range("A1").PasteSpecial xlPasteAll
     ActiveSheet.Name = "ZHRMX27 FECHA DEL REING"
@@ -73,7 +73,7 @@ Sub Organizar_paginas()
     Workbooks.Open ruta2 & "\ZPYMX025" & ".xlsx"
     ActiveSheet.Cells.Select
     Selection.Copy
-    Workbooks("PW PTU " & Año & ".xlsx").Activate
+    Workbooks("PW PTU " & AÃ±o & ".xlsx").Activate
     Sheets("Sheet3").Activate
     Range("A1").PasteSpecial xlPasteAll
     ActiveSheet.Name = "PTU DIAS DETALLADO"
@@ -85,7 +85,7 @@ Sub Organizar_paginas()
     Workbooks.Open ruta2 & "\ZPYMX025_V2" & ".xlsx"
     ActiveSheet.Cells.Select
     Selection.Copy
-    Workbooks("PW PTU " & Año & ".xlsx").Activate
+    Workbooks("PW PTU " & AÃ±o & ".xlsx").Activate
     Sheets("Sheet4").Activate
     Range("A1").PasteSpecial xlPasteAll
     ActiveSheet.Name = "PTU PESOS DETALLADO"
@@ -97,7 +97,7 @@ Sub Organizar_paginas()
     Workbooks.Open ruta2 & "\ZPYMX025_AUSENTISMOS" & ".xlsx"
     ActiveSheet.Cells.Select
     Selection.Copy
-    Workbooks("PW PTU " & Año & ".xlsx").Activate
+    Workbooks("PW PTU " & AÃ±o & ".xlsx").Activate
     Sheets("Sheet5").Activate
     Range("A1").PasteSpecial xlPasteAll
     ActiveSheet.Name = "AUSENTISMOS SIND"
@@ -105,7 +105,7 @@ Sub Organizar_paginas()
     Workbooks("ZPYMX025_AUSENTISMOS.xlsx").Close SaveChanges:=False
     
     
-    Workbooks("PW PTU " & Año & ".xlsx").Activate 'Guardar
+    Workbooks("PW PTU " & AÃ±o & ".xlsx").Activate 'Guardar
     ActiveWorkbook.Save
     
     
@@ -122,7 +122,7 @@ Sub Cambios_formato()
     Dim lastrow_put_ausen As Long
     
     'En la ZHR929 FLEX Y CCTO: Pone titulos en las columnas y hace cambios de formato
-        Workbooks("PW PTU " & Año & ".xlsx").Activate
+        Workbooks("PW PTU " & AÃ±o & ".xlsx").Activate
         Sheets("ZHR929 FLEX Y CCTO").Activate
         Range("C1").Value = "Fecha de ingreso"
         Range("D1").Value = "Fecha de baja"
@@ -246,18 +246,18 @@ Sub Cambios_formato()
 End Sub
 
 Sub Filtrar()
-'Elimina los datos del año anterior al que se esta realizando el informe en las hojas PTU DIAS y PTU PESOS
+'Elimina los datos del aÃ±o anterior al que se esta realizando el informe en las hojas PTU DIAS y PTU PESOS
     
     InicializarVariables
     
 
-    'ELIMINA DATOS DEL AÑO ANTERIOR EN LA PTU DIAS DETALLADO
+    'ELIMINA DATOS DEL AÃ‘O ANTERIOR EN LA PTU DIAS DETALLADO
 
-        Workbooks("PW PTU " & Año & ".xlsx").Activate
+        Workbooks("PW PTU " & AÃ±o & ".xlsx").Activate
         Sheets("PTU DIAS DETALLADO").Activate
         Columns("U:U").Insert Shift:=xlToRight, CopyOrigin:=xlFormatFromLeftOrAbove
     
-        'Llena la nueva columna con los digitos del año segun la columna Per.para
+        'Llena la nueva columna con los digitos del aÃ±o segun la columna Per.para
         Range("U2:U" & Cells(Rows.Count, "V").End(xlUp).Row).Formula = "=LEFT(V2,4)"
         Columns("U:U").Copy
         Columns("U:U").PasteSpecial Paste:=xlPasteValues
@@ -266,12 +266,12 @@ Sub Filtrar()
         'Evalua
         Dim celda As Range
         For Each celda In Range("U2:U" & Cells(Rows.Count, "U").End(xlUp).Row)
-            If Left(celda.Value, 4) = CStr(Año - 1) Then
+            If Left(celda.Value, 4) = CStr(AÃ±o - 1) Then
                 celda.Interior.Color = RGB(173, 216, 230)
             End If
         Next celda
     
-        ' Eliminar las filas que están resaltadas
+        ' Eliminar las filas que estÃ¡n resaltadas
         On Error Resume Next
         Application.ScreenUpdating = False
         
@@ -291,13 +291,13 @@ Sub Filtrar()
         Columns("U:U").Delete 'Elimina la columna que creamos
     
     
-    'ELIMINA DATOS DEL AÑO ANTERIOR EN LA PTU PESOS DETALLADO
+    'ELIMINA DATOS DEL AÃ‘O ANTERIOR EN LA PTU PESOS DETALLADO
 
-        Workbooks("PW PTU " & Año & ".xlsx").Activate
+        Workbooks("PW PTU " & AÃ±o & ".xlsx").Activate
         Sheets("PTU PESOS DETALLADO").Activate
         Columns("W:W").Insert Shift:=xlToRight, CopyOrigin:=xlFormatFromLeftOrAbove
     
-        ' Aplicar fórmula para extraer los primeros 4 dígitos de la columna V y pegar como valores
+        ' Aplicar fÃ³rmula para extraer los primeros 4 dÃ­gitos de la columna V y pegar como valores
         Range("W2:W" & Cells(Rows.Count, "X").End(xlUp).Row).Formula = "=LEFT(X2,4)"
         Columns("W:W").Copy
         Columns("W:W").PasteSpecial Paste:=xlPasteValues
@@ -306,12 +306,12 @@ Sub Filtrar()
         'Evalua
         Dim celda1 As Range
         For Each celda1 In Range("W2:W" & Cells(Rows.Count, "W").End(xlUp).Row)
-            If Left(celda1.Value, 4) = CStr(Año - 1) Then
+            If Left(celda1.Value, 4) = CStr(AÃ±o - 1) Then
                 celda1.Interior.Color = RGB(173, 216, 230) ' Color azul claro
             End If
         Next celda1
     
-        ' Eliminar las filas que están resaltadas
+        ' Eliminar las filas que estÃ¡n resaltadas
         
         On Error Resume Next
         Application.ScreenUpdating = False
@@ -343,7 +343,7 @@ Sub TD_Dias()
     Dim ultimaFila As Long
     ultimaFila = Cells(Rows.Count, "A").End(xlUp).Row
     
-    Workbooks("PW PTU " & Año & ".xlsx").Activate 'Activa la hoja
+    Workbooks("PW PTU " & AÃ±o & ".xlsx").Activate 'Activa la hoja
     Sheets("PTU DIAS DETALLADO").Activate
     
     'Rango
@@ -359,7 +359,7 @@ Sub TD_Dias()
     Set tablaDinamica = ActiveSheet.PivotTableWizard(SourceType:=xlDatabase, SourceData:=rangoDatos, TableDestination:=celdaTabla)
     
     With tablaDinamica
-        .PivotFields("Nº pers.").Orientation = xlRowField '
+        .PivotFields("NÂº pers.").Orientation = xlRowField '
         .PivotFields("Soc.").Orientation = xlColumnField
         .AddDataField .PivotFields("Ctd."), "Suma de Ctd.", xlSum
         '.PivotFields("Ctd.").Orientation = xlDataField
@@ -383,7 +383,7 @@ Sub TD_Pesos()
     Dim ultimaFila2 As Long
     ultimaFila2 = Cells(Rows.Count, "A").End(xlUp).Row
     
-    Workbooks("PW PTU " & Año & ".xlsx").Activate 'Activar la hoja
+    Workbooks("PW PTU " & AÃ±o & ".xlsx").Activate 'Activar la hoja
     Sheets("PTU PESOS DETALLADO").Activate
     
     'Rango
@@ -399,7 +399,7 @@ Sub TD_Pesos()
     Set tablaDinamica = ActiveSheet.PivotTableWizard(SourceType:=xlDatabase, SourceData:=rangoDatos, TableDestination:=celdaTabla)
     
     With tablaDinamica
-        .PivotFields("Nº pers.").Orientation = xlRowField '
+        .PivotFields("NÂº pers.").Orientation = xlRowField '
         .PivotFields("Soc.").Orientation = xlColumnField
         .AddDataField .PivotFields("Importe"), "Suma de Ctd.", xlSum
         '.PivotFields("Importe").Orientation = xlDataField
@@ -417,7 +417,7 @@ Sub TD_ausentismos()
     Dim ultimaFila3 As Long
     ultimaFila3 = Cells(Rows.Count, "A").End(xlUp).Row
     
-    Workbooks("PW PTU " & Año & ".xlsx").Activate
+    Workbooks("PW PTU " & AÃ±o & ".xlsx").Activate
     Sheets("AUSENTISMOS SIND").Activate
     
     'Rango
@@ -433,9 +433,9 @@ Sub TD_ausentismos()
     Set tablaDinamica = ActiveSheet.PivotTableWizard(SourceType:=xlDatabase, SourceData:=rangoDatos, TableDestination:=celdaTabla)
     
     With tablaDinamica
-        .PivotFields("Nº pers.").Orientation = xlRowField
+        .PivotFields("NÂº pers.").Orientation = xlRowField
         .PivotFields("CC-n.").Orientation = xlColumnField
-        .PivotFields("Texto expl.CC-nómina").Orientation = xlColumnField
+        .PivotFields("Texto expl.CC-nÃ³mina").Orientation = xlColumnField
         .AddDataField .PivotFields("Ctd."), "Suma de Ctd.", xlSum
         '.PivotFields("Ctd.").Orientation = xlDataField
     End With
@@ -452,7 +452,7 @@ Sub Buscarv()
 
 
     'Realiza el buscarV para PTU DIAS
-    Workbooks("PW PTU " & Año & ".xlsx").Activate
+    Workbooks("PW PTU " & AÃ±o & ".xlsx").Activate
     Sheets("ZHR929 FLEX Y CCTO").Select
     lastRow = ActiveSheet.Cells(Rows.Count, 1).End(xlUp).Row
     With Worksheets("ZHR929 FLEX Y CCTO").Range("S2:S" & lastRow)
@@ -492,7 +492,7 @@ Sub Filtro_ZHR929()
     
     'Filro
 
-    Workbooks("PW PTU " & Año & ".xlsx").Activate
+    Workbooks("PW PTU " & AÃ±o & ".xlsx").Activate
     Sheets("ZHR929 FLEX Y CCTO").Activate
     Rows("1:1").AutoFilter
     ActiveSheet.Range("H:H").AutoFilter Field:=8, Criteria1:="<>TIEMPO INDETERMINADO"
@@ -526,13 +526,13 @@ Sub Filtro_ZHR929()
 End Sub
 
 Sub Unificado_y_planta()
-'Crea el nuevo informe "Informe Dias Pesos Año"
+'Crea el nuevo informe "Informe Dias Pesos AÃ±o"
 
 
 
     InicializarVariables
     Dim UltFila As Long
-    Workbooks("PW PTU " & Año & ".xlsx").Activate
+    Workbooks("PW PTU " & AÃ±o & ".xlsx").Activate
     UltFila = Cells(Rows.Count, "A").End(xlUp).Row
     
     'Filtra los empleados sindicalizados
@@ -546,67 +546,67 @@ Sub Unificado_y_planta()
     On Error GoTo 0 ' Restablece el manejo de errores a su estado normal
 
     'Crea un libro con las hojas correspondientes
-    Workbooks.Add.SaveAs ruta3 & "\" & "1. Informe Dias Pesos Año " & CStr(Año) & " V1.xlsx"
+    Workbooks.Add.SaveAs ruta3 & "\" & "1. Informe Dias Pesos AÃ±o " & CStr(AÃ±o) & " V1.xlsx"
     Sheets("Hoja1").Activate
     ActiveSheet.Name = "UNIFICADO"
     Range("A2:E2").Merge
-    Range("A2").Value = "LISTADO DE PERSONAL SINDICALIZADO PTU AÑO "
+    Range("A2").Value = "LISTADO DE PERSONAL SINDICALIZADO PTU AÃ‘O "
     Range("A2").Font.Bold = True
     ActiveWorkbook.Sheets.Add(After:=Sheets(Sheets.Count)).Name = "MX02"
     ActiveWorkbook.Sheets.Add(After:=Sheets(Sheets.Count)).Name = "MX08"
   
     
     'Crea tabla de la hoja Unificado
-    Workbooks("PW PTU " & Año & ".xlsx").Activate
+    Workbooks("PW PTU " & AÃ±o & ".xlsx").Activate
     Sheets("ZHR929 FLEX Y CCTO").Activate
     Range("A:B").Resize(UltFila, 2).Copy
     
-    Workbooks("1. Informe Dias Pesos Año " & CStr(Año) & " V1.xlsx").Activate
+    Workbooks("1. Informe Dias Pesos AÃ±o " & CStr(AÃ±o) & " V1.xlsx").Activate
     Sheets("UNIFICADO").Activate
     Range("A5").PasteSpecial Paste:=xlPasteValues
     Application.CutCopyMode = False
     
-    Workbooks("PW PTU " & Año & ".xlsx").Activate
+    Workbooks("PW PTU " & AÃ±o & ".xlsx").Activate
     Sheets("ZHR929 FLEX Y CCTO").Activate
     Range("G1:G" & UltFila).Copy
     
-    Workbooks("1. Informe Dias Pesos Año " & CStr(Año) & " V1.xlsx").Activate
+    Workbooks("1. Informe Dias Pesos AÃ±o " & CStr(AÃ±o) & " V1.xlsx").Activate
     Sheets("UNIFICADO").Activate
     Range("C5").PasteSpecial Paste:=xlPasteValues
     Application.CutCopyMode = False
     
-    Workbooks("PW PTU " & Año & ".xlsx").Activate
+    Workbooks("PW PTU " & AÃ±o & ".xlsx").Activate
     Sheets("ZHR929 FLEX Y CCTO").Activate
     Range("M1:M" & UltFila).Copy
     
-    Workbooks("1. Informe Dias Pesos Año " & CStr(Año) & " V1.xlsx").Activate
+    Workbooks("1. Informe Dias Pesos AÃ±o " & CStr(AÃ±o) & " V1.xlsx").Activate
     Sheets("UNIFICADO").Activate
     Range("D5").PasteSpecial Paste:=xlPasteValues
     Application.CutCopyMode = False
     
-    Workbooks("PW PTU " & Año & ".xlsx").Activate
+    Workbooks("PW PTU " & AÃ±o & ".xlsx").Activate
     Sheets("ZHR929 FLEX Y CCTO").Activate
     Range("U1:U" & UltFila).Copy
     
-    Workbooks("1. Informe Dias Pesos Año " & CStr(Año) & " V1.xlsx").Activate
+    Workbooks("1. Informe Dias Pesos AÃ±o " & CStr(AÃ±o) & " V1.xlsx").Activate
     Sheets("UNIFICADO").Activate
     Range("E5").PasteSpecial Paste:=xlPasteValues
     Application.CutCopyMode = False
     
-    Workbooks("PW PTU " & Año & ".xlsx").Activate
+    Workbooks("PW PTU " & AÃ±o & ".xlsx").Activate
     Sheets("ZHR929 FLEX Y CCTO").Activate
     Range("V1:V" & UltFila).Copy
     
-    Workbooks("1. Informe Dias Pesos Año " & CStr(Año) & " V1.xlsx").Activate
+    Workbooks("1. Informe Dias Pesos AÃ±o " & CStr(AÃ±o) & " V1.xlsx").Activate
     Sheets("UNIFICADO").Activate
     Range("F5").PasteSpecial Paste:=xlPasteValues
     Application.CutCopyMode = False
     
-    Workbooks("PW PTU " & Año & ".xlsx").Activate
+    Workbooks("PW PTU " & AÃ±o & ".xlsx").Activate
     Sheets("ZHR929 FLEX Y CCTO").Activate
     Range("J1:J" & UltFila).Copy
     
-    Workbooks("1. Informe Dias Pesos Año " & CStr(Año) & " V1.xlsx").Activate
+    Workbooks("1. Informe Dias Pesos AÃ±o " & CStr(AÃ±o) & " V1.xlsx").Activate
     Sheets("UNIFICADO").Activate
     Range("G5").PasteSpecial Paste:=xlPasteValues
     Application.CutCopyMode = False
@@ -643,7 +643,7 @@ Sub Unificado_y_planta()
         Application.CutCopyMode = False
         
         Range("A2:E2").Merge
-        Range("A2").Value = "LISTADO DE PERSONAL SINDICALIZADO PTU AÑO "
+        Range("A2").Value = "LISTADO DE PERSONAL SINDICALIZADO PTU AÃ‘O "
         Range("A2").Font.Bold = True
         
         With Range("A5:G5")
@@ -670,7 +670,7 @@ Sub Unificado_y_planta()
         Application.CutCopyMode = False
         
         Range("A2:E2").Merge
-        Range("A2").Value = "LISTADO DE PERSONAL SINDICALIZADO PTU AÑO "
+        Range("A2").Value = "LISTADO DE PERSONAL SINDICALIZADO PTU AÃ‘O "
         Range("A2").Font.Bold = True
         
         With Range("A5:G5")
@@ -694,39 +694,39 @@ Sub Sind_Alto()
     InicializarVariables
 
     'Crea el nuevo libro en la carpeta 3.
-    Workbooks.Add.SaveAs ruta3 & "\" & "1. Mayores salarios SIND " & CStr(Año) & " V1.xlsx"
+    Workbooks.Add.SaveAs ruta3 & "\" & "1. Mayores salarios SIND " & CStr(AÃ±o) & " V1.xlsx"
     Sheets("Hoja1").Activate
-    ActiveSheet.Name = "Mayores salarios " & CStr(Año)
+    ActiveSheet.Name = "Mayores salarios " & CStr(AÃ±o)
     Range("A2:E2").Merge
-    Range("A2").Value = "LISTADO DE PERSONAL SINDICALIZADO PTU " & CStr(Año)
+    Range("A2").Value = "LISTADO DE PERSONAL SINDICALIZADO PTU " & CStr(AÃ±o)
     Range("A2").Font.Bold = True
 
     'Va a hacer el filtro para sacar los salarios mayores de MX02
-    Workbooks("1. Informe Dias Pesos Año " & CStr(Año) & " V1.xlsx").Activate
+    Workbooks("1. Informe Dias Pesos AÃ±o " & CStr(AÃ±o) & " V1.xlsx").Activate
     Sheets("MX02").Activate
 
-    ' Encontrar la última fila en la columna F
+    ' Encontrar la Ãºltima fila en la columna F
     Dim ultimaFila As Long
     ultimaFila = Cells(Rows.Count, "F").End(xlUp).Row
     Range("F5:F" & ultimaFila).Sort Key1:=Range("F5"), Order1:=xlDescending, Header:=xlYes
     
     'Copiar y pegar
     Range("A5:G8").Copy
-    Workbooks("1. Mayores salarios SIND " & CStr(Año) & " V1.xlsx").Activate
-    Sheets("Mayores salarios " & CStr(Año)).Activate
+    Workbooks("1. Mayores salarios SIND " & CStr(AÃ±o) & " V1.xlsx").Activate
+    Sheets("Mayores salarios " & CStr(AÃ±o)).Activate
     Range("A5").PasteSpecial Paste:=xlPasteValues
     Application.CutCopyMode = False
     
        
-    Workbooks("1. Informe Dias Pesos Año " & CStr(Año) & " V1.xlsx").Activate
+    Workbooks("1. Informe Dias Pesos AÃ±o " & CStr(AÃ±o) & " V1.xlsx").Activate
     Sheets("MX08").Activate
     Dim ultimaFila2 As Long
     ultimaFila2 = Cells(Rows.Count, "F").End(xlUp).Row
     Range("F5:F" & ultimaFila2).Sort Key1:=Range("F5"), Order1:=xlDescending, Header:=xlYes
     
     Range("A6:G6").Copy
-    Workbooks("1. Mayores salarios SIND " & CStr(Año) & " V1.xlsx").Activate
-    Sheets("Mayores salarios " & CStr(Año)).Activate
+    Workbooks("1. Mayores salarios SIND " & CStr(AÃ±o) & " V1.xlsx").Activate
+    Sheets("Mayores salarios " & CStr(AÃ±o)).Activate
     Range("A9").PasteSpecial Paste:=xlPasteValues
     Application.CutCopyMode = False
     
@@ -743,8 +743,8 @@ Sub Sind_Alto()
     ActiveWorkbook.Save
     ActiveWorkbook.Close
     
-    'Que me cierre el 1. Informe Dias Pesos Año
-    Workbooks("1. Informe Dias Pesos Año " & CStr(Año) & " V1.xlsx").Activate
+    'Que me cierre el 1. Informe Dias Pesos AÃ±o
+    Workbooks("1. Informe Dias Pesos AÃ±o " & CStr(AÃ±o) & " V1.xlsx").Activate
     ActiveWorkbook.Save
     ActiveWorkbook.Close
     
@@ -755,7 +755,7 @@ Sub Plantilla_MX08()
 
     InicializarVariables
         
-    'Verificar la carpeta´plantillas
+    'Verificar la carpetaÂ´plantillas
     If Dir(ruta & "\PLANTILLAS\", vbDirectory) = "" Then
         MsgBox "La carpeta PLANTILLAS no existe en la ruta proporcionada.", vbExclamation, "Error"
         Exit Sub
@@ -772,14 +772,14 @@ Sub Plantilla_MX08()
     End If
     
     'Copiar archivo y abrirlo
-    FileCopy rutaPlantilla, ruta4 & "\" & "MX08 PTU " & CStr(Año) & ".xlsx"
-    Workbooks.Open ruta4 & "\" & "MX08 PTU " & CStr(Año) & ".xlsx", UpdateLinks:=False
-    Workbooks("MX08 PTU " & CStr(Año) & ".xlsx").Activate
+    FileCopy rutaPlantilla, ruta4 & "\" & "MX08 PTU " & CStr(AÃ±o) & ".xlsx"
+    Workbooks.Open ruta4 & "\" & "MX08 PTU " & CStr(AÃ±o) & ".xlsx", UpdateLinks:=False
+    Workbooks("MX08 PTU " & CStr(AÃ±o) & ".xlsx").Activate
     Sheets("CIA").Activate
     ActiveSheet.Name = "MX08"
     
     'Filtra los empleados
-    Workbooks("PW PTU " & Año & ".xlsx").Activate
+    Workbooks("PW PTU " & AÃ±o & ".xlsx").Activate
     Sheets("ZHR929 FLEX Y CCTO").Activate
     ActiveSheet.AutoFilterMode = False
     Rows("1:1").AutoFilter
@@ -788,80 +788,80 @@ Sub Plantilla_MX08()
     
     On Error Resume Next 'Sociedad
     Columns("J:J").Resize(Rows.Count - 1, 1).Offset(1, 0).SpecialCells(xlCellTypeVisible).Copy
-    Workbooks("MX08 PTU " & CStr(Año) & ".xlsx").Activate
+    Workbooks("MX08 PTU " & CStr(AÃ±o) & ".xlsx").Activate
     Sheets("MX08").Activate
     Range("A10").PasteSpecial Paste:=xlPasteValues
     Application.CutCopyMode = False
     On Error GoTo 0
     
-    Workbooks("PW PTU " & Año & ".xlsx").Activate 'Numero de personal
+    Workbooks("PW PTU " & AÃ±o & ".xlsx").Activate 'Numero de personal
     Sheets("ZHR929 FLEX Y CCTO").Activate
     Columns("A:A").Resize(Rows.Count - 1, 1).Offset(1, 0).SpecialCells(xlCellTypeVisible).Copy
-    Workbooks("MX08 PTU " & CStr(Año) & ".xlsx").Activate
+    Workbooks("MX08 PTU " & CStr(AÃ±o) & ".xlsx").Activate
     Sheets("MX08").Activate
     Range("B10").PasteSpecial Paste:=xlPasteValues
     Application.CutCopyMode = False
 
-    Workbooks("PW PTU " & Año & ".xlsx").Activate 'Nombre del empleado
+    Workbooks("PW PTU " & AÃ±o & ".xlsx").Activate 'Nombre del empleado
     Sheets("ZHR929 FLEX Y CCTO").Activate
     Columns("B:B").Resize(Rows.Count - 1, 1).Offset(1, 0).SpecialCells(xlCellTypeVisible).Copy
-    Workbooks("MX08 PTU " & CStr(Año) & ".xlsx").Activate
+    Workbooks("MX08 PTU " & CStr(AÃ±o) & ".xlsx").Activate
     Sheets("MX08").Activate
     Range("C10").PasteSpecial Paste:=xlPasteValues
     Application.CutCopyMode = False
     
-    Workbooks("PW PTU " & Año & ".xlsx").Activate 'Apres
+    Workbooks("PW PTU " & AÃ±o & ".xlsx").Activate 'Apres
     Sheets("ZHR929 FLEX Y CCTO").Activate
     Columns("F:F").Resize(Rows.Count - 1, 1).Offset(1, 0).SpecialCells(xlCellTypeVisible).Copy
-    Workbooks("MX08 PTU " & CStr(Año) & ".xlsx").Activate
+    Workbooks("MX08 PTU " & CStr(AÃ±o) & ".xlsx").Activate
     Sheets("MX08").Activate
     Range("D10").PasteSpecial Paste:=xlPasteValues
     Application.CutCopyMode = False
     
-    Workbooks("PW PTU " & Año & ".xlsx").Activate 'DivPres
+    Workbooks("PW PTU " & AÃ±o & ".xlsx").Activate 'DivPres
     Sheets("ZHR929 FLEX Y CCTO").Activate
     Columns("L:L").Resize(Rows.Count - 1, 1).Offset(1, 0).SpecialCells(xlCellTypeVisible).Copy
-    Workbooks("MX08 PTU " & CStr(Año) & ".xlsx").Activate
+    Workbooks("MX08 PTU " & CStr(AÃ±o) & ".xlsx").Activate
     Sheets("MX08").Activate
     Range("E10").PasteSpecial Paste:=xlPasteValues
     Application.CutCopyMode = False
     
-    Workbooks("PW PTU " & Año & ".xlsx").Activate 'TextoDivPers
+    Workbooks("PW PTU " & AÃ±o & ".xlsx").Activate 'TextoDivPers
     Sheets("ZHR929 FLEX Y CCTO").Activate
     Columns("M:M").Resize(Rows.Count - 1, 1).Offset(1, 0).SpecialCells(xlCellTypeVisible).Copy
-    Workbooks("MX08 PTU " & CStr(Año) & ".xlsx").Activate
+    Workbooks("MX08 PTU " & CStr(AÃ±o) & ".xlsx").Activate
     Sheets("MX08").Activate
     Range("F10").PasteSpecial Paste:=xlPasteValues
     Application.CutCopyMode = False
     
-    Workbooks("PW PTU " & Año & ".xlsx").Activate 'Status de ocupación
+    Workbooks("PW PTU " & AÃ±o & ".xlsx").Activate 'Status de ocupaciÃ³n
     Sheets("ZHR929 FLEX Y CCTO").Activate
     Columns("P:P").Resize(Rows.Count - 1, 1).Offset(1, 0).SpecialCells(xlCellTypeVisible).Copy
-    Workbooks("MX08 PTU " & CStr(Año) & ".xlsx").Activate
+    Workbooks("MX08 PTU " & CStr(AÃ±o) & ".xlsx").Activate
     Sheets("MX08").Activate
     Range("G10").PasteSpecial Paste:=xlPasteValues
     Application.CutCopyMode = False
     
-    Workbooks("PW PTU " & Año & ".xlsx").Activate 'Sueldo Base Mensual
+    Workbooks("PW PTU " & AÃ±o & ".xlsx").Activate 'Sueldo Base Mensual
     Sheets("ZHR929 FLEX Y CCTO").Activate
     Columns("I:I").Resize(Rows.Count - 1, 1).Offset(1, 0).SpecialCells(xlCellTypeVisible).Copy
-    Workbooks("MX08 PTU " & CStr(Año) & ".xlsx").Activate
+    Workbooks("MX08 PTU " & CStr(AÃ±o) & ".xlsx").Activate
     Sheets("MX08").Activate
     Range("H10").PasteSpecial Paste:=xlPasteValues
     Application.CutCopyMode = False
     
-    Workbooks("PW PTU " & Año & ".xlsx").Activate 'Ptu Dias
+    Workbooks("PW PTU " & AÃ±o & ".xlsx").Activate 'Ptu Dias
     Sheets("ZHR929 FLEX Y CCTO").Activate
     Columns("U:U").Resize(Rows.Count - 1, 1).Offset(1, 0).SpecialCells(xlCellTypeVisible).Copy
-    Workbooks("MX08 PTU " & CStr(Año) & ".xlsx").Activate
+    Workbooks("MX08 PTU " & CStr(AÃ±o) & ".xlsx").Activate
     Sheets("MX08").Activate
     Range("L10").PasteSpecial Paste:=xlPasteValues
     Application.CutCopyMode = False
     
-    Workbooks("PW PTU " & Año & ".xlsx").Activate 'Ptu pesos
+    Workbooks("PW PTU " & AÃ±o & ".xlsx").Activate 'Ptu pesos
     Sheets("ZHR929 FLEX Y CCTO").Activate
     Columns("V:V").Resize(Rows.Count - 1, 1).Offset(1, 0).SpecialCells(xlCellTypeVisible).Copy
-    Workbooks("MX08 PTU " & CStr(Año) & ".xlsx").Activate
+    Workbooks("MX08 PTU " & CStr(AÃ±o) & ".xlsx").Activate
     Sheets("MX08").Activate
     Range("N10").PasteSpecial Paste:=xlPasteValues
     Application.CutCopyMode = False
@@ -875,7 +875,7 @@ Sub Plantilla_MX02()
 
     InicializarVariables
         
-    'Verificar la carpeta´plantillas
+    'Verificar la carpetaÂ´plantillas
     If Dir(ruta & "\PLANTILLAS\", vbDirectory) = "" Then
         MsgBox "La carpeta PLANTILLAS no existe en la ruta proporcionada.", vbExclamation, "Error"
         Exit Sub
@@ -892,14 +892,14 @@ Sub Plantilla_MX02()
     End If
     
     'Copiar archivo y abrirlo
-    FileCopy rutaPlantilla, ruta4 & "\" & "MX02 PTU " & CStr(Año) & ".xlsx"
-    Workbooks.Open ruta4 & "\" & "MX02 PTU " & CStr(Año) & ".xlsx", UpdateLinks:=False
-    Workbooks("MX02 PTU " & CStr(Año) & ".xlsx").Activate
+    FileCopy rutaPlantilla, ruta4 & "\" & "MX02 PTU " & CStr(AÃ±o) & ".xlsx"
+    Workbooks.Open ruta4 & "\" & "MX02 PTU " & CStr(AÃ±o) & ".xlsx", UpdateLinks:=False
+    Workbooks("MX02 PTU " & CStr(AÃ±o) & ".xlsx").Activate
     Sheets("CIA").Activate
     ActiveSheet.Name = "MX02"
     
     'Filtra los empleados
-    Workbooks("PW PTU " & Año & ".xlsx").Activate
+    Workbooks("PW PTU " & AÃ±o & ".xlsx").Activate
     Sheets("ZHR929 FLEX Y CCTO").Activate
     ActiveSheet.AutoFilterMode = False
     Rows("1:1").AutoFilter
@@ -908,80 +908,80 @@ Sub Plantilla_MX02()
     
     On Error Resume Next 'Sociedad
     Columns("J:J").Resize(Rows.Count - 1, 1).Offset(1, 0).SpecialCells(xlCellTypeVisible).Copy
-    Workbooks("MX02 PTU " & CStr(Año) & ".xlsx").Activate
+    Workbooks("MX02 PTU " & CStr(AÃ±o) & ".xlsx").Activate
     Sheets("MX02").Activate
     Range("A10").PasteSpecial Paste:=xlPasteValues
     Application.CutCopyMode = False
     On Error GoTo 0
     
-    Workbooks("PW PTU " & Año & ".xlsx").Activate 'Numero de personal
+    Workbooks("PW PTU " & AÃ±o & ".xlsx").Activate 'Numero de personal
     Sheets("ZHR929 FLEX Y CCTO").Activate
     Columns("A:A").Resize(Rows.Count - 1, 1).Offset(1, 0).SpecialCells(xlCellTypeVisible).Copy
-    Workbooks("MX02 PTU " & CStr(Año) & ".xlsx").Activate
+    Workbooks("MX02 PTU " & CStr(AÃ±o) & ".xlsx").Activate
     Sheets("MX02").Activate
     Range("B10").PasteSpecial Paste:=xlPasteValues
     Application.CutCopyMode = False
 
-    Workbooks("PW PTU " & Año & ".xlsx").Activate 'Nombre del empleado
+    Workbooks("PW PTU " & AÃ±o & ".xlsx").Activate 'Nombre del empleado
     Sheets("ZHR929 FLEX Y CCTO").Activate
     Columns("B:B").Resize(Rows.Count - 1, 1).Offset(1, 0).SpecialCells(xlCellTypeVisible).Copy
-    Workbooks("MX02 PTU " & CStr(Año) & ".xlsx").Activate
+    Workbooks("MX02 PTU " & CStr(AÃ±o) & ".xlsx").Activate
     Sheets("MX02").Activate
     Range("C10").PasteSpecial Paste:=xlPasteValues
     Application.CutCopyMode = False
     
-    Workbooks("PW PTU " & Año & ".xlsx").Activate 'Apres
+    Workbooks("PW PTU " & AÃ±o & ".xlsx").Activate 'Apres
     Sheets("ZHR929 FLEX Y CCTO").Activate
     Columns("F:F").Resize(Rows.Count - 1, 1).Offset(1, 0).SpecialCells(xlCellTypeVisible).Copy
-    Workbooks("MX02 PTU " & CStr(Año) & ".xlsx").Activate
+    Workbooks("MX02 PTU " & CStr(AÃ±o) & ".xlsx").Activate
     Sheets("MX02").Activate
     Range("D10").PasteSpecial Paste:=xlPasteValues
     Application.CutCopyMode = False
     
-    Workbooks("PW PTU " & Año & ".xlsx").Activate 'DivPres
+    Workbooks("PW PTU " & AÃ±o & ".xlsx").Activate 'DivPres
     Sheets("ZHR929 FLEX Y CCTO").Activate
     Columns("L:L").Resize(Rows.Count - 1, 1).Offset(1, 0).SpecialCells(xlCellTypeVisible).Copy
-    Workbooks("MX02 PTU " & CStr(Año) & ".xlsx").Activate
+    Workbooks("MX02 PTU " & CStr(AÃ±o) & ".xlsx").Activate
     Sheets("MX02").Activate
     Range("E10").PasteSpecial Paste:=xlPasteValues
     Application.CutCopyMode = False
     
-    Workbooks("PW PTU " & Año & ".xlsx").Activate 'TextoDivPers
+    Workbooks("PW PTU " & AÃ±o & ".xlsx").Activate 'TextoDivPers
     Sheets("ZHR929 FLEX Y CCTO").Activate
     Columns("M:M").Resize(Rows.Count - 1, 1).Offset(1, 0).SpecialCells(xlCellTypeVisible).Copy
-    Workbooks("MX02 PTU " & CStr(Año) & ".xlsx").Activate
+    Workbooks("MX02 PTU " & CStr(AÃ±o) & ".xlsx").Activate
     Sheets("MX02").Activate
     Range("F10").PasteSpecial Paste:=xlPasteValues
     Application.CutCopyMode = False
     
-    Workbooks("PW PTU " & Año & ".xlsx").Activate 'Status de ocupación
+    Workbooks("PW PTU " & AÃ±o & ".xlsx").Activate 'Status de ocupaciÃ³n
     Sheets("ZHR929 FLEX Y CCTO").Activate
     Columns("P:P").Resize(Rows.Count - 1, 1).Offset(1, 0).SpecialCells(xlCellTypeVisible).Copy
-    Workbooks("MX02 PTU " & CStr(Año) & ".xlsx").Activate
+    Workbooks("MX02 PTU " & CStr(AÃ±o) & ".xlsx").Activate
     Sheets("MX02").Activate
     Range("G10").PasteSpecial Paste:=xlPasteValues
     Application.CutCopyMode = False
     
-    Workbooks("PW PTU " & Año & ".xlsx").Activate 'Sueldo Base Mensual
+    Workbooks("PW PTU " & AÃ±o & ".xlsx").Activate 'Sueldo Base Mensual
     Sheets("ZHR929 FLEX Y CCTO").Activate
     Columns("I:I").Resize(Rows.Count - 1, 1).Offset(1, 0).SpecialCells(xlCellTypeVisible).Copy
-    Workbooks("MX02 PTU " & CStr(Año) & ".xlsx").Activate
+    Workbooks("MX02 PTU " & CStr(AÃ±o) & ".xlsx").Activate
     Sheets("MX02").Activate
     Range("H10").PasteSpecial Paste:=xlPasteValues
     Application.CutCopyMode = False
     
-    Workbooks("PW PTU " & Año & ".xlsx").Activate 'Ptu Dias
+    Workbooks("PW PTU " & AÃ±o & ".xlsx").Activate 'Ptu Dias
     Sheets("ZHR929 FLEX Y CCTO").Activate
     Columns("U:U").Resize(Rows.Count - 1, 1).Offset(1, 0).SpecialCells(xlCellTypeVisible).Copy
-    Workbooks("MX02 PTU " & CStr(Año) & ".xlsx").Activate
+    Workbooks("MX02 PTU " & CStr(AÃ±o) & ".xlsx").Activate
     Sheets("MX02").Activate
     Range("L10").PasteSpecial Paste:=xlPasteValues
     Application.CutCopyMode = False
     
-    Workbooks("PW PTU " & Año & ".xlsx").Activate 'Ptu pesos
+    Workbooks("PW PTU " & AÃ±o & ".xlsx").Activate 'Ptu pesos
     Sheets("ZHR929 FLEX Y CCTO").Activate
     Columns("V:V").Resize(Rows.Count - 1, 1).Offset(1, 0).SpecialCells(xlCellTypeVisible).Copy
-    Workbooks("MX02 PTU " & CStr(Año) & ".xlsx").Activate
+    Workbooks("MX02 PTU " & CStr(AÃ±o) & ".xlsx").Activate
     Sheets("MX02").Activate
     Range("N10").PasteSpecial Paste:=xlPasteValues
     Application.CutCopyMode = False
@@ -990,7 +990,7 @@ Sub Plantilla_MX02()
     ActiveWorkbook.Close
     
     'Me guarde el archivo PW PTU
-    Workbooks("PW PTU " & Año & ".xlsx").Activate 'Ptu Dias
+    Workbooks("PW PTU " & AÃ±o & ".xlsx").Activate 'Ptu Dias
     ActiveSheet.AutoFilterMode = False
     ActiveWorkbook.Save
     ActiveWorkbook.Close
