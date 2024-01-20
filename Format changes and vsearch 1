@@ -3,15 +3,15 @@ Attribute VB_Name = "Template"
 Sub Template()
 
 If IsEmpty(ThisWorkbook.Sheets("Position").Range("C6").Value) Then
-MsgBox "Es necesario completar la informaciÛn de los cÛdigos en la hoja 'Position'.", vbExclamation, "Falta InformaciÛn"
+MsgBox "Es necesario completar la informaci√≥n de los c√≥digos en la hoja 'Position'.", vbExclamation, "Falta Informaci√≥n"
 Else
 
 If IsEmpty(ThisWorkbook.Sheets("Positions Report").Range("A3").Value) Or IsEmpty(ThisWorkbook.Sheets("Positions Report").Range("A4").Value) Then
-MsgBox "Es necesario pegar los datos en la hoja ìPositions Reportî.", vbExclamation, "Falta InformaciÛn"
+MsgBox "Es necesario pegar los datos en la hoja ‚ÄúPositions Report‚Äù.", vbExclamation, "Falta Informaci√≥n"
 Else
 
 If IsEmpty(ThisWorkbook.Sheets("Total").Range("A3").Value) Or IsEmpty(ThisWorkbook.Sheets("Total").Range("A4").Value) Then
-MsgBox "Es necesario pegar los datos en la hoja ìTotalî.", vbExclamation, "Falta InformaciÛn"
+MsgBox "Es necesario pegar los datos en la hoja ‚ÄúTotal‚Äù.", vbExclamation, "Falta Informaci√≥n"
 Else
 
 
@@ -59,7 +59,7 @@ End Sub
 
 Sub Buscarv()
 
-'Encuentra la ˙ltima fila en la columna C
+'Encuentra la √∫ltima fila en la columna C
 
 Dim UltimaFila As Long
 Sheets("Position").Activate
