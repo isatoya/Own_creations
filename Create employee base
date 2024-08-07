@@ -1,12 +1,12 @@
-Attribute VB_Name = "MAESTRO"
+
 Option Explicit
 'variables para todo el proyecto
 
-    Dim Fecha1, Fecha2, Fecha3, mes, Mes_texto, AÒo, mes_eliminar, dia As String
-    Dim ruta, Ruta_AÒo, Ruta_Mes, Ruta_Audi As String
+    Dim Fecha1, Fecha2, Fecha3, mes, Mes_texto, A√±o, mes_eliminar, dia As String
+    Dim ruta, Ruta_A√±o, Ruta_Mes, Ruta_Audi As String
     Dim CelsAG As Object
     
-    Sub Ejecutar_MAESTRO()
+    Sub Ejecutar()
 
     ' Verificar si hay datos en las celdas I8 y M8
     If ThisWorkbook.Sheets("Reportes").Range("I8").Value = "" Or ThisWorkbook.Sheets("Reportes").Range("M8").Value = "" Then
@@ -16,7 +16,7 @@ Option Explicit
 
     ' Llama a cada una de las funciones
     CrearCarpetas
-    CreacionMaestro
+    Crear
     
     MsgBox "Reporte finalizado. Lo podra encontrar en la carpeta correspondiente.", vbInformation
 
@@ -28,7 +28,7 @@ Sub InicializarVariables()
     'Fechas
     mes = ThisWorkbook.Sheets("Reportes").Range("N8").Text
     Mes_texto = ThisWorkbook.Sheets("Reportes").Range("I12").Value
-    AÒo = ThisWorkbook.Sheets("Reportes").Range("I10").Value
+    A√±o = ThisWorkbook.Sheets("Reportes").Range("I10").Value
     Fecha1 = ThisWorkbook.Sheets("Reportes").Range("I8").Value
     Fecha2 = ThisWorkbook.Sheets("Reportes").Range("M8").Value
     dia = ThisWorkbook.Sheets("Reportes").Range("N10").Text
@@ -36,28 +36,27 @@ Sub InicializarVariables()
     'Rutas
     ruta = ThisWorkbook.Path & "\"
     'ruta = ThisWorkbook.Sheets("Reportes").Range("D30").Text
-    Ruta_AÒo = ruta & AÒo
-    Ruta_Mes = Ruta_AÒo & "\" & mes & ". " & Mes_texto
-    'ORIGINAL: G:\H2R\ABS\PAYROLL\Nominas\
+    Ruta_A√±o = ruta & A√±o
+    Ruta_Mes = Ruta_A√±o & "\" & mes & ". " & Mes_texto
     
 
 End Sub
 Sub CrearCarpetas()
     
-    'CreaciÛn y validacion de las carpetas
+    'Creaci√≥n y validacion de las carpetas
     InicializarVariables
     '''''''
-    ''A—O''
+    ''A√ëO''
     '''''''
-    Ruta_AÒo = ruta & AÒo
-    If Dir(Ruta_AÒo, vbDirectory + vbHidden) = "" Then
+    Ruta_A√±o = ruta & A√±o
+    If Dir(Ruta_A√±o, vbDirectory + vbHidden) = "" Then
         'Comprueba que la carpeta no exista para crear el directorio.
-        If Dir(Ruta_AÒo & vbDirectory + vbHidden) = "" Then MkDir Ruta_AÒo
+        If Dir(Ruta_A√±o & vbDirectory + vbHidden) = "" Then MkDir Ruta_A√±o
     End If
     '''''''
     ''MES''
     '''''''
-    Ruta_Mes = Ruta_AÒo & "\" & mes & ". " & Mes_texto
+    Ruta_Mes = Ruta_A√±o & "\" & mes & ". " & Mes_texto
     If Dir(Ruta_Mes, vbDirectory + vbHidden) = "" Then
         'Comprueba que la carpeta no exista para crear el directorio.
         If Dir(Ruta_Mes & vbDirectory + vbHidden) = "" Then MkDir Ruta_Mes
@@ -91,8 +90,8 @@ Sub Descarga_zhr929()
     
     'Busca variante
     session.findById("wnd[0]/tbar[1]/btn[17]").press
-    session.findById("wnd[1]/usr/txtV-LOW").Text = "TC_NOMINA"
-    session.findById("wnd[1]/usr/txtENAME-LOW").Text = "ASANC1K"
+    session.findById("wnd[1]/usr/txtV-LOW").Text = "VARIANTE"
+    session.findById("wnd[1]/usr/txtENAME-LOW").Text = "DUE√ëO"
     session.findById("wnd[1]/usr/txtV-LOW").caretPosition = 9
     session.findById("wnd[1]/tbar[0]/btn[8]").press
     
@@ -155,13 +154,13 @@ Sub Descarga_maestro()
     session.findById("wnd[1]/usr/cntlGRID1/shellcont/shell").currentCellRow = -1
     session.findById("wnd[1]/usr/cntlGRID1/shellcont/shell").selectColumn "DBGBNUM"
     session.findById("wnd[1]/tbar[0]/btn[29]").press
-    session.findById("wnd[2]/usr/ssub%_SUBSCREEN_FREESEL:SAPLSSEL:1105/ctxt%%DYN001-LOW").Text = "/SAPQUERY/H6"
+    session.findById("wnd[2]/usr/ssub%_SUBSCREEN_FREESEL:SAPLSSEL:1105/ctxt%%DYN001-LOW").Text = "LUGAR"
     session.findById("wnd[2]/tbar[0]/btn[0]").press
     session.findById("wnd[1]/usr/cntlGRID1/shellcont/shell").selectedRows = "0"
     session.findById("wnd[1]/tbar[0]/btn[0]").press
     
-    'Ingresa el query Z_MAESTRO_NOM
-    session.findById("wnd[0]/usr/ctxtRS38R-QNUM").Text = "Z_MAESTRO_CRES"
+    'Ingresa el query 
+    session.findById("wnd[0]/usr/ctxtRS38R-QNUM").Text = "QUERY"
     session.findById("wnd[0]").sendVKey 0
     session.findById("wnd[0]/tbar[1]/btn[8]").press
     
@@ -232,13 +231,13 @@ Sub Descarga_maestro()
     session.findById("wnd[1]/usr/cntlGRID1/shellcont/shell").currentCellRow = -1
     session.findById("wnd[1]/usr/cntlGRID1/shellcont/shell").selectColumn "DBGBNUM"
     session.findById("wnd[1]/tbar[0]/btn[29]").press
-    session.findById("wnd[2]/usr/ssub%_SUBSCREEN_FREESEL:SAPLSSEL:1105/ctxt%%DYN001-LOW").Text = "/SAPQUERY/H6"
+    session.findById("wnd[2]/usr/ssub%_SUBSCREEN_FREESEL:SAPLSSEL:1105/ctxt%%DYN001-LOW").Text = "LUGAR"
     session.findById("wnd[2]/tbar[0]/btn[0]").press
     session.findById("wnd[1]/usr/cntlGRID1/shellcont/shell").selectedRows = "0"
     session.findById("wnd[1]/tbar[0]/btn[0]").press
     
-    'Ingresa el query Z_MAESTRO_NOM
-    session.findById("wnd[0]/usr/ctxtRS38R-QNUM").Text = "Z_MAESTRO_NOMA"
+    'Ingresa el query 
+    session.findById("wnd[0]/usr/ctxtRS38R-QNUM").Text = "QUERY"
     session.findById("wnd[0]").sendVKey 0
     session.findById("wnd[0]/tbar[1]/btn[8]").press
     
@@ -261,14 +260,14 @@ Sub Descarga_maestro()
 
 End Sub
 
-Sub CreacionMaestro()
+Sub Crear()
     
     InicializarVariables
     Dim ruta_maestroA As String
     Dim MAESTRO As Workbook
 
 '----------------------------------- Solicitar al usuario que abra un archivo -----------------------------------
-'Solciita al usuario abrir el primer documento descargado de sap en la transaccion SQ01 con la variante Z_MAESTRO_NOMA
+'Solciita al usuario abrir el primer documento descargado de sap en la transaccion SQ01 con la variante 
 
     MsgBox "Por favor selecciene el archivo previamente guardado (el maestro de la variante Z_MAESTRO_NOMA).", vbInformation
     ruta_maestroA = Application.GetOpenFilename("Archivos Excel (*.xls; *.xlsx), *.xls; *.xlsx")
@@ -290,21 +289,21 @@ If ruta_maestroA <> "Falso" Then
         Application.CutCopyMode = False
     
         ' Verifica si el archivo ya existe en la ruta y lo elimina
-        If Dir(Ruta_Mes & "\" & AÒo & mes & " MAESTRO ACTIVOS" & ".xlsx") <> "" Then
-            Kill Ruta_Mes & "\" & AÒo & mes & " MAESTRO ACTIVOS" & ".xlsx"
+        If Dir(Ruta_Mes & "\" & A√±o & mes & " MAESTRO ACTIVOS" & ".xlsx") <> "" Then
+            Kill Ruta_Mes & "\" & A√±o & mes & " MAESTRO ACTIVOS" & ".xlsx"
 End If
         
 '----------------------------------- Empieza a trabajar con el archivo nuevo del maestro -----------------------------------
     
     'Crea el archivo nuevo
     ActiveSheet.Name = "ORIGINAL"
-    ActiveWorkbook.SaveAs Ruta_Mes & "\" & AÒo & mes & " MAESTRO ACTIVOS" & ".xlsx"
+    ActiveWorkbook.SaveAs Ruta_Mes & "\" & A√±o & mes & " MAESTRO ACTIVOS" & ".xlsx"
     MAESTRO.Save
     MAESTRO.Close
     Application.AskToUpdateLinks = True
     
     'Crea las hojas
-    Workbooks(AÒo & mes & " MAESTRO ACTIVOS" & ".xlsx").Activate
+    Workbooks(A√±o & mes & " MAESTRO ACTIVOS" & ".xlsx").Activate
     Sheets.Add(After:=Sheets(Sheets.Count)).Name = "SALARIAL"
     Sheets.Add(After:=Sheets(Sheets.Count)).Name = "NETO APROXIMADO"
     Sheets.Add(After:=Sheets(Sheets.Count)).Name = "EXCLUSIONES"
@@ -342,10 +341,10 @@ End If
     Workbooks.Open Ruta_Mes & "\" & "BAJAS_ALTAS.XLSX"
     Workbooks("BAJAS_ALTAS.XLSX").Activate
     Rows("1:1").AutoFilter
-    Rows("1:1").AutoFilter Field:=5, Criteria1:="=ContrataciÛn"
+    Rows("1:1").AutoFilter Field:=5, Criteria1:="=Contrataci√≥n"
     Columns("A:AB").Select
     Selection.SpecialCells(xlCellTypeVisible).Copy
-    Workbooks(AÒo & mes & " MAESTRO ACTIVOS" & ".xlsx").Activate
+    Workbooks(A√±o & mes & " MAESTRO ACTIVOS" & ".xlsx").Activate
     Sheets("ALTAS").Activate
     ActiveSheet.Range("A1").PasteSpecial Paste:=xlPasteAll
     Application.CutCopyMode = False
@@ -439,7 +438,7 @@ End If
     Rows("1:1").AutoFilter Field:=5, Criteria1:="=Desvinculacion de Personal"
     Columns("A:AB").Select
     Selection.SpecialCells(xlCellTypeVisible).Copy
-    Workbooks(AÒo & mes & " MAESTRO ACTIVOS" & ".xlsx").Activate
+    Workbooks(A√±o & mes & " MAESTRO ACTIVOS" & ".xlsx").Activate
     Sheets("BAJAS").Activate
     ActiveSheet.Range("A1").PasteSpecial Paste:=xlPasteAll
     Application.CutCopyMode = False
@@ -461,7 +460,7 @@ End If
     lastRow_A = ActiveSheet.Cells(ActiveSheet.Rows.Count, "A").End(xlUp).row
     For y = 2 To lastRow_A
         If ActiveSheet.Cells(y, "D").Value = mes_eliminar Then
-            ActiveSheet.Cells(y, "C").Value = dia & "." & mes & "." & AÒo
+            ActiveSheet.Cells(y, "C").Value = dia & "." & mes & "." & A√±o
         End If
     Next y
     Columns("D:D").Select
@@ -501,7 +500,7 @@ End If
     ActiveWorkbook.Save
     Workbooks("BAJAS_ALTAS.XLSX").Save
     Workbooks("BAJAS_ALTAS.XLSX").Close
-    Workbooks(AÒo & mes & " MAESTRO ACTIVOS" & ".xlsx").Activate
+    Workbooks(A√±o & mes & " MAESTRO ACTIVOS" & ".xlsx").Activate
     
     'Dividir por grupo de personal
     lastRow_A = ActiveSheet.Cells(ActiveSheet.Rows.Count, "A").End(xlUp).row
@@ -539,17 +538,17 @@ End If
             Selection.Copy
             
             'Crea el archivo nuevo
-            Workbooks(AÒo & mes & " MAESTRO ACTIVOS" & ".xlsx").Activate
+            Workbooks(A√±o & mes & " MAESTRO ACTIVOS" & ".xlsx").Activate
             Sheets("ZHR929").Activate
             ActiveSheet.Range("A1").PasteSpecial Paste:=xlPasteAll
             Columns("A:CJ").AutoFit
             Application.CutCopyMode = False
-            Workbooks(AÒo & mes & " MAESTRO ACTIVOS" & ".xlsx").Save
+            Workbooks(A√±o & mes & " MAESTRO ACTIVOS" & ".xlsx").Save
             MAESTRO.Save
             MAESTRO.Close
         
     End If
-    Workbooks(AÒo & mes & " MAESTRO ACTIVOS" & ".xlsx").Activate
+    Workbooks(A√±o & mes & " MAESTRO ACTIVOS" & ".xlsx").Activate
     
     'Cambiar de texto a numero
     Dim rng As Range
@@ -558,9 +557,9 @@ End If
     For Each cell In rng
         cell.Value = Val(cell.Value)
     Next cell
-    Range("A1").Value = "N˙mero de personal"
+    Range("A1").Value = "N√∫mero de personal"
     
-    'Pone condicional de duplicados - los seÒala de rojo
+    'Pone condicional de duplicados - los se√±ala de rojo
     Columns("A:A").Select
     Selection.FormatConditions.AddUniqueValues
     Selection.FormatConditions(Selection.FormatConditions.Count).SetFirstPriority
@@ -583,7 +582,7 @@ End If
             Rows(i).Delete
         End If
     Next i
-    Workbooks(AÒo & mes & " MAESTRO ACTIVOS" & ".xlsx").Save
+    Workbooks(A√±o & mes & " MAESTRO ACTIVOS" & ".xlsx").Save
     
     'Hace el ContarA
     lastRow_A = Cells(Rows.Count, "A").End(xlUp).row
@@ -613,10 +612,10 @@ End If
     For Each cell In rng
         cell.Value = Val(cell.Value)
     Next cell
-    Range("A1").Value = "N∫ pers."
+    Range("A1").Value = "N¬∫ pers."
     
     
-    'Condicional de duplicados - Los seÒala con rojo
+    'Condicional de duplicados - Los se√±ala con rojo
     Columns("A:A").Select
     Selection.FormatConditions.AddUniqueValues
     Selection.FormatConditions(Selection.FormatConditions.Count).SetFirstPriority
@@ -686,7 +685,7 @@ End If
 
     '------- Inicia a copiar y pegar columnas --------
     
-    'ReLab y RelaciÛn laboral
+    'ReLab y Relaci√≥n laboral
     Range("AY:AZ").Select
     Selection.Copy
     Range("E:E").Select
@@ -694,7 +693,7 @@ End If
         :=False, Transpose:=False
     Application.CutCopyMode = False
     
-    '¡.liq. y ¡rea de nÛmina
+    '√Å.liq. y √Årea de n√≥mina
     Range("CN:CO").Select
     Selection.Copy
     Range("G:G").Select
@@ -702,7 +701,7 @@ End If
         :=False, Transpose:=False
     Application.CutCopyMode = False
     
-    'CC-nÛmina y CC-nÛmina14
+    'CC-n√≥mina y CC-n√≥mina14
     Range("CD:CE").Select
     Selection.Copy
     Range("I:I").Select
@@ -734,9 +733,9 @@ End If
         :=False, Transpose:=False
     Application.CutCopyMode = False
     
-    'GrPer   Grupo de personal   ¡Pers   ¡rea de personal
-    'PosiciÛn    PosiciÛn    FunciÛn FunciÛn DivP    DivisiÛn de personal
-    'Clase de identificaciÛn (clase  N˙mero ID
+    'GrPer   Grupo de personal   √ÅPers   √Årea de personal
+    'Posici√≥n    Posici√≥n    Funci√≥n Funci√≥n DivP    Divisi√≥n de personal
+    'Clase de identificaci√≥n (clase  N√∫mero ID
     Range("BC:BN").Select
     Selection.Copy
     Range("T:T").Select
@@ -745,8 +744,8 @@ End If
     Application.CutCopyMode = False
     
     'Fecha nac.  Edad del empleado   Sexo    Clave de sexo
-    'CC  Clase de contrato   Soc.    Sociedad    Div.    DivisiÛn
-    'S   Status ocupaciÛn
+    'CC  Clase de contrato   Soc.    Sociedad    Div.    Divisi√≥n
+    'S   Status ocupaci√≥n
     Range("BR:CC").Select
     Selection.Copy
     Range("AF:AF").Select
@@ -754,8 +753,8 @@ End If
         :=False, Transpose:=False
     Application.CutCopyMode = False
     
-    'VP  VÌa de pago Clave banco Clave de banco
-    '¡re ¡rea de convenio
+    'VP  V√≠a de pago Clave banco Clave de banco
+    '√Åre √Årea de convenio
     Range("CH:CM").Select
     Selection.Copy
     Range("AR:AR").Select
@@ -810,19 +809,19 @@ End If
             Selection.Copy
             
             'Trae la columna necesaria
-            Workbooks(AÒo & mes & " MAESTRO ACTIVOS" & ".xlsx").Activate
+            Workbooks(A√±o & mes & " MAESTRO ACTIVOS" & ".xlsx").Activate
             Sheets("MAESTRO MES ANTERIOR").Activate
             ActiveSheet.Range("A1").PasteSpecial Paste:=xlPasteAll
             Columns("A:M").AutoFit
             Application.CutCopyMode = False
-            Workbooks(AÒo & mes & " MAESTRO ACTIVOS" & ".xlsx").Save
+            Workbooks(A√±o & mes & " MAESTRO ACTIVOS" & ".xlsx").Save
             MAESTRO.Save
             MAESTRO.Close
         
     End If
     
     'Hace el buscarv
-    Workbooks(AÒo & mes & " MAESTRO ACTIVOS" & ".xlsx").Activate
+    Workbooks(A√±o & mes & " MAESTRO ACTIVOS" & ".xlsx").Activate
     Sheets("SALARIAL").Activate
     Columns("M").NumberFormat = "General"
     Columns("N").NumberFormat = "General"
@@ -866,9 +865,9 @@ End If
     For Each cell In rng
         cell.Value = Val(cell.Value)
     Next cell
-    Range("A1").Value = "N∫ pers."
+    Range("A1").Value = "N¬∫ pers."
     
-    'Condicional de duplicados - Los seÒala con rojo
+    'Condicional de duplicados - Los se√±ala con rojo
     Columns("A:A").Select
     Selection.FormatConditions.AddUniqueValues
     Selection.FormatConditions(Selection.FormatConditions.Count).SetFirstPriority
@@ -918,7 +917,7 @@ End If
     ActiveWorkbook.Close
       
     Else
-        MsgBox "OperaciÛn cancelada por el usuario.", vbInformation
+        MsgBox "Operaci√≥n cancelada por el usuario.", vbInformation
     End If
 
 End Sub
