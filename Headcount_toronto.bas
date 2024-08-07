@@ -1,0 +1,326 @@
+Attribute VB_Name = "Headcount_toronto"
+Option Explicit
+'variables para todo el proyecto
+
+    Dim MAESTRO, wb_auditoria As Workbook
+    Dim Año, Mes_texto, fechaInicio, ruta, Ruta_Mes As String
+    Dim LastRow, i As Long
+    Dim CelsAG As Object
+    Dim rng, row, visibleRange As Range
+    Dim cell As Range
+    
+Sub InicializarVariables()
+'Definicion de las variables
+    
+    '------------ Variables originales del archivo -----------
+    Año = ThisWorkbook.Sheets("HC").Range("F10").Value
+    Mes_texto = ThisWorkbook.Sheets("HC").Range("F8").Value
+    
+    '------------ Rutas -----------
+    ruta = ThisWorkbook.Path & "\"
+    Ruta_Mes = ruta & Año & "\" & Mes_texto
+
+    '------------ Calcular fechas de los semestres-----------
+    If Mes_texto = "January" Then fechaInicio = Format(DateSerial(Año - 1, 12, 31), "MM/DD/YYYY")
+    If Mes_texto = "February" Then fechaInicio = Format(DateSerial(Año, 1, 31), "MM/DD/YYYY")
+    If Mes_texto = "March" Then fechaInicio = Format(DateSerial(Año, 2, 28), "MM/DD/YYYY")
+    If Mes_texto = "April" Then fechaInicio = Format(DateSerial(Año, 3, 31), "MM/DD/YYYY")
+    If Mes_texto = "May" Then fechaInicio = Format(DateSerial(Año, 4, 30), "MM/DD/YYYY")
+    If Mes_texto = "June" Then fechaInicio = Format(DateSerial(Año, 5, 31), "MM/DD/YYYY")
+    If Mes_texto = "July" Then fechaInicio = Format(DateSerial(Año, 6, 30), "MM/DD/YYYY")
+    If Mes_texto = "August" Then fechaInicio = Format(DateSerial(Año, 7, 31), "MM/DD/YYYY")
+    If Mes_texto = "September" Then fechaInicio = Format(DateSerial(Año, 8, 31), "MM/DD/YYYY")
+    If Mes_texto = "October" Then fechaInicio = Format(DateSerial(Año, 9, 30), "MM/DD/YYYY")
+    If Mes_texto = "November" Then fechaInicio = Format(DateSerial(Año, 10, 31), "MM/DD/YYYY")
+    If Mes_texto = "December" Then fechaInicio = Format(DateSerial(Año, 11, 30), "MM/DD/YYYY")
+
+    
+    'Crear carpetas
+    Ruta_Mes = ruta & Año & "\" & Mes_texto
+    If Dir(Ruta_Mes, vbDirectory + vbHidden) = "" Then
+        'Comprueba que la carpeta no exista para crear el directorio.
+        If Dir(Ruta_Mes & vbDirectory + vbHidden) = "" Then MkDir Ruta_Mes
+    End If
+    
+    
+End Sub
+
+Sub Boton1()
+
+InicializarVariables
+    
+'---------------------- DESCARGA PRIMER REPORTE DE LA SQ01 ----------------------
+    'Código SAP
+    Dim SapGuiAuto As Object
+    Dim App As Object
+    Dim Connection As Object
+    Dim session As Object
+    
+    Set SapGuiAuto = GetObject("SAPGUI")
+    Set App = SapGuiAuto.GetScriptingEngine
+    Set Connection = App.Children(0)
+    Set session = Connection.Children(0)
+    
+    'Vuelve a la pantalla inicial
+    session.findById("wnd[0]/tbar[0]/okcd").Text = "/n"
+    session.findById("wnd[0]").sendVKey 0
+    
+    'Entramos a la transaccion
+    session.findById("wnd[0]/tbar[0]/okcd").Text = "/nsq01"
+    session.findById("wnd[0]").sendVKey 0
+    
+    'Confirmamos el Environment
+    session.findById("wnd[0]/mbar/menu[5]/menu[0]").Select
+    session.findById("wnd[1]/usr/radRAD1").Select
+    session.findById("wnd[1]/tbar[0]/btn[2]").press
+    session.findById("wnd[0]/mbar/menu[5]/menu[0]").Select
+    session.findById("wnd[1]/usr/radRAD1").Select
+    session.findById("wnd[1]/tbar[0]/btn[2]").press
+    session.findById("wnd[0]/tbar[1]/btn[19]").press
+    session.findById("wnd[1]/usr/cntlGRID1/shellcont/shell").currentCellRow = 11
+    session.findById("wnd[1]/usr/cntlGRID1/shellcont/shell").selectedRows = "11"
+    session.findById("wnd[1]/tbar[0]/btn[0]").press
+    
+    'Selecciona el grupo de usarios H2
+    session.findById("wnd[0]/tbar[1]/btn[19]").press
+    session.findById("wnd[1]/usr/cntlGRID1/shellcont/shell").selectColumn "DBGBNUM"
+    session.findById("wnd[1]/tbar[0]/btn[29]").press
+    session.findById("wnd[2]/usr/ssub%_SUBSCREEN_FREESEL:SAPLSSEL:1105/ctxt%%DYN001-LOW").Text = "HR_ALL_SITE"
+    session.findById("wnd[2]/tbar[0]/btn[0]").press
+    session.findById("wnd[1]/usr/cntlGRID1/shellcont/shell").selectedRows = "0"
+    session.findById("wnd[1]/tbar[0]/btn[0]").press
+    
+    'Entramos al qry
+    session.findById("wnd[0]/usr/ctxtRS38R-QNUM").Text = "EMPL_LIST-H2R"
+    session.findById("wnd[0]/tbar[1]/btn[8]").press
+    
+    'Elegimos la variante
+    session.findById("wnd[0]/tbar[1]/btn[17]").press
+    session.findById("wnd[1]/usr/txtV-LOW").Text = "NASS REPORTING"
+    session.findById("wnd[1]/usr/txtENAME-LOW").Text = ""
+    session.findById("wnd[1]/tbar[0]/btn[8]").press
+    
+    'Determinamos la fecha del end date
+    session.findById("wnd[0]/usr/ctxtSP$00007-LOW").Text = fechaInicio
+    session.findById("wnd[0]/usr/ctxtSP$00007-HIGH").Text = "12/31/9999"
+       
+    'Cambia el layout
+    session.findById("wnd[0]/usr/ctxt%ALVL").Text = "/ABS TORONTO"
+    session.findById("wnd[0]/usr/ctxt%ALVL").SetFocus
+        
+    'Ejecutamos
+    session.findById("wnd[0]/tbar[1]/btn[8]").press
+    
+    'Exportamos
+    session.findById("wnd[0]/mbar/menu[0]/menu[4]/menu[2]").Select
+    session.findById("wnd[1]/usr/subSUBSCREEN_STEPLOOP:SAPLSPO5:0150/sub:SAPLSPO5:0150/radSPOPLI-SELFLAG[1,0]").Select
+    session.findById("wnd[1]/tbar[0]/btn[0]").press
+    session.findById("wnd[1]/usr/ctxtDY_PATH").Text = Ruta_Mes
+    session.findById("wnd[1]/usr/ctxtDY_FILENAME").Text = "ABS TORONTO HeadCount " & Mes_texto & " " & Año & ".XLS"
+    session.findById("wnd[1]/tbar[0]/btn[11]").press
+
+    'Organizar documento
+    Application.CutCopyMode = False
+    Workbooks.Open Ruta_Mes & "\" & "ABS TORONTO HeadCount " & Mes_texto & " " & Año & ".XLS"
+    ActiveSheet.Cells.Select
+    Selection.Copy
+    Workbooks.Add
+    ActiveSheet.Paste
+    ActiveWorkbook.SaveAs Ruta_Mes & "\" & "ABS TORONTO HeadCount " & Mes_texto & " " & Año & ".XLSX"
+    ActiveWorkbook.Close SaveChanges:=True
+    Workbooks("ABS TORONTO HeadCount " & Mes_texto & " " & Año & ".XLS").Close
+    Kill Ruta_Mes & "\" & "ABS TORONTO HeadCount " & Mes_texto & " " & Año & ".XLS"
+    
+
+'---------------------- EMPIEZA A ORGANIZAR LA INFORMACION PARA CREAR EL REPORTE ----------------------
+
+    'Cambios de formato
+    Workbooks.Open Ruta_Mes & "\" & "ABS TORONTO HeadCount " & Mes_texto & " " & Año & ".XLSX"
+    Workbooks("ABS TORONTO HeadCount " & Mes_texto & " " & Año & ".XLSX").Activate
+    Rows("1:4").Delete
+    Rows("2").Delete
+    Columns("A").Delete
+    Columns("A:K").AutoFit
+    ActiveSheet.Name = "ORIGINAL"
+    
+    'Creacion de las nuevas hojas
+    Sheets.Add.Name = "EMPL_LIST-H2R"
+    Sheets.Add.Name = "BASE"
+    Sheets.Add.Name = "Report"
+    ActiveWorkbook.Save
+    Sheets("EMPL_LIST-H2R").Activate
+    Range("A1").Value = "SAP ID"
+    Range("B1").Value = "Name"
+    Range("C1").Value = "ID Number"
+    Range("D1").Value = "SAP ID Manager"
+    Range("E1").Value = "Manager's Name"
+    Range("F1").Value = "EEGrp"
+    Range("G1").Value = "Employee Group"
+    Range("H1").Value = "LOA Status"
+    Range("I1").Value = "Employee Subgroup"
+    Range("J1").Value = "Employee Subgroup"
+    Range("K1").Value = "Status"
+    Range("L1").Value = "Position"
+    Range("M1").Value = "Position's Name"
+    Range("N1").Value = "PA"
+    Range("O1").Value = "Personnel Area"
+    Range("P1").Value = "Cost ctr"
+    Range("Q1").Value = "Cost Center"
+    Range("R1").Value = "NABS Stream"
+    Range("S1").Value = "PS Group"
+    Range("T1").Value = "Start Date"
+    Range("U1").Value = "End Sate"
+    Range("V1").Value = "CoCd"
+    Range("W1").Value = "PSA"
+    Range("X1").Value = "Personnel Subarea"
+    Range("Y1").Value = "PArea"
+     With Range("A1:Y1")
+        .Interior.Color = RGB(204, 209, 209)
+        .Font.Bold = True
+        .HorizontalAlignment = xlCenter
+    End With
+    Columns("A:Y").AutoFit
+    
+    'Empieza a hacer filtros para eliminar
+    Sheets("ORIGINAL").Activate
+    If ActiveSheet.AutoFilterMode Then
+        ActiveSheet.AutoFilterMode = False
+    End If
+    LastRow = ActiveSheet.Cells(ActiveSheet.Rows.Count, 1).End(xlUp).row
+    Rows("1:1").AutoFilter
+    Rows("1:1").AutoFilter Field:=8, Criteria1:=Array("ABS Toronto - O2C", "ABS Toronto - P2P", "ABS Toronto - H2R", "Canada-HR"), Operator:=xlFilterValues
+    Rows("1:1").AutoFilter Field:=5, Criteria1:="7207", Operator:=xlFilterValues
+    
+    For i = LastRow To 2 Step -1 'Elimina las filas visibles
+        If ActiveSheet.Rows(i).Hidden = False Then
+            ActiveSheet.Rows(i).Delete
+        End If
+    Next i
+    
+    If ActiveSheet.AutoFilterMode Then
+        ActiveSheet.AutoFilterMode = False
+    End If
+    LastRow = ActiveSheet.Cells(ActiveSheet.Rows.Count, 1).End(xlUp).row
+    
+    'Filtrar los que nos interesan
+    Rows("1:1").AutoFilter
+    Rows("1:1").AutoFilter Field:=8, Criteria1:=Array("ABS Toronto - O2C", "ABS Toronto - P2P", "ABS Toronto - H2R", "Canada-HR"), Operator:=xlFilterValues
+    Rows("1:1").AutoFilter Field:=5, Criteria1:=Array("7018", "7382"), Operator:=xlFilterValues
+    Rows("1:1").AutoFilter Field:=4, Criteria1:=Array("Active Employee", "LTD"), Operator:=xlFilterValues
+    
+    'Copia y pega para empezar a organizar la info
+    'SAP ID
+    Sheets("ORIGINAL").Range("A2:A" & LastRow).SpecialCells(xlCellTypeVisible).Copy
+    Sheets("EMPL_LIST-H2R").Range("A2").PasteSpecial Paste:=xlPasteAll
+    
+    'Name
+    Sheets("ORIGINAL").Range("B2:B" & LastRow).SpecialCells(xlCellTypeVisible).Copy
+    Sheets("EMPL_LIST-H2R").Range("B2").PasteSpecial Paste:=xlPasteAll
+    
+    'EEGrp
+    Sheets("ORIGINAL").Range("C2:C" & LastRow).SpecialCells(xlCellTypeVisible).Copy
+    Sheets("EMPL_LIST-H2R").Range("F2").PasteSpecial Paste:=xlPasteAll
+    
+    'Employee Group
+    Sheets("ORIGINAL").Range("D2:D" & LastRow).SpecialCells(xlCellTypeVisible).Copy
+    Sheets("EMPL_LIST-H2R").Range("N2").PasteSpecial Paste:=xlPasteAll
+    
+    'PA
+    Sheets("ORIGINAL").Range("E2:E" & LastRow).SpecialCells(xlCellTypeVisible).Copy
+    Sheets("EMPL_LIST-H2R").Range("G2").PasteSpecial Paste:=xlPasteAll
+    
+    'Personnel Area
+    Sheets("ORIGINAL").Range("F2:F" & LastRow).SpecialCells(xlCellTypeVisible).Copy
+    Sheets("EMPL_LIST-H2R").Range("O2").PasteSpecial Paste:=xlPasteAll
+    
+    'Cost ctr
+    Sheets("ORIGINAL").Range("G2:G" & LastRow).SpecialCells(xlCellTypeVisible).Copy
+    Sheets("EMPL_LIST-H2R").Range("P2").PasteSpecial Paste:=xlPasteAll
+    
+    'Cost Center
+    Sheets("ORIGINAL").Range("H2:H" & LastRow).SpecialCells(xlCellTypeVisible).Copy
+    Sheets("EMPL_LIST-H2R").Range("Q2").PasteSpecial Paste:=xlPasteAll
+    
+    'CoCd
+    Sheets("ORIGINAL").Range("I2:I" & LastRow).SpecialCells(xlCellTypeVisible).Copy
+    Sheets("EMPL_LIST-H2R").Range("V2").PasteSpecial Paste:=xlPasteAll
+    
+    'PArea
+    Sheets("ORIGINAL").Range("J2:J" & LastRow).SpecialCells(xlCellTypeVisible).Copy
+    Sheets("EMPL_LIST-H2R").Range("Y2").PasteSpecial Paste:=xlPasteAll
+    Sheets("EMPL_LIST-H2R").Activate
+    Columns("A:Y").AutoFit
+    ActiveWorkbook.Save
+
+    
+'---------------------- HACE LA SEGUNDA DESCARGA DE SAP PARA HACER CRUCES DE INFORMACION ----------------------
+    
+    
+    'Vuelve a la pantalla inicial
+    session.findById("wnd[0]/tbar[0]/okcd").Text = "/n"
+    session.findById("wnd[0]").sendVKey 0
+    
+    'Entramos a la transaccion
+    session.findById("wnd[0]/tbar[0]/okcd").Text = "/nsq01"
+    session.findById("wnd[0]").sendVKey 0
+    
+    'Confirmamos el Environment
+    session.findById("wnd[0]/mbar/menu[5]/menu[0]").Select
+    session.findById("wnd[1]/usr/radRAD1").Select
+    session.findById("wnd[1]/tbar[0]/btn[2]").press
+    session.findById("wnd[0]/mbar/menu[5]/menu[0]").Select
+    session.findById("wnd[1]/usr/radRAD1").Select
+    session.findById("wnd[1]/tbar[0]/btn[2]").press
+    session.findById("wnd[0]/tbar[1]/btn[19]").press
+    session.findById("wnd[1]/usr/cntlGRID1/shellcont/shell").currentCellRow = 11
+    session.findById("wnd[1]/usr/cntlGRID1/shellcont/shell").selectedRows = "11"
+    session.findById("wnd[1]/tbar[0]/btn[0]").press
+    
+    'Selecciona el grupo de usarios H2
+    session.findById("wnd[0]/tbar[1]/btn[19]").press
+    session.findById("wnd[1]/usr/cntlGRID1/shellcont/shell").selectColumn "DBGBNUM"
+    session.findById("wnd[1]/tbar[0]/btn[29]").press
+    session.findById("wnd[2]/usr/ssub%_SUBSCREEN_FREESEL:SAPLSSEL:1105/ctxt%%DYN001-LOW").Text = "HR_ALL_SITE"
+    session.findById("wnd[2]/tbar[0]/btn[0]").press
+    session.findById("wnd[1]/usr/cntlGRID1/shellcont/shell").selectedRows = "0"
+    session.findById("wnd[1]/tbar[0]/btn[0]").press
+    
+    'Entramos al qry
+    session.findById("wnd[0]/usr/ctxtRS38R-QNUM").Text = "HR_IT0001_CHG"
+    session.findById("wnd[0]/tbar[1]/btn[8]").press
+    
+    'Cambia la fecha a today
+    session.findById("wnd[0]/usr/cmbPNPTIMED").Key = "D"
+    session.findById("wnd[0]/usr/btn%_PNPPERNR_%_APP_%-VALU_PUSH").press
+    
+    'Copia los numeros de empleado
+    Workbooks("ABS TORONTO HeadCount " & Mes_texto & " " & Año & ".XLSX").Activate
+    Sheets("EMPL_LIST-H2R").Activate
+    LastRow = ActiveSheet.Cells(ActiveSheet.Rows.Count, 1).End(xlUp).row
+    Range("A2:A" & LastRow).Copy
+    
+    'Pega la informacion de los empleados
+    session.findById("wnd[1]/tbar[0]/btn[24]").press
+    session.findById("wnd[1]/tbar[0]/btn[8]").press
+    
+    'Ejecuta
+    session.findById("wnd[0]/tbar[1]/btn[8]").press
+    
+    'Descarga
+    session.findById("wnd[1]/usr/subSUBSCREEN_STEPLOOP:SAPLSPO5:0150/sub:SAPLSPO5:0150/radSPOPLI-SELFLAG[0,0]").Select
+    session.findById("wnd[1]/usr/subSUBSCREEN_STEPLOOP:SAPLSPO5:0150/sub:SAPLSPO5:0150/radSPOPLI-SELFLAG[0,0]").SetFocus
+    session.findById("wnd[1]/tbar[0]/btn[0]").press
+    session.findById("wnd[1]/tbar[0]/btn[0]").press
+    
+
+    MsgBox "Por favor, Pegue la informacion en la hoja BASE en la celda A1 y luego continue con el segundo boton", vbExclamation
+    
+End Sub
+
+Sub Boton2()
+
+InicializarVariables
+
+
+
+End Sub

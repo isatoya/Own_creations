@@ -1,0 +1,913 @@
+Attribute VB_Name = "AUDITORIA_ADC"
+Option Explicit
+'variables para todo el proyecto
+
+    Dim MAESTRO As String
+    Dim ruta As String
+    Dim Fecha1, Fecha2 As String
+    Dim mes, Mes_texto, Año As String
+    Dim Ruta_Año, Ruta_Mes, Ruta_Audi As String
+    Dim CelsAG As Object
+    
+
+Sub InicializarVariables()
+'Definicion de las variables
+
+    mes = ThisWorkbook.Sheets("Reportes").Range("N8").Value
+    Mes_texto = ThisWorkbook.Sheets("Reportes").Range("I12").Value
+    Año = ThisWorkbook.Sheets("Reportes").Range("I10").Value
+    ruta = ThisWorkbook.Path & "\"
+    'ruta = ThisWorkbook.Sheets("Reportes").Range("H21").Value
+    Ruta_Año = ruta & Año
+    Ruta_Mes = Ruta_Año & "\" & mes & ". " & Mes_texto
+    Ruta_Audi = Ruta_Mes & "\" & "AUDITORIAS DE NOMINA"
+    
+    
+
+End Sub
+
+Sub CrearCarpetas()
+    
+    'Creación y validacion de las carpetas
+    InicializarVariables
+    '''''''
+    ''AÑO''
+    '''''''
+    Ruta_Año = ruta & Año
+    If Dir(Ruta_Año, vbDirectory + vbHidden) = "" Then
+        'Comprueba que la carpeta no exista para crear el directorio.
+        If Dir(Ruta_Año & vbDirectory + vbHidden) = "" Then MkDir Ruta_Año
+    End If
+    '''''''
+    ''MES''
+    '''''''
+    Ruta_Mes = Ruta_Año & "\" & mes & ". " & Mes_texto
+    If Dir(Ruta_Mes, vbDirectory + vbHidden) = "" Then
+        'Comprueba que la carpeta no exista para crear el directorio.
+        If Dir(Ruta_Mes & vbDirectory + vbHidden) = "" Then MkDir Ruta_Mes
+    End If
+    ''''''''''''''''''''
+    ''AUDITORIA NÓMINA''
+    ''''''''''''''''''''
+    Ruta_Audi = Ruta_Mes & "\" & "AUDITORIAS DE NOMINA"
+    If Dir(Ruta_Audi, vbDirectory + vbHidden) = "" Then
+        'Comprueba que la carpeta no exista para crear el directorio.
+        If Dir(Ruta_Audi & vbDirectory + vbHidden) = "" Then MkDir Ruta_Audi
+    End If
+        
+End Sub
+
+Sub Abrir_activar()
+
+    Dim ruta_maestroA As String
+    Dim MAESTRO As Workbook
+    InicializarVariables
+    
+    ' Solicitar al usuario que abra un archivo
+    MsgBox "Por favor selecciene el archivo del Maestro de Activos mas reciente.", vbInformation
+    ruta_maestroA = Application.GetOpenFilename("Archivos Excel (*.xls; *.xlsx), *.xls; *.xlsx")
+    Application.AskToUpdateLinks = False
+    
+    ' Abre el reporte seleccionado por el usuario y copiia la primera hoja
+    If ruta_maestroA <> "Falso" Then
+        
+        Set MAESTRO = Workbooks.Open(Filename:=ruta_maestroA, UpdateLinks:=0)
+        MAESTRO.Activate
+        Worksheets("SALARIAL").Activate
+        
+        If ActiveSheet.AutoFilterMode Then
+            ActiveSheet.AutoFilterMode = False
+        End If
+        Columns("A:Y").Select
+        Selection.Copy
+        
+        'Crea el archivo nuevo
+        Workbooks.Add
+        ActiveSheet.Range("A1").PasteSpecial Paste:=xlPasteAll
+        Application.CutCopyMode = False
+
+        ' Verifica si el archivo ya existe en la ruta y lo elimina
+        If Dir(Ruta_Audi & "\" & Año & "." & mes & "." & "AUDITORIA PRIMA ADC" & ".XLSX") <> "" Then
+            Kill Ruta_Audi & "\" & Año & "." & mes & "." & "AUDITORIA PRIMA ADC" & ".XLSX"
+        End If
+        
+        'Crea el archivo nuevo
+        ActiveSheet.Name = "Maestro Completo"
+        ActiveWorkbook.SaveAs Ruta_Audi & "\" & Año & "." & mes & "." & "AUDITORIA PRIMA ADC" & ".XLSX"
+        ActiveWorkbook.Close SaveChanges:=True
+        MAESTRO.Close
+        Application.AskToUpdateLinks = True
+        
+    Else
+        MsgBox "Operación cancelada por el usuario.", vbInformation
+    End If
+End Sub
+
+
+Sub Auditoria()
+
+    'Llama las variables
+    InicializarVariables
+    Dim wb As Workbook
+    Dim hoja_maestro As Worksheet
+    Dim LastRow As Long
+
+'Verifica que el archivo existe
+    If Dir(Ruta_Audi & "\" & Año & "." & mes & "." & "AUDITORIA PRIMA ADC" & ".XLSX") <> "" Then
+        
+        'Abrir el archivo
+        Set wb = Workbooks.Open(Ruta_Audi & "\" & Año & "." & mes & "." & "AUDITORIA PRIMA ADC" & ".XLSX")
+        wb.Activate
+        wb.Sheets(1).Name = "Maestro Completo"
+        Set hoja_maestro = wb.Sheets("Maestro Completo")
+        
+'Hace el filtro para que solo queden empleados de ley 50 y que tengan como area de nomina AD
+     If Not hoja_maestro.AutoFilterMode Then
+            hoja_maestro.Rows(1).AutoFilter
+        End If
+    hoja_maestro.Range("A:Y").AutoFilter Field:=6, Criteria1:="Ley 50"
+    hoja_maestro.Range("A:Y").AutoFilter Field:=7, Criteria1:="AD"
+    
+    hoja_maestro.Activate
+    Columns("A:Y").Select
+    Selection.Copy
+       
+'Nueva hoja con los datos filtrados
+    Worksheets.Add.Name = "Maestro ADC"
+    Sheets("Maestro ADC").Activate
+    ActiveSheet.Range("A1").PasteSpecial Paste:=xlPasteAll
+    Application.CutCopyMode = False
+
+'Agrega columnas
+    Columns("A:Y").AutoFit
+    Columns("R:R").Select
+    Selection.Insert Shift:=xlToRight, CopyOrigin:=xlFormatFromLeftOrAbove
+    LastRow = ActiveSheet.Cells(Rows.Count, 7).End(xlUp).row
+    Columns("R:R").NumberFormat = "General"
+    Range("R1").Value = "Mes"
+    Sheets("Maestro ADC").Range("R2:R" & LastRow) = "=MONTH(RC[-1])"
+    
+    Columns("S:S").Select
+    Selection.Insert Shift:=xlToRight, CopyOrigin:=xlFormatFromLeftOrAbove
+    Columns("S:S").NumberFormat = "General"
+    Range("S1").Value = "Año"
+    Sheets("Maestro ADC").Range("S2:S" & LastRow) = "=YEAR(RC[-2])"
+
+'Filtra solo por el mes en que se esta haciendo la auditoria
+    If Not Sheets("Maestro ADC").AutoFilterMode Then
+            Sheets("Maestro ADC").Rows(1).AutoFilter
+    End If
+    mes = Val(mes)
+    Sheets("Maestro ADC").Range("A:Y").AutoFilter Field:=18, Criteria1:=mes
+    Sheets("Maestro ADC").Range("A:Y").AutoFilter Field:=19, Criteria1:="<> " & Año
+
+'Se crea la hoja de auditoria
+    Sheets("Maestro ADC").Activate
+    Columns("A:Q").Select
+    Selection.Copy
+    Worksheets.Add.Name = "Auditoria"
+    Sheets("Auditoria").Activate
+    ActiveSheet.Range("A1").PasteSpecial Paste:=xlPasteAll
+    Application.CutCopyMode = False
+    Columns("A:Q").AutoFit
+    wb.Save
+
+'Descarga CWTR de sap
+SAP
+
+'Pega los datos de la CWTR
+    Workbooks(Año & mes & "." & "PRIMA ANTIGUEDAD" & ".XLSX").Activate
+    Sheets(1).Activate
+    Columns("A:H").Select
+    Selection.Copy
+    wb.Activate
+    Worksheets.Add.Name = "CWTR"
+    Sheets("CWTR").Activate
+    ActiveSheet.Range("A1").PasteSpecial Paste:=xlPasteAll
+    Application.CutCopyMode = False
+    Columns("A:Q").AutoFit
+    Columns("H:H").NumberFormat = "$#,##0"
+    Workbooks(Año & mes & "." & "PRIMA ANTIGUEDAD" & ".XLSX").Close
+    Kill Ruta_Audi & "\" & Año & mes & "." & "PRIMA ANTIGUEDAD" & ".XLSX"
+    wb.Activate
+    wb.Save
+
+'Hace el buscarV con la CWTR para traer el importe
+    Sheets("Auditoria").Activate
+    Columns("M:M").NumberFormat = "$#,##0"
+    Columns("K:K").NumberFormat = "$#,##0"
+    LastRow = ActiveSheet.Cells(Rows.Count, 7).End(xlUp).row
+    Range("R1").Value = "CWTR"
+    Sheets("Auditoria").Range("R2:R" & LastRow) = "=VLOOKUP(RC[-17],CWTR!C[-17]:C[-10],8,0)"
+    Columns("R:R").NumberFormat = "$#,##0"
+    wb.Save
+    
+'Buscarv de la posicion
+    Sheets("Maestro Completo").Activate
+    If Sheets("Maestro Completo").AutoFilterMode Then
+        Sheets("Maestro Completo").AutoFilterMode = False
+    End If
+    Sheets("Auditoria").Activate
+    LastRow = ActiveSheet.Cells(Rows.Count, 7).End(xlUp).row
+    Range("S1").Value = "POSICION"
+    Sheets("Auditoria").Range("S2:S" & LastRow) = "=VLOOKUP(RC[-18],'Maestro Completo'!C[-18]:C[6],25,0)"
+    Columns("A:S").AutoFit
+    wb.Save
+    
+'Descarga la base de la prima
+SAP2
+
+'Pega los datos del reporte que acano de descargar
+    Workbooks(Año & mes & "." & "BASE PRIMA ANTIGUEDAD ADC" & ".XLSX").Activate
+    Sheets(1).Activate
+    Sheets(1).Range("A:H").AutoFilter Field:=3, Criteria1:="<>000000"
+    Columns("A:H").Select
+    Selection.Copy
+    wb.Activate
+    Worksheets.Add.Name = "BASES"
+    Sheets("BASES").Activate
+    ActiveSheet.Range("A1").PasteSpecial Paste:=xlPasteAll
+    Application.CutCopyMode = False
+    Columns("A:Q").AutoFit
+    Columns("H:H").NumberFormat = "$#,##0"
+    Workbooks(Año & mes & "." & "BASE PRIMA ANTIGUEDAD ADC" & ".XLSX").Close
+    Kill Ruta_Audi & "\" & Año & mes & "." & "BASE PRIMA ANTIGUEDAD ADC" & ".XLSX"
+    wb.Activate
+    wb.Save
+
+'Convierte fechas de contab. de 01.01.9999 a 01/01/9999
+    Sheets("BASES").Activate
+    
+    Dim CelsD As Range
+    Dim UltimaFilaD As Long
+    
+    ' Obtener la última fila con datos en la columna A
+    UltimaFilaD = ActiveSheet.Cells(Rows.Count, 1).End(xlUp).row
+    
+    ' Verificar que hay datos en la columna D
+    If UltimaFilaD >= 2 Then
+        ' Iterar sobre las celdas de la columna D
+        For Each CelsD In ActiveSheet.Range("D2:D" & UltimaFilaD)
+            ' Verificar si el valor es un formato de fecha válido (dd.mm.aaaa)
+            If Len(CelsD.Value) = 10 And Mid(CelsD.Value, 3, 1) = "." And Mid(CelsD.Value, 6, 1) = "." Then
+                ' Convertir el formato de fecha y aplicar el formato correcto (dd/mm/aaaa)
+                CelsD.Value = DateSerial(Right(CelsD.Value, 4), Mid(CelsD.Value, 4, 2), Left(CelsD.Value, 2))
+                CelsD.NumberFormat = "dd/mm/yyyy"
+            End If
+        Next CelsD
+    End If
+    
+    
+'Tabla dinamica
+
+ 'Define el rango
+    Dim ult_Tabla As Long
+    Sheets("BASES").Activate
+    ult_Tabla = Cells(Rows.Count, "A").End(xlUp).row
+
+    Dim rangoTabla As Range
+    Set rangoTabla = ActiveSheet.Range("A1:H" & ult_Tabla)
+    ActiveSheet.ListObjects.Add(xlSrcRange, rangoTabla, , xlYes).Name = "Tabla1"
+
+    'Crear tabla dinamica
+
+        'Definir la ubicación para la tabla dinámica (celda K1)
+        Dim celdaTablaDinamica As Range
+        Set celdaTablaDinamica = ActiveSheet.Range("J1")
+        Dim tablaDinamica As PivotTable
+
+        'Activa los campos de la tabla y la pone en formato tabular
+        ActiveWorkbook.PivotCaches.Create(SourceType:=xlDatabase, SourceData:= _
+            rangoTabla, Version:=6).CreatePivotTable TableDestination:= _
+            celdaTablaDinamica, TableName:="tablaDinamica", DefaultVersion:=6
+
+        Sheets("BASES").Select
+        Cells(1, 10).Select
+
+        With ActiveSheet.PivotTables("tablaDinamica").PivotFields("Nº pers.")
+            .Orientation = xlRowField
+            .Position = 1
+        End With
+        With ActiveSheet.PivotTables("tablaDinamica").PivotFields("Apellido Nombre")
+            .Orientation = xlRowField
+            .Position = 2
+        End With
+        With ActiveSheet.PivotTables("tablaDinamica").PivotFields("Fecha pago")
+            .Orientation = xlColumnField
+            .Position = 1
+        End With
+        ActiveSheet.PivotTables("tablaDinamica").PivotFields("Fecha pago").AutoGroup
+        
+        ActiveSheet.PivotTables("tablaDinamica").AddDataField ActiveSheet.PivotTables( _
+            "tablaDinamica").PivotFields("Importe"), "Suma de Importe", xlSum
+        
+        ActiveSheet.PivotTables("tablaDinamica").PivotFields("Nº pers.").Subtotals = _
+            Array(False, False, False, False, False, False, False, False, False, False, False, False)
+        ActiveSheet.PivotTables("tablaDinamica").PivotFields("Apellido Nombre"). _
+            Subtotals = Array(False, False, False, False, False, False, False, False, False, False, _
+            False, False)
+        ActiveSheet.PivotTables("tablaDinamica").PivotFields("Per.para").Subtotals = _
+            Array(False, False, False, False, False, False, False, False, False, False, False, False)
+        ActiveSheet.PivotTables("tablaDinamica").PivotFields("Fecha pago").Subtotals _
+            = Array(False, False, False, False, False, False, False, False, False, False, False, False _
+            )
+        ActiveSheet.PivotTables("tablaDinamica").PivotFields("CC-n.").Subtotals = _
+            Array(False, False, False, False, False, False, False, False, False, False, False, False)
+        ActiveSheet.PivotTables("tablaDinamica").PivotFields("Texto expl.CC-nómina"). _
+            Subtotals = Array(False, False, False, False, False, False, False, False, False, False, _
+            False, False)
+        ActiveSheet.PivotTables("tablaDinamica").PivotFields("Cantidad").Subtotals = _
+            Array(False, False, False, False, False, False, False, False, False, False, False, False)
+        ActiveSheet.PivotTables("tablaDinamica").PivotFields("Importe").Subtotals = _
+            Array(False, False, False, False, False, False, False, False, False, False, False, False)
+        ActiveSheet.PivotTables("tablaDinamica").RowAxisLayout xlTabularRow
+        
+        'Expande para que se vean todos lo meses
+        Range("L1").Select
+        ActiveSheet.PivotTables("tablaDinamica").PivotFields("Años").ShowDetail = True
+        Range("L3").Select
+        ActiveSheet.PivotTables("tablaDinamica").PivotFields("Trimestres").ShowDetail = True
+
+    '******************************** FIN TABLA DINAMICA ********************************
+
+'Crea promedio con los datos de la tabla dinamica
+    With Worksheets("BASES").Range("Y4")
+        .Value = "PROMEDIO"
+        .Font.Bold = True
+        .Interior.Color = RGB(173, 216, 230) ' Color azul claro
+    End With
+    LastRow = ActiveSheet.Cells(Rows.Count, 11).End(xlUp).row
+    Sheets("BASES").Range("Y5:Y" & LastRow) = "=AVERAGE(RC[-13]:RC[-2])"
+    
+
+'Hace buscarv del promedio
+    Sheets("Auditoria").Activate
+    LastRow = ActiveSheet.Cells(Rows.Count, 7).End(xlUp).row
+    Range("T1").Value = "PROMEDIO"
+    Sheets("Auditoria").Range("T2:T" & LastRow) = "=VLOOKUP(RC[-19],BASES!C[-10]:C[5],16,0)"
+    Columns("T:T").NumberFormat = "$#,##0"
+    Columns("A:T").AutoFit
+ 
+
+'Calculo de diferencia
+    LastRow = ActiveSheet.Cells(Rows.Count, 7).End(xlUp).row
+    Range("U1").Value = "DIFERENCIA"
+    Sheets("Auditoria").Range("U2:U" & LastRow) = "=RC[-3]-RC[-1]"
+    Columns("U:U").NumberFormat = "$#,##0"
+    Columns("A:U").AutoFit
+    wb.Save
+
+'Pone la fecha calculada y hace cambios de formato
+    If Mes_texto = "Diciembre" Then
+         Fecha1 = "01" & Format(mes - 1, "00") & Año - 1
+    Else
+        Fecha1 = "01" & Format(mes + 1, "00") & Año - 1
+    End If
+    
+    If Mes_texto = "Febrero" Then
+        Fecha2 = ThisWorkbook.Sheets("Reportes").Range("N12").Value
+    Else
+        Fecha2 = ThisWorkbook.Sheets("Reportes").Range("M8").Value
+    End If
+    
+    wb.Activate
+    Sheets("Auditoria").Activate
+    With Sheets("Auditoria")
+        .Range("X1").Value = "F Inicial"
+        .Range("V2:V" & LastRow).Value = Fecha1
+        .Range("Y1").Value = "F Final"
+        .Range("W2:W" & LastRow).Value = Fecha2
+    End With
+    
+    Columns("V:W").NumberFormat = "00000000"
+    LastRow = ActiveSheet.Cells(Rows.Count, 11).End(xlUp).row
+    Sheets("Auditoria").Range("X2:X" & LastRow) = "=TEXT(RC[-2],""00\.00\.0000"")"
+    Sheets("Auditoria").Range("Y2:Y" & LastRow) = "=TEXT(RC[-2],""00\.00\.0000"")"
+    
+    Columns("X:Y").Select
+    Selection.Copy
+    Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks _
+        :=False, Transpose:=False
+    Columns("V:W").Delete Shift:=xlToLeft
+    Application.CutCopyMode = False
+    
+    wb.Save
+    
+'Cambia a formato fecha
+
+    UltimaFilaD = ActiveSheet.Cells(Rows.Count, 7).End(xlUp).row
+    If UltimaFilaD >= 2 Then
+        
+        For Each CelsD In ActiveSheet.Range("V2:V" & UltimaFilaD)
+            
+            If Len(CelsD.Value) = 10 And Mid(CelsD.Value, 3, 1) = "." And Mid(CelsD.Value, 6, 1) = "." Then
+               
+                CelsD.Value = DateSerial(Right(CelsD.Value, 4), Mid(CelsD.Value, 4, 2), Left(CelsD.Value, 2))
+                CelsD.NumberFormat = "dd/mm/yyyy"
+            End If
+        Next CelsD
+    End If
+    
+       
+    If UltimaFilaD >= 2 Then
+        
+        For Each CelsD In ActiveSheet.Range("W2:W" & UltimaFilaD)
+           
+            If Len(CelsD.Value) = 10 And Mid(CelsD.Value, 3, 1) = "." And Mid(CelsD.Value, 6, 1) = "." Then
+                
+                CelsD.Value = DateSerial(Right(CelsD.Value, 4), Mid(CelsD.Value, 4, 2), Left(CelsD.Value, 2))
+                CelsD.NumberFormat = "dd/mm/yyyy"
+            End If
+        Next CelsD
+    End If
+    
+'Calcula dias
+Range("X1").Value = "DIAS"
+LastRow = ActiveSheet.Cells(Rows.Count, 11).End(xlUp).row
+Sheets("Auditoria").Range("X2:X" & LastRow) = "=DAYS360(RC[-2],RC[-1])"
+Range("Y1").Value = "LNR"
+
+'Descarga ausencias
+SAP3
+
+'Pega datos del reporte que acano de descargar
+    Workbooks(Año & mes & "." & "LICENCIA AFECTA PRIMA" & ".XLSX").Activate
+    Sheets(1).Activate
+    Columns("A:H").Select
+    Selection.Copy
+    wb.Activate
+    Worksheets.Add.Name = "AUSENCIAS"
+    Sheets("AUSENCIAS").Activate
+    ActiveSheet.Range("A1").PasteSpecial Paste:=xlPasteAll
+    Application.CutCopyMode = False
+    Columns("A:Q").AutoFit
+    Columns("H:H").NumberFormat = "$#,##0"
+    Workbooks(Año & mes & "." & "LICENCIA AFECTA PRIMA" & ".XLSX").Close
+    Kill Ruta_Audi & "\" & Año & mes & "." & "LICENCIA AFECTA PRIMA" & ".XLSX"
+    wb.Activate
+    wb.Save
+
+    ' Obtener la última fila con datos en la columna A
+    UltimaFilaD = ActiveSheet.Cells(Rows.Count, 1).End(xlUp).row
+    
+    ' Verificar que hay datos en la columna D
+    If UltimaFilaD >= 2 Then
+        ' Iterar sobre las celdas de la columna D
+        For Each CelsD In ActiveSheet.Range("D2:D" & UltimaFilaD)
+            ' Verificar si el valor es un formato de fecha válido (dd.mm.aaaa)
+            If Len(CelsD.Value) = 10 And Mid(CelsD.Value, 3, 1) = "." And Mid(CelsD.Value, 6, 1) = "." Then
+                ' Convertir el formato de fecha y aplicar el formato correcto (dd/mm/aaaa)
+                CelsD.Value = DateSerial(Right(CelsD.Value, 4), Mid(CelsD.Value, 4, 2), Left(CelsD.Value, 2))
+                CelsD.NumberFormat = "dd/mm/yyyy"
+            End If
+        Next CelsD
+    End If
+
+
+ 'Define el rango
+    Sheets("AUSENCIAS").Activate
+    ult_Tabla = Cells(Rows.Count, "A").End(xlUp).row
+    Set rangoTabla = ActiveSheet.Range("A1:H" & ult_Tabla)
+    ActiveSheet.ListObjects.Add(xlSrcRange, rangoTabla, , xlYes).Name = "Tabla1"
+
+'Crear tabla dinamica
+    Set celdaTablaDinamica = ActiveSheet.Range("J1")
+
+    'Activa los campos de la tabla y la pone en formato tabular
+    ActiveWorkbook.PivotCaches.Create(SourceType:=xlDatabase, SourceData:= _
+        rangoTabla, Version:=6).CreatePivotTable TableDestination:= _
+        celdaTablaDinamica, TableName:="tablaDinamica", DefaultVersion:=6
+
+    Sheets("AUSENCIAS").Select
+    Cells(1, 10).Select
+
+    With ActiveSheet.PivotTables("tablaDinamica").PivotFields("Nº pers.")
+        .Orientation = xlRowField
+        .Position = 1
+    End With
+    With ActiveSheet.PivotTables("tablaDinamica").PivotFields("Apellido Nombre")
+        .Orientation = xlRowField
+        .Position = 2
+    End With
+    ActiveSheet.PivotTables("tablaDinamica").AddDataField ActiveSheet.PivotTables( _
+        "tablaDinamica").PivotFields("Cantidad"), "Suma de Cantidad", xlSum
+    ActiveSheet.PivotTables("tablaDinamica").PivotFields("Nº pers.").Subtotals = _
+        Array(False, False, False, False, False, False, False, False, False, False, False, False)
+    ActiveSheet.PivotTables("tablaDinamica").PivotFields("Apellido Nombre"). _
+        Subtotals = Array(False, False, False, False, False, False, False, False, False, False, _
+        False, False)
+    ActiveSheet.PivotTables("tablaDinamica").PivotFields("Per.para").Subtotals = _
+        Array(False, False, False, False, False, False, False, False, False, False, False, False)
+    ActiveSheet.PivotTables("tablaDinamica").PivotFields("Fecha pago").Subtotals _
+        = Array(False, False, False, False, False, False, False, False, False, False, False, False _
+        )
+    ActiveSheet.PivotTables("tablaDinamica").PivotFields("CC-n.").Subtotals = _
+        Array(False, False, False, False, False, False, False, False, False, False, False, False)
+    ActiveSheet.PivotTables("tablaDinamica").PivotFields("Texto expl.CC-nómina"). _
+        Subtotals = Array(False, False, False, False, False, False, False, False, False, False, _
+        False, False)
+    ActiveSheet.PivotTables("tablaDinamica").PivotFields("Cantidad").Subtotals = _
+        Array(False, False, False, False, False, False, False, False, False, False, False, False)
+    ActiveSheet.PivotTables("tablaDinamica").PivotFields("Importe").Subtotals = _
+        Array(False, False, False, False, False, False, False, False, False, False, False, False)
+    ActiveSheet.PivotTables("tablaDinamica").RowAxisLayout xlTabularRow
+    
+    wb.Save
+    
+'BuscarV de las ausencias en la hoja de auditoria
+    Sheets("Auditoria").Activate
+    LastRow = ActiveSheet.Cells(Rows.Count, 11).End(xlUp).row
+    Sheets("Auditoria").Range("Y2:Y" & LastRow) = "=IFERROR(VLOOKUP(RC[-24],AUSENCIAS!C[-15]:C[-13],3,0),0)"
+
+
+'Calculo de total dias
+    Range("Z1").Value = "TOTAL DIAS"
+    LastRow = ActiveSheet.Cells(Rows.Count, 11).End(xlUp).row
+    Sheets("Auditoria").Range("Z2:Z" & LastRow) = "=RC[-2]-RC[-1]"
+
+'Calculo de los dias reales
+    Range("AA1").Value = "CALCULO"
+    LastRow = ActiveSheet.Cells(Rows.Count, 11).End(xlUp).row
+    Sheets("Auditoria").Range("AA2:AA" & LastRow) = "=RC[-1]*30/360"
+    
+'Señala celdas con total de dias diferentes a 30
+    Dim cell_dias As Range
+    For Each cell_dias In Sheets("Auditoria").Range("AA2:AA" & Cells(Rows.Count, "AA").End(xlUp).row)
+
+        If cell_dias.Value <> 30 Then
+            cell_dias.Interior.Color = RGB(255, 255, 0)
+        End If
+    Next cell_dias
+
+'Calculo prima
+    Range("AB1").Value = "CALCULO PRIMA"
+    LastRow = ActiveSheet.Cells(Rows.Count, 11).End(xlUp).row
+    Sheets("Auditoria").Range("AB2:AB" & LastRow) = "=RC[-8]/30*RC[-1]"
+    
+
+'Cruces en la CWTR
+    Sheets("CWTR").Activate
+    LastRow = ActiveSheet.Cells(Rows.Count, 1).End(xlUp).row
+    Range("I1").Value = "AREA DE NOMINA"
+    Sheets("CWTR").Range("I2:I" & LastRow) = "=VLOOKUP(RC[-8],'Maestro Completo'!C[-8]:C[-2],7,0)"
+    Range("J1").Value = "TRAINEE"
+    Sheets("CWTR").Range("J2:J" & LastRow) = "=VLOOKUP(RC[-9],'Maestro Completo'!C[-9]:C[15],25,0)"
+    Columns("A:J").AutoFit
+    
+'Guarda y cierra
+    Sheets("Auditoria").Move Before:=Sheets(1)
+    Columns("AB:AB").NumberFormat = "$#,##0"
+    Columns("A:AB").AutoFit
+    wb.Save
+    wb.Close
+    MsgBox "La auditoria fue creada y se encuentra en la carpeta AUDITORIAS", vbInformation
+
+ End If
+ 
+End Sub
+
+Sub SAP()
+
+'Descarga reporte con la variante TC_PRIMA_ANTIG
+    
+    'Calculo de fechas
+    InicializarVariables
+
+    Fecha1 = ThisWorkbook.Sheets("Reportes").Range("I8").Value
+    Fecha2 = ThisWorkbook.Sheets("Reportes").Range("M8").Value
+    If Mes_texto = "Febrero" Then
+        Fecha2 = ThisWorkbook.Sheets("Reportes").Range("N12").Value
+    Else
+        Fecha2 = ThisWorkbook.Sheets("Reportes").Range("M8").Value
+    End If
+    
+    'Descargar datos
+    Dim SapGuiAuto As Object
+    Dim App As Object
+    Dim Connection As Object
+    Dim session As Object
+    
+    ' Conexion con SAP
+    Application.DisplayAlerts = False
+    Set SapGuiAuto = GetObject("SAPGUI")
+    Set App = SapGuiAuto.GetScriptingEngine
+    Set Connection = App.Children(0)
+    Set session = Connection.Children(0)
+
+    'Vuelve a la pantalla inicial
+    session.findById("wnd[0]/tbar[0]/okcd").Text = "/n"
+    session.findById("wnd[0]").sendVKey 0
+
+    'Entra a la transacion
+    session.findById("wnd[0]/tbar[0]/okcd").Text = "/nPC00_M99_CWTR"
+    session.findById("wnd[0]").sendVKey 0
+    
+    'Busca la variante
+    session.findById("wnd[0]/tbar[1]/btn[17]").press
+    session.findById("wnd[1]/usr/txtV-LOW").Text = "TC_PRIMA_ANTIG"
+    session.findById("wnd[1]/usr/txtENAME-LOW").Text = "ASANC1K"
+    session.findById("wnd[1]/usr/txtV-LOW").caretPosition = 14
+    session.findById("wnd[1]/tbar[0]/btn[8]").press
+    
+    'Cambia fechas
+    session.findById("wnd[0]/usr/ctxtBEGD_CAL").Text = Fecha1
+    session.findById("wnd[0]/usr/ctxtENDD_CAL").Text = Fecha2
+
+    'Ejecuta
+    session.findById("wnd[0]/tbar[1]/btn[8]").press
+    
+    'Descarga el archivo
+    session.findById("wnd[0]/mbar/menu[0]/menu[1]/menu[2]").Select
+    session.findById("wnd[1]/usr/subSUBSCREEN_STEPLOOP:SAPLSPO5:0150/sub:SAPLSPO5:0150/radSPOPLI-SELFLAG[1,0]").Select
+    session.findById("wnd[1]/usr/subSUBSCREEN_STEPLOOP:SAPLSPO5:0150/sub:SAPLSPO5:0150/radSPOPLI-SELFLAG[1,0]").SetFocus
+    session.findById("wnd[1]/tbar[0]/btn[0]").press
+    session.findById("wnd[1]/usr/ctxtDY_PATH").Text = Ruta_Audi
+    session.findById("wnd[1]/usr/ctxtDY_FILENAME").Text = Año & mes & "." & "PRIMA ANTIGUEDAD" & ".XLS"
+    session.findById("wnd[1]/usr/ctxtDY_FILENAME").caretPosition = 16
+    session.findById("wnd[1]/tbar[0]/btn[11]").press
+    
+    'Organizar formato
+    Application.CutCopyMode = False
+    Workbooks.Open Ruta_Audi & "\" & Año & mes & "." & "PRIMA ANTIGUEDAD" & ".XLS"
+    ActiveSheet.Cells.Select
+    Selection.Copy
+    Workbooks.Add
+    ActiveSheet.Paste
+    ActiveWorkbook.SaveAs Ruta_Audi & "\" & Año & mes & "." & "PRIMA ANTIGUEDAD" & ".XLSX"
+    ActiveWorkbook.Close SaveChanges:=True
+    Workbooks(Año & mes & "." & "PRIMA ANTIGUEDAD" & ".XLS").Close
+    Kill Ruta_Audi & "\" & Año & mes & "." & "PRIMA ANTIGUEDAD" & ".XLS"
+    
+    'Cambios de formato
+    Workbooks.Open Ruta_Audi & "\" & Año & mes & "." & "PRIMA ANTIGUEDAD" & ".XLSX"
+    Workbooks(Año & mes & "." & "PRIMA ANTIGUEDAD" & ".XLSX").Activate
+    organiza_doc_sap
+    
+End Sub
+
+
+Sub organiza_doc_sap()
+'Organiza los archivos que descarga de sap
+
+    InicializarVariables
+    Dim lastRow_T As Long
+    
+    Rows("1").Delete
+    Rows("2").Delete
+    Columns("A").Delete
+
+'Cambios de formato para la cantidad
+    Columns("G:G").Select
+    Selection.Insert Shift:=xlToRight, CopyOrigin:=xlFormatFromLeftOrAbove
+    Range("G1").Value = "Cantidad"
+    lastRow_T = ActiveSheet.Cells(ActiveSheet.Rows.Count, "A").End(xlUp).row
+    If lastRow_T >= 2 Then
+        Range("G2:G" & lastRow_T).Formula = "=VALUE(SUBSTITUTE(RC[1], CHAR(160),""""))"
+    End If
+    Columns("G:G").Select
+    Selection.Copy
+    Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks _
+        :=False, Transpose:=False
+    Columns("H:H").Select
+    Selection.Delete
+
+'Cambios de formato para el importe
+    Columns("H:H").Select
+    Selection.Insert Shift:=xlToRight, CopyOrigin:=xlFormatFromLeftOrAbove
+    Range("H1").Value = "Importe"
+        If lastRow_T >= 2 Then
+        Range("H2:H" & lastRow_T).Formula = "=VALUE(SUBSTITUTE(RC[1], CHAR(160),""""))"
+    End If
+    Columns("H:H").Select
+    Selection.Copy
+    Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks _
+        :=False, Transpose:=False
+    Columns("I:I").Select
+    Selection.Delete
+
+'Guardar cambios
+    Columns("A:H").AutoFit
+    ActiveWorkbook.Save
+
+End Sub
+
+Sub SAP2()
+
+'Descarga reporte con la variante TC_BASEPRIMEXT
+    
+    'Calculo de fechas
+    InicializarVariables
+    
+    'Calcula una fecha desde el año anterior hasta el mes presente que se esta pagando
+    If Mes_texto = "Diciembre" Then
+         Fecha1 = "01" & Format(mes - 1, "00") & Año - 1
+    Else
+        Fecha1 = "01" & Format(mes + 1, "00") & Año - 1
+    End If
+    
+    If Mes_texto = "Febrero" Then
+        Fecha2 = ThisWorkbook.Sheets("Reportes").Range("N12").Value
+    Else
+        Fecha2 = ThisWorkbook.Sheets("Reportes").Range("M8").Value
+    End If
+    
+    'Descargar datos
+    Dim SapGuiAuto As Object
+    Dim App As Object
+    Dim Connection As Object
+    Dim session As Object
+    
+    ' Conexion con SAP
+    Application.DisplayAlerts = False
+    Set SapGuiAuto = GetObject("SAPGUI")
+    Set App = SapGuiAuto.GetScriptingEngine
+    Set Connection = App.Children(0)
+    Set session = Connection.Children(0)
+
+    'Vuelve a la pantalla inicial
+    session.findById("wnd[0]/tbar[0]/okcd").Text = "/n"
+    session.findById("wnd[0]").sendVKey 0
+
+    'Entra a la transacion
+    session.findById("wnd[0]/tbar[0]/okcd").Text = "/nPC00_M99_CWTR"
+    session.findById("wnd[0]").sendVKey 0
+    
+    'Busca la variante
+    session.findById("wnd[0]/tbar[1]/btn[17]").press
+    session.findById("wnd[1]/usr/txtV-LOW").Text = "TC_BASEPRIMEXT"
+    session.findById("wnd[1]/usr/txtENAME-LOW").Text = "ASANC1K"
+    session.findById("wnd[1]/usr/txtV-LOW").caretPosition = 14
+    session.findById("wnd[1]/tbar[0]/btn[8]").press
+    
+    'Cambia fechas
+    session.findById("wnd[0]/usr/ctxtBEGD_CAL").Text = Fecha1
+    session.findById("wnd[0]/usr/ctxtENDD_CAL").Text = Fecha2
+    
+    'Copia los numeros de empleado
+    session.findById("wnd[0]").resizeWorkingPane 128, 39, False
+    session.findById("wnd[0]/usr/btn%_PNPPERNR_%_APP_%-VALU_PUSH").press
+    session.findById("wnd[1]/tbar[0]/btn[16]").press
+    
+    Workbooks(Año & "." & mes & "." & "AUDITORIA PRIMA ADC" & ".XLSX").Activate
+    Worksheets("Auditoria").Activate
+    Dim lastRowSAP As Long
+    lastRowSAP = ActiveSheet.Cells(Rows.Count, 7).End(xlUp).row
+    ActiveSheet.Range("A2:A" & lastRowSAP).Copy
+
+    session.findById("wnd[1]/tbar[0]/btn[24]").press
+    session.findById("wnd[1]/tbar[0]/btn[8]").press
+
+    'Ejecuta
+    session.findById("wnd[0]/tbar[1]/btn[8]").press
+    
+    'Descarga el archivo
+    session.findById("wnd[0]/mbar/menu[0]/menu[1]/menu[2]").Select
+    session.findById("wnd[1]/usr/subSUBSCREEN_STEPLOOP:SAPLSPO5:0150/sub:SAPLSPO5:0150/radSPOPLI-SELFLAG[1,0]").Select
+    session.findById("wnd[1]/usr/subSUBSCREEN_STEPLOOP:SAPLSPO5:0150/sub:SAPLSPO5:0150/radSPOPLI-SELFLAG[1,0]").SetFocus
+    session.findById("wnd[1]/tbar[0]/btn[0]").press
+    session.findById("wnd[1]/usr/ctxtDY_PATH").Text = Ruta_Audi
+    session.findById("wnd[1]/usr/ctxtDY_FILENAME").Text = Año & mes & "." & "BASE PRIMA ANTIGUEDAD ADC" & ".XLS"
+    session.findById("wnd[1]/usr/ctxtDY_FILENAME").caretPosition = 16
+    session.findById("wnd[1]/tbar[0]/btn[11]").press
+    
+    'Organizar formato
+    Application.CutCopyMode = False
+    Workbooks.Open Ruta_Audi & "\" & Año & mes & "." & "BASE PRIMA ANTIGUEDAD ADC" & ".XLS"
+    ActiveSheet.Cells.Select
+    Selection.Copy
+    Workbooks.Add
+    ActiveSheet.Paste
+    ActiveWorkbook.SaveAs Ruta_Audi & "\" & Año & mes & "." & "BASE PRIMA ANTIGUEDAD ADC" & ".XLSX"
+    ActiveWorkbook.Close SaveChanges:=True
+    Workbooks(Año & mes & "." & "BASE PRIMA ANTIGUEDAD ADC" & ".XLS").Close
+    Kill Ruta_Audi & "\" & Año & mes & "." & "BASE PRIMA ANTIGUEDAD ADC" & ".XLS"
+    
+    'Cambios de formato
+    Workbooks.Open Ruta_Audi & "\" & Año & mes & "." & "BASE PRIMA ANTIGUEDAD ADC" & ".XLSX"
+    Workbooks(Año & mes & "." & "BASE PRIMA ANTIGUEDAD ADC" & ".XLSX").Activate
+    organiza_doc_sap
+    
+End Sub
+
+Sub SAP3()
+
+'Descarga reporte con la variante TC_LNR_LIQUIDA
+    
+    'Calculo de fechas
+    InicializarVariables
+    
+    'Calcula una fecha desde el año anterior hasta el mes presente que se esta pagando
+    If Mes_texto = "Diciembre" Then
+         Fecha1 = "01" & Format(mes - 1, "00") & Año - 1
+    Else
+        Fecha1 = "01" & Format(mes + 1, "00") & Año - 1
+    End If
+    
+    If Mes_texto = "Febrero" Then
+        Fecha2 = ThisWorkbook.Sheets("Reportes").Range("N12").Value
+    Else
+        Fecha2 = ThisWorkbook.Sheets("Reportes").Range("M8").Value
+    End If
+    
+    'Descargar datos
+    Dim SapGuiAuto As Object
+    Dim App As Object
+    Dim Connection As Object
+    Dim session As Object
+    
+    ' Conexion con SAP
+    Application.DisplayAlerts = False
+    Set SapGuiAuto = GetObject("SAPGUI")
+    Set App = SapGuiAuto.GetScriptingEngine
+    Set Connection = App.Children(0)
+    Set session = Connection.Children(0)
+
+    'Vuelve a la pantalla inicial
+    session.findById("wnd[0]/tbar[0]/okcd").Text = "/n"
+    session.findById("wnd[0]").sendVKey 0
+
+    'Entra a la transacion
+    session.findById("wnd[0]/tbar[0]/okcd").Text = "/nPC00_M99_CWTR"
+    session.findById("wnd[0]").sendVKey 0
+    
+    'Busca la variante
+    session.findById("wnd[0]/tbar[1]/btn[17]").press
+    session.findById("wnd[1]/usr/txtV-LOW").Text = "TC_LNR_LIQUIDA"
+    session.findById("wnd[1]/usr/txtENAME-LOW").Text = "ASANC1K"
+    session.findById("wnd[1]/usr/txtV-LOW").caretPosition = 14
+    session.findById("wnd[1]/tbar[0]/btn[8]").press
+    
+    'Cambia fechas
+    session.findById("wnd[0]/usr/ctxtBEGD_CAL").Text = Fecha1
+    session.findById("wnd[0]/usr/ctxtENDD_CAL").Text = Fecha2
+    
+    'Borra los numeros de empleados que tenga
+    session.findById("wnd[0]").resizeWorkingPane 128, 39, False
+    session.findById("wnd[0]/usr/btn%_PNPPERNR_%_APP_%-VALU_PUSH").press
+    session.findById("wnd[1]/tbar[0]/btn[16]").press
+    session.findById("wnd[1]/tbar[0]/btn[8]").press
+
+    'Ejecuta
+    session.findById("wnd[0]/tbar[1]/btn[8]").press
+    
+    'Descarga el archivo
+    session.findById("wnd[0]/mbar/menu[0]/menu[1]/menu[2]").Select
+    session.findById("wnd[1]/usr/subSUBSCREEN_STEPLOOP:SAPLSPO5:0150/sub:SAPLSPO5:0150/radSPOPLI-SELFLAG[1,0]").Select
+    session.findById("wnd[1]/usr/subSUBSCREEN_STEPLOOP:SAPLSPO5:0150/sub:SAPLSPO5:0150/radSPOPLI-SELFLAG[1,0]").SetFocus
+    session.findById("wnd[1]/tbar[0]/btn[0]").press
+    session.findById("wnd[1]/usr/ctxtDY_PATH").Text = Ruta_Audi
+    session.findById("wnd[1]/usr/ctxtDY_FILENAME").Text = Año & mes & "." & "LICENCIA AFECTA PRIMA" & ".XLS"
+    session.findById("wnd[1]/usr/ctxtDY_FILENAME").caretPosition = 16
+    session.findById("wnd[1]/tbar[0]/btn[11]").press
+    
+    'Organizar formato
+    Application.CutCopyMode = False
+    Workbooks.Open Ruta_Audi & "\" & Año & mes & "." & "LICENCIA AFECTA PRIMA" & ".XLS"
+    ActiveSheet.Cells.Select
+    Selection.Copy
+    Workbooks.Add
+    ActiveSheet.Paste
+    ActiveWorkbook.SaveAs Ruta_Audi & "\" & Año & mes & "." & "LICENCIA AFECTA PRIMA" & ".XLSX"
+    ActiveWorkbook.Close SaveChanges:=True
+    Workbooks(Año & mes & "." & "LICENCIA AFECTA PRIMA" & ".XLS").Close
+    Kill Ruta_Audi & "\" & Año & mes & "." & "LICENCIA AFECTA PRIMA" & ".XLS"
+    
+    'Cambios de formato
+    Workbooks.Open Ruta_Audi & "\" & Año & mes & "." & "LICENCIA AFECTA PRIMA" & ".XLSX"
+    Workbooks(Año & mes & "." & "LICENCIA AFECTA PRIMA" & ".XLSX").Activate
+    organiza_doc_sap
+    
+End Sub
+Sub Ejecutar_PRIMA_ADC()
+
+    ' Verificar si hay datos en las celdas I8 y M8
+    If ThisWorkbook.Sheets("Reportes").Range("I8").Value = "" Or ThisWorkbook.Sheets("Reportes").Range("M8").Value = "" Then
+        MsgBox "Por favor, ingrese las fechas en las celdas correspondientes.", vbExclamation
+        Exit Sub
+    End If
+
+    ' Llama a cada una de las funciones
+    DeactivateStuff
+    CrearCarpetas
+    Abrir_activar
+    Auditoria
+    ReactivateStuff
+
+End Sub
+
+Private Sub DeactivateStuff()
+'SUBPROCEDURE EXPLANATION: Deactivates unwanted alerts, messages and pop-up windows.
+   Application.IgnoreRemoteRequests = False
+   Application.ScreenUpdating = False
+   Application.DisplayAlerts = False
+   Application.DisplayStatusBar = False
+End Sub
+Private Sub ReactivateStuff()
+'SUBPROCEDURE EXPLANATION: Reactivates normal behavior of alerts, messages and pop-up windows.
+   Application.ScreenUpdating = True
+   Application.DisplayAlerts = True
+   Application.DisplayStatusBar = True
+   Application.IgnoreRemoteRequests = False
+End Sub
+
+
