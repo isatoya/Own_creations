@@ -1,10 +1,9 @@
-Attribute VB_Name = "PRIMA_EXTRA_ABS"
 Option Explicit
 'variables para todo el proyecto
 
     Dim MAESTRO As String
-    Dim Fecha1, Fecha2, inicio_tri, fin_tri, mes, Mes_texto, Año, MesTrimestreAnterior, variante As String
-    Dim ruta, Ruta_Año, Ruta_Mes, Ruta_Audi, ruta_maestroA As String
+    Dim Fecha1, Fecha2, inicio_tri, fin_tri, mes, Mes_texto, AÃ±o, MesTrimestreAnterior, variante As String
+    Dim ruta, Ruta_AÃ±o, Ruta_Mes, Ruta_Audi, ruta_maestroA As String
     Dim LastRow, i As Long
     Dim promedioFormula As String
     Dim CelsAG As Object
@@ -17,41 +16,41 @@ Sub InicializarVariables()
     '------------ Variables originales del archivo -----------
     mes = ThisWorkbook.Sheets("Reportes").Range("N8").Value
     Mes_texto = ThisWorkbook.Sheets("Reportes").Range("I12").Value
-    Año = ThisWorkbook.Sheets("Reportes").Range("I10").Value
+    AÃ±o = ThisWorkbook.Sheets("Reportes").Range("I10").Value
     Fecha1 = ThisWorkbook.Sheets("Reportes").Range("I8").Value
     Fecha2 = ThisWorkbook.Sheets("Reportes").Range("M8").Value
     
     '------------ Rutas -----------
     ruta = ThisWorkbook.Path & "\"
     'ruta = ThisWorkbook.Sheets("Reportes").Range("H21").Value
-    Ruta_Año = ruta & Año
-    Ruta_Mes = Ruta_Año & "\" & mes & ". " & Mes_texto
-    Ruta_Audi = Ruta_Mes & "\" & "AUDITORIAS DE NOMINA"
+    Ruta_AÃ±o = ruta & AÃ±o
+    Ruta_Mes = Ruta_AÃ±o & "\" & mes & ". " & Mes_texto
+    Ruta_Audi = Ruta_Mes & "\" & "AUDITS"
     
     
     '------------ Calcular fechas de los trimestres -----------
-    ' Definir el primer día del trimestre anterior
+    ' Definir el primer dÃ­a del trimestre anterior
     Select Case Mes_texto
         Case "Enero"
-            inicio_tri = Format(DateSerial(Año - 1, 10, 1), "dd.mm.yyyy")
+            inicio_tri = Format(DateSerial(AÃ±o - 1, 10, 1), "dd.mm.yyyy")
         Case "Abril"
-            inicio_tri = Format(DateSerial(Año, 1, 1), "dd.mm.yyyy")
+            inicio_tri = Format(DateSerial(AÃ±o, 1, 1), "dd.mm.yyyy")
         Case "Julio"
-            inicio_tri = Format(DateSerial(Año, 4, 1), "dd.mm.yyyy")
+            inicio_tri = Format(DateSerial(AÃ±o, 4, 1), "dd.mm.yyyy")
         Case "Octubre"
-            inicio_tri = Format(DateSerial(Año, 7, 1), "dd.mm.yyyy")
+            inicio_tri = Format(DateSerial(AÃ±o, 7, 1), "dd.mm.yyyy")
     End Select
     
-    ' Definir el último día del trimestre anterior y aplicar formato
+    ' Definir el Ãºltimo dÃ­a del trimestre anterior y aplicar formato
     Select Case Mes_texto
         Case "Enero"
-            fin_tri = Format(DateSerial(Año - 1, 12, 31), "dd.mm.yyyy")
+            fin_tri = Format(DateSerial(AÃ±o - 1, 12, 31), "dd.mm.yyyy")
         Case "Abril"
-            fin_tri = Format(DateSerial(Año, 3, 31), "dd.mm.yyyy")
+            fin_tri = Format(DateSerial(AÃ±o, 3, 31), "dd.mm.yyyy")
         Case "Julio"
-            fin_tri = Format(DateSerial(Año, 6, 30), "dd.mm.yyyy")
+            fin_tri = Format(DateSerial(AÃ±o, 6, 30), "dd.mm.yyyy")
         Case "Octubre"
-            fin_tri = Format(DateSerial(Año, 9, 30), "dd.mm.yyyy")
+            fin_tri = Format(DateSerial(AÃ±o, 9, 30), "dd.mm.yyyy")
     End Select
 
     '------------ Calcula meses de los trimestres -----------
@@ -69,7 +68,7 @@ Sub InicializarVariables()
 
 End Sub
 
-Sub Ejecutar_AUDI_PRIMAEXTRA_ABS()
+Sub Ejecutar()
 
     ' Verificar si hay datos en las celdas I8 y M8
     If ThisWorkbook.Sheets("Reportes").Range("I8").Value = "" Or ThisWorkbook.Sheets("Reportes").Range("M8").Value = "" Then
@@ -90,28 +89,28 @@ End Sub
 
 Sub CrearCarpetas()
     
-    'Creación y validacion de las carpetas
+    'CreaciÃ³n y validacion de las carpetas
     InicializarVariables
     '''''''
-    ''AÑO''
+    ''AÃ‘O''
     '''''''
-    Ruta_Año = ruta & Año
-    If Dir(Ruta_Año, vbDirectory + vbHidden) = "" Then
+    Ruta_AÃ±o = ruta & AÃ±o
+    If Dir(Ruta_AÃ±o, vbDirectory + vbHidden) = "" Then
         'Comprueba que la carpeta no exista para crear el directorio.
-        If Dir(Ruta_Año & vbDirectory + vbHidden) = "" Then MkDir Ruta_Año
+        If Dir(Ruta_AÃ±o & vbDirectory + vbHidden) = "" Then MkDir Ruta_AÃ±o
     End If
     '''''''
     ''MES''
     '''''''
-    Ruta_Mes = Ruta_Año & "\" & mes & ". " & Mes_texto
+    Ruta_Mes = Ruta_AÃ±o & "\" & mes & ". " & Mes_texto
     If Dir(Ruta_Mes, vbDirectory + vbHidden) = "" Then
         'Comprueba que la carpeta no exista para crear el directorio.
         If Dir(Ruta_Mes & vbDirectory + vbHidden) = "" Then MkDir Ruta_Mes
     End If
     ''''''''''''''''''''
-    ''AUDITORIA NÓMINA''
+    ''AUDITORIA NÃ“MINA''
     ''''''''''''''''''''
-    Ruta_Audi = Ruta_Mes & "\" & "AUDITORIAS DE NOMINA"
+    Ruta_Audi = Ruta_Mes & "\" & "AUDITS"
     If Dir(Ruta_Audi, vbDirectory + vbHidden) = "" Then
         'Comprueba que la carpeta no exista para crear el directorio.
         If Dir(Ruta_Audi & vbDirectory + vbHidden) = "" Then MkDir Ruta_Audi
@@ -147,8 +146,8 @@ InicializarVariables
     
     'Busca la variante
     session.findById("wnd[0]/tbar[1]/btn[17]").press
-    session.findById("wnd[1]/usr/txtV-LOW").Text = "TC_BASEPRIABS"
-    session.findById("wnd[1]/usr/txtENAME-LOW").Text = "ASANC1K"
+    session.findById("wnd[1]/usr/txtV-LOW").Text = "VAIRANTE"
+    session.findById("wnd[1]/usr/txtENAME-LOW").Text = "DUEÃ‘O"
     session.findById("wnd[1]/usr/txtV-LOW").caretPosition = 14
     session.findById("wnd[1]/tbar[0]/btn[8]").press
     
@@ -294,7 +293,7 @@ InicializarVariables
             celdaTablaDinamica1, TableName:="tablaDinamica1", DefaultVersion:=6
             
         Sheets("BASES").Select
-        With ActiveSheet.PivotTables("tablaDinamica1").PivotFields("Nº pers.")
+        With ActiveSheet.PivotTables("tablaDinamica1").PivotFields("NÂº pers.")
         .Orientation = xlRowField
         .Position = 1
         End With
@@ -309,7 +308,7 @@ InicializarVariables
         ActiveSheet.PivotTables("tablaDinamica1").PivotFields("Fecha pago").AutoGroup
         ActiveSheet.PivotTables("tablaDinamica1").AddDataField ActiveSheet.PivotTables( _
             "tablaDinamica1").PivotFields("Importe"), "Suma de Importe", xlSum
-        ActiveSheet.PivotTables("tablaDinamica1").PivotFields("Nº pers.").Subtotals = _
+        ActiveSheet.PivotTables("tablaDinamica1").PivotFields("NÂº pers.").Subtotals = _
             Array(False, False, False, False, False, False, False, False, False, False, False, False)
         ActiveSheet.PivotTables("tablaDinamica1").PivotFields("Apellido Nombre"). _
             Subtotals = Array(False, False, False, False, False, False, False, False, False, False, _
@@ -321,7 +320,7 @@ InicializarVariables
             )
         ActiveSheet.PivotTables("tablaDinamica1").PivotFields("CC-n.").Subtotals = _
             Array(False, False, False, False, False, False, False, False, False, False, False, False)
-        ActiveSheet.PivotTables("tablaDinamica1").PivotFields("Texto expl.CC-nómina"). _
+        ActiveSheet.PivotTables("tablaDinamica1").PivotFields("Texto expl.CC-nÃ³mina"). _
             Subtotals = Array(False, False, False, False, False, False, False, False, False, False, _
             False, False)
         ActiveSheet.PivotTables("tablaDinamica1").PivotFields("Cantidad").Subtotals = _
@@ -382,20 +381,20 @@ Dim MAESTRO As Workbook
     'Busca la variante
     Select Case Mes_texto
         Case "Enero"
-            variante = "TC_PRIMAS_ENER"
+            variante = "
         Case "Abril"
-            variante = "TC_PRIMA_PERMA"
+            variante = "
         Case "Julio"
-            variante = "TC_PRIMA_JULAB"
+            variante = "
         Case "octubre"
-            variante = "TC_PRIM_OCTABS"
+            variante = "
         Case Else
             variante = ""
     End Select
     
     session.findById("wnd[0]/tbar[1]/btn[17]").press
     session.findById("wnd[1]/usr/txtV-LOW").Text = variante
-    session.findById("wnd[1]/usr/txtENAME-LOW").Text = "ASANC1K"
+    session.findById("wnd[1]/usr/txtENAME-LOW").Text = "DUEÃ‘O"
     session.findById("wnd[1]/usr/txtV-LOW").caretPosition = 14
     session.findById("wnd[1]/tbar[0]/btn[8]").press
     
@@ -412,25 +411,25 @@ Dim MAESTRO As Workbook
     session.findById("wnd[1]/usr/subSUBSCREEN_STEPLOOP:SAPLSPO5:0150/sub:SAPLSPO5:0150/radSPOPLI-SELFLAG[1,0]").SetFocus
     session.findById("wnd[1]/tbar[0]/btn[0]").press
     session.findById("wnd[1]/usr/ctxtDY_PATH").Text = Ruta_Audi
-    session.findById("wnd[1]/usr/ctxtDY_FILENAME").Text = Año & mes & "." & "AUDITORIA PRIMA-" & Mes_texto & ".XLS"
+    session.findById("wnd[1]/usr/ctxtDY_FILENAME").Text = AÃ±o & mes & "." & "AUDIT-" & Mes_texto & ".XLS"
     session.findById("wnd[1]/usr/ctxtDY_FILENAME").caretPosition = 16
     session.findById("wnd[1]/tbar[0]/btn[11]").press
     
     'Organizar documento
     Application.CutCopyMode = False
-    Workbooks.Open Ruta_Audi & "\" & Año & mes & "." & "AUDITORIA PRIMA-" & Mes_texto & ".XLS"
+    Workbooks.Open Ruta_Audi & "\" & AÃ±o & mes & "." & "AUDIT-" & Mes_texto & ".XLS"
     ActiveSheet.Cells.Select
     Selection.Copy
     Workbooks.Add
     ActiveSheet.Paste
-    ActiveWorkbook.SaveAs Ruta_Audi & "\" & Año & mes & "." & "AUDITORIA PRIMA-" & Mes_texto & ".XLSX"
+    ActiveWorkbook.SaveAs Ruta_Audi & "\" & AÃ±o & mes & "." & "AUDIT-" & Mes_texto & ".XLSX"
     ActiveWorkbook.Close SaveChanges:=True
-    Workbooks(Año & mes & "." & "AUDITORIA PRIMA-" & Mes_texto & ".XLS").Close
-    Kill Ruta_Audi & "\" & Año & mes & "." & "AUDITORIA PRIMA-" & Mes_texto & ".XLS"
+    Workbooks(AÃ±o & mes & "." & "AUDIT-" & Mes_texto & ".XLS").Close
+    Kill Ruta_Audi & "\" & AÃ±o & mes & "." & "AUDIT-" & Mes_texto & ".XLS"
 
      'Cambios de formato
-    Workbooks.Open Ruta_Audi & "\" & Año & mes & "." & "AUDITORIA PRIMA-" & Mes_texto & ".XLSX"
-    Workbooks(Año & mes & "." & "AUDITORIA PRIMA-" & Mes_texto & ".XLSX").Activate
+    Workbooks.Open Ruta_Audi & "\" & AÃ±o & mes & "." & "AUDIT-" & Mes_texto & ".XLSX"
+    Workbooks(AÃ±o & mes & "." & "AUDIT-" & Mes_texto & ".XLSX").Activate
     Rows("1").Delete
     Rows("2").Delete
     Columns("A").Delete
@@ -483,7 +482,7 @@ Dim MAESTRO As Workbook
     End If
     
     'Crea Hojas
-    Workbooks(Año & mes & "." & "AUDITORIA PRIMA-" & Mes_texto & ".XLSX").Activate
+    Workbooks(AÃ±o & mes & "." & "AUDIT-" & Mes_texto & ".XLSX").Activate
     ActiveSheet.Name = "CWTR"
     Sheets.Add(After:=Sheets(Sheets.Count)).Name = "BASES"
     Sheets.Add(After:=Sheets(Sheets.Count)).Name = "MAESTRO"
@@ -494,14 +493,14 @@ Dim MAESTRO As Workbook
     Sheets("BASE TRIMESTRE").Activate
     Columns("A:F").Select
     Selection.Copy
-    Workbooks(Año & mes & "." & "AUDITORIA PRIMA-" & Mes_texto & ".XLSX").Activate
+    Workbooks(AÃ±o & mes & "." & "AUDIT-" & Mes_texto & ".XLSX").Activate
     Sheets("BASES").Activate
     Range("A1").Select
     Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks _
         :=False, Transpose:=False
     Application.CutCopyMode = False
     Columns("A:F").AutoFit
-    Workbooks(Año & mes & "." & "AUDITORIA PRIMA-" & Mes_texto & ".XLSX").Save
+    Workbooks(AÃ±o & mes & "." & "AUDIT-" & Mes_texto & ".XLSX").Save
     Workbooks("BASES PRIMA-" & Mes_texto & ".XLSX").Save
     Workbooks("BASES PRIMA-" & Mes_texto & ".XLSX").Close
     
@@ -523,19 +522,19 @@ Dim MAESTRO As Workbook
             Selection.Copy
             
             'Trae la columna necesaria
-            Workbooks(Año & mes & "." & "AUDITORIA PRIMA-" & Mes_texto & ".XLSX").Activate
+            Workbooks(AÃ±o & mes & "." & "AUDIT-" & Mes_texto & ".XLSX").Activate
             Sheets("MAESTRO").Activate
             ActiveSheet.Range("A1").PasteSpecial Paste:=xlPasteAll
             Columns("A:Y").AutoFit
             Application.CutCopyMode = False
-            Workbooks(Año & mes & "." & "AUDITORIA PRIMA-" & Mes_texto & ".XLSX").Save
+            Workbooks(AÃ±o & mes & "." & "AUDIT-" & Mes_texto & ".XLSX").Save
             MAESTRO.Save
             MAESTRO.Close
         
     End If
     
     'Filtra hoja de maestro
-    Workbooks(Año & mes & "." & "AUDITORIA PRIMA-" & Mes_texto & ".XLSX").Activate
+    Workbooks(AÃ±o & mes & "." & "AUDIT-" & Mes_texto & ".XLSX").Activate
     Sheets("MAESTRO").Activate
     Rows("1:1").AutoFilter
     Rows("1:1").AutoFilter Field:=6, Criteria1:="=Ley 50"
@@ -570,9 +569,9 @@ Dim MAESTRO As Workbook
     Columns("Q:Q").NumberFormat = "dd/mm/yyyy"
 
     
-    'Calcula fecha inicio, primero borra lo que no sea del año presente
+    'Calcula fecha inicio, primero borra lo que no sea del aÃ±o presente
         
-    If Mes_texto = "Enero" Then  'Elimina datos del año anterior
+    If Mes_texto = "Enero" Then  'Elimina datos del aÃ±o anterior
 
         Columns("Q:Q").Select
         Selection.Insert Shift:=xlToRight, CopyOrigin:=xlFormatFromLeftOrAbove
@@ -584,7 +583,7 @@ Dim MAESTRO As Workbook
             :=False, Transpose:=False
         
         Rows("1:1").AutoFilter
-        Range("1:1").AutoFilter Field:=17, Criteria1:=Año
+        Range("1:1").AutoFilter Field:=17, Criteria1:=AÃ±o
         LastRow = ActiveSheet.Cells(ActiveSheet.Rows.Count, "A").End(xlUp).row
         Rows("2:" & LastRow).Select
         ' Seleccionar solo las filas visibles
@@ -612,7 +611,7 @@ Dim MAESTRO As Workbook
         Columns("Q:Q").NumberFormat = "00"
         Range("Q1").Value = "Mes"
         
-        'extrae el año
+        'extrae el aÃ±o
         Columns("Q:Q").Select
         Selection.Insert Shift:=xlToRight, CopyOrigin:=xlFormatFromLeftOrAbove
         LastRow = ActiveSheet.Cells(ActiveSheet.Rows.Count, "A").End(xlUp).row
@@ -621,11 +620,11 @@ Dim MAESTRO As Workbook
         Selection.Copy
         Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks _
             :=False, Transpose:=False
-        Range("Q1").Value = "Año"
+        Range("Q1").Value = "AÃ±o"
         
         'Filtra y elimina las celdas que cumplan con es condicion
         Rows("1:1").AutoFilter
-        Rows("1:1").AutoFilter Field:=17, Criteria1:=Año
+        Rows("1:1").AutoFilter Field:=17, Criteria1:=AÃ±o
         Range("1:1").AutoFilter Field:=18, Criteria1:=mes
         LastRow = ActiveSheet.Cells(ActiveSheet.Rows.Count, "A").End(xlUp).row
         Rows("2:" & LastRow).Select
@@ -653,13 +652,13 @@ Dim MAESTRO As Workbook
 
     Select Case Mes_texto
         Case "Enero"
-            Sheets("AUDITORIA").Range("R2:R" & LastRow) = "=IF(RC[-1]<(DATE(" & Año - 1 & "," & 9 & ",30)),(DATE(" & Año - 1 & "," & 10 & ",01)),RC[-1])"
+            Sheets("AUDITORIA").Range("R2:R" & LastRow) = "=IF(RC[-1]<(DATE(" & AÃ±o - 1 & "," & 9 & ",30)),(DATE(" & AÃ±o - 1 & "," & 10 & ",01)),RC[-1])"
         Case "Abril"
-            Sheets("AUDITORIA").Range("R2:R" & LastRow) = "=IF(RC[-1]>(DATE(" & Año - 1 & "," & 12 & ",31)),RC[-1],(DATE(" & Año & "," & 1 & ",01)))"
+            Sheets("AUDITORIA").Range("R2:R" & LastRow) = "=IF(RC[-1]>(DATE(" & AÃ±o - 1 & "," & 12 & ",31)),RC[-1],(DATE(" & AÃ±o & "," & 1 & ",01)))"
         Case "Julio"
-            Sheets("AUDITORIA").Range("R2:R" & LastRow) = "=IF(RC[-1]>(DATE(" & Año & "," & 3 & ",31)),RC[-1],(DATE(" & Año & "," & 4 & ",01)))"
+            Sheets("AUDITORIA").Range("R2:R" & LastRow) = "=IF(RC[-1]>(DATE(" & AÃ±o & "," & 3 & ",31)),RC[-1],(DATE(" & AÃ±o & "," & 4 & ",01)))"
         Case "Octubre"
-            Sheets("AUDITORIA").Range("R2:R" & LastRow) = "=IF(RC[-1]>(DATE(" & Año & "," & 6 & ",30)),RC[-1],(DATE(" & Año & "," & 7 & ",01)))"
+            Sheets("AUDITORIA").Range("R2:R" & LastRow) = "=IF(RC[-1]>(DATE(" & AÃ±o & "," & 6 & ",30)),RC[-1],(DATE(" & AÃ±o & "," & 7 & ",01)))"
         Case Else
     End Select
     
@@ -667,13 +666,13 @@ Dim MAESTRO As Workbook
     Columns("S:S").NumberFormat = "dd/mm/yyyy"
     Select Case Mes_texto
         Case "Enero"
-            Sheets("AUDITORIA").Range("S2:S" & LastRow) = "=DATE(" & Año - 1 & ",12,31)"
+            Sheets("AUDITORIA").Range("S2:S" & LastRow) = "=DATE(" & AÃ±o - 1 & ",12,31)"
         Case "Abril"
-            Sheets("AUDITORIA").Range("S2:S" & LastRow) = "=DATE(" & Año & ",03,31)"
+            Sheets("AUDITORIA").Range("S2:S" & LastRow) = "=DATE(" & AÃ±o & ",03,31)"
         Case "Julio"
-            Sheets("AUDITORIA").Range("S2:S" & LastRow) = "=DATE(" & Año & ",06,30)"
+            Sheets("AUDITORIA").Range("S2:S" & LastRow) = "=DATE(" & AÃ±o & ",06,30)"
         Case "Octubre"
-            Sheets("AUDITORIA").Range("S2:S" & LastRow) = "=DATE(" & Año & ",09,30)"
+            Sheets("AUDITORIA").Range("S2:S" & LastRow) = "=DATE(" & AÃ±o & ",09,30)"
         Case Else
     End Select
     
@@ -722,8 +721,8 @@ Dim MAESTRO As Workbook
     Range("I1").Font.Bold = True
     Range("I1").HorizontalAlignment = xlCenter
     Sheets("CWTR").Range("I2:I" & LastRow) = "=VLOOKUP(RC[-8],AUDITORIA!C[-8]:C[13],1,0)"
-    Workbooks(Año & mes & "." & "AUDITORIA PRIMA-" & Mes_texto & ".XLSX").Save
-    Workbooks(Año & mes & "." & "AUDITORIA PRIMA-" & Mes_texto & ".XLSX").Close
+    Workbooks(AÃ±o & mes & "." & "AUDIT-" & Mes_texto & ".XLSX").Save
+    Workbooks(AÃ±o & mes & "." & "AUDIT-" & Mes_texto & ".XLSX").Close
     
     
 End Sub
