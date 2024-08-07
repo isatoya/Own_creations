@@ -1,9 +1,8 @@
-Attribute VB_Name = "Organizar_doc"
 Option Explicit
 'variables para todo el proyecto
 
-    Dim Fecha1, Fecha2, mes, Mes_Texto, año, catorcena As String
-    Dim ruta, Ruta_Año, Ruta_Catorcena, Ruta_organizado As String
+    Dim Fecha1, Fecha2, mes, Mes_Texto, aÃ±o, 14 As String
+    Dim ruta, Ruta_AÃ±o, Ruta_14, Ruta_organizado As String
     Dim wbConsolidado, wbCreditosInicial As Workbook
     Dim CelsFecha As Range
     Dim lastRow, i As Long
@@ -21,7 +20,7 @@ Sub Organizar_docs_local()
     CrearCarpetas
     crea_reportes
     
-    MsgBox "Los exceles estan abiertos, por favor ingrese a realiza las conexiónes por medio de formulas entre ellos.", vbInformation
+    MsgBox "Los exceles estan abiertos, por favor ingrese a realiza las conexiÃ³nes por medio de formulas entre ellos.", vbInformation
 
 End Sub
 
@@ -31,44 +30,37 @@ Sub InicializarVariables()
     'Fechas
     mes = ThisWorkbook.Sheets("Principal").Range("M7").Text
     Mes_Texto = ThisWorkbook.Sheets("Principal").Range("H11").Value
-    año = ThisWorkbook.Sheets("Principal").Range("M13").Value
-    catorcena = ThisWorkbook.Sheets("Principal").Range("H13").Text
+    aÃ±o = ThisWorkbook.Sheets("Principal").Range("M13").Value
+    14 = ThisWorkbook.Sheets("Principal").Range("H13").Text
     Fecha1 = ThisWorkbook.Sheets("Principal").Range("H7").Value
     Fecha2 = ThisWorkbook.Sheets("Principal").Range("I7").Value
     
-    'Rutas ------'ORIGINAL: G:\H2R\Mexico\PAYROLL\Novedades\CATORCENAS 2024\CATORCENA 08-2024\PAGOS A TERCEROS\SINDICATOS
-    ruta = "G:\H2R\Mexico\PAYROLL\Novedades\"
-    Ruta_Año = ruta & "CATORCENAS " & año
-    Ruta_Catorcena = Ruta_Año & "\" & "CATORCENA " & catorcena & "-" & año & "\PAGOS A TERCEROS\SINDICATOS"
-    Ruta_organizado = Ruta_Catorcena & "\" & "DOCS ORGANIZADOS"
     
-    'ruta = "G:\H2R\Mexico\PAYROLL\Novedades\"
-    'Ruta_Año = ruta & "CATORCENAS " & año
-    'Ruta_Catorcena = "C:\Users\imontoy\Desktop\CATORCENA 08 - 2024"
-    'Ruta_organizado = "C:\Users\imontoy\Desktop\CATORCENA 08 - 2024" & "\" & "DOCS ORGANIZADOS"
+    ruta = thisworkbook.path
+    Ruta_AÃ±o = ruta & "14S " & aÃ±o
+    Ruta_14 = Ruta_AÃ±o & "\" & "14 " & 14 & "-" & aÃ±o & "\PAGOS A TERCEROS\SINDICATOS"
+    Ruta_organizado = Ruta_14 & "\" & "DOCS ORGANIZADOS"
     
-    
-
 End Sub
 
 Sub CrearCarpetas()
     
-    'Creación y validacion de las carpetas
+    'CreaciÃ³n y validacion de las carpetas
     InicializarVariables
     
     '''''''''''''
-    ''CATORCENA''
+    ''14''
     '''''''''''''
-    Ruta_Catorcena = Ruta_Año & "\" & "CATORCENA " & catorcena & "-" & año & "\PAGOS A TERCEROS\SINDICATOS"
-    If Dir(Ruta_Catorcena, vbDirectory + vbHidden) = "" Then
+    Ruta_14 = Ruta_AÃ±o & "\" & "14 " & 14 & "-" & aÃ±o & "\PAGOS A TERCEROS\SINDICATOS"
+    If Dir(Ruta_14, vbDirectory + vbHidden) = "" Then
         'Comprueba que la carpeta no exista para crear el directorio.
-        If Dir(Ruta_Catorcena & vbDirectory + vbHidden) = "" Then MkDir Ruta_Catorcena
+        If Dir(Ruta_14 & vbDirectory + vbHidden) = "" Then MkDir Ruta_14
     End If
     
     '''''''''''''''''''''''
     ''Documneto orgnizado''
     '''''''''''''''''''''''
-    Ruta_organizado = Ruta_Catorcena & "\" & "DOCS ORGANIZADOS"
+    Ruta_organizado = Ruta_14 & "\" & "DOCS ORGANIZADOS"
     If Dir(Ruta_organizado, vbDirectory + vbHidden) = "" Then
         'Comprueba que la carpeta no exista para crear el directorio.
         If Dir(Ruta_organizado & vbDirectory + vbHidden) = "" Then MkDir Ruta_organizado
@@ -90,32 +82,32 @@ Sub crea_reportes()
 
 'Hace copia del archivo de relacion sociedad
     On Error Resume Next
-    Kill Ruta_organizado & "\" & "ZPYMX025 CAT " & catorcena & " - " & año & "_Relacion Sociedad COMPLETO" & ".xlsx"
+    Kill Ruta_organizado & "\" & "ZPYMX025 CAT " & 14 & " - " & aÃ±o & "_Relacion Sociedad COMPLETO" & ".xlsx"
     On Error GoTo 0
     
-    Set wbPlantilla = Workbooks.Open(Ruta_Catorcena & "\" & "Relacion sociedad.xlsx")
+    Set wbPlantilla = Workbooks.Open(Ruta_14 & "\" & "Relacion sociedad.xlsx")
     wbPlantilla.Activate
-    ActiveWorkbook.SaveCopyAs Filename:=Ruta_organizado & "\" & "ZPYMX025 CAT " & catorcena & " - " & año & "_Relacion Sociedad COMPLETO" & ".xlsx"
+    ActiveWorkbook.SaveCopyAs Filename:=Ruta_organizado & "\" & "ZPYMX025 CAT " & 14 & " - " & aÃ±o & "_Relacion Sociedad COMPLETO" & ".xlsx"
     wbPlantilla.Close False
 
 'Hace copia del archivo de MX02_Relacion sociedad -
     On Error Resume Next
-    Kill Ruta_organizado & "\" & "ZPYMX025 CAT " & catorcena & " - " & año & " MX02_Relacion Sociedad" & ".xlsx"
+    Kill Ruta_organizado & "\" & "ZPYMX025 CAT " & 14 & " - " & aÃ±o & " MX02_Relacion Sociedad" & ".xlsx"
     On Error GoTo 0
     
-    Set wbPlantilla = Workbooks.Open(Ruta_Catorcena & "\" & "MX02_Relacion Sociedad.xlsx")
+    Set wbPlantilla = Workbooks.Open(Ruta_14 & "\" & "MX02_Relacion Sociedad.xlsx")
     wbPlantilla.Activate
-    ActiveWorkbook.SaveCopyAs Filename:=Ruta_organizado & "\" & "ZPYMX025 CAT " & catorcena & " - " & año & " MX02_Relacion Sociedad" & ".xlsx"
+    ActiveWorkbook.SaveCopyAs Filename:=Ruta_organizado & "\" & "ZPYMX025 CAT " & 14 & " - " & aÃ±o & " MX02_Relacion Sociedad" & ".xlsx"
     wbPlantilla.Close False
     
 'Hace copia del archivo de ZPYMXO34 CAT
     On Error Resume Next
-    Kill Ruta_organizado & "\" & "ZPYMX034 CAT " & catorcena & ".xlsx"
+    Kill Ruta_organizado & "\" & "ZPYMX034 CAT " & 14 & ".xlsx"
     On Error GoTo 0
     
-    Set wbPlantilla = Workbooks.Open(Ruta_Catorcena & "\" & "ZPYMX034 CAT " & catorcena & ".xlsx")
+    Set wbPlantilla = Workbooks.Open(Ruta_14 & "\" & "ZPYMX034 CAT " & 14 & ".xlsx")
     wbPlantilla.Activate
-    ActiveWorkbook.SaveCopyAs Filename:=Ruta_organizado & "\" & "ZPYMX034 CAT " & catorcena & ".xlsx"
+    ActiveWorkbook.SaveCopyAs Filename:=Ruta_organizado & "\" & "ZPYMX034 CAT " & 14 & ".xlsx"
     wbPlantilla.Close False
 
 
@@ -126,7 +118,7 @@ Sub crea_reportes()
 '----------- TRABAJA EN EL ZPYMX034 -----------
 
 'Hace cambios de formato en el arhchivo ZPYMX034
-    Set wbZPYMX034 = Workbooks.Open(Ruta_organizado & "\" & "ZPYMX034 CAT " & catorcena & ".xlsx")
+    Set wbZPYMX034 = Workbooks.Open(Ruta_organizado & "\" & "ZPYMX034 CAT " & 14 & ".xlsx")
     wbZPYMX034.Activate
     Sheets("Sheet1").Name = "ORIGINAL"
     Sheets("ORIGINAL").Copy After:=Sheets(Sheets.Count)
@@ -286,9 +278,9 @@ Sub crea_reportes()
     Set rangoF = Range("F2:F" & lastRow)
     
     'Contar si
-    Range("F" & lastRow + 4).FormulaR1C1 = "=SUMIF(" & rangoE.Address(ReferenceStyle:=xlR1C1) & ",""CARLOS OROPEZA CHONA""," & rangoF.Address(ReferenceStyle:=xlR1C1) & ")"
-    Range("F" & lastRow + 5).FormulaR1C1 = "=SUMIF(" & rangoE.Address(ReferenceStyle:=xlR1C1) & ",""SINDICATO DE TRABAJADORES DE CEMENTO SECCION 40""," & rangoF.Address(ReferenceStyle:=xlR1C1) & ")"
-    Range("F" & lastRow + 6).FormulaR1C1 = "=SUMIF(" & rangoE.Address(ReferenceStyle:=xlR1C1) & ",""SINDICATO NACIONAL DE LA INDUSTRIA DEL CEMENTO SECCION 51""," & rangoF.Address(ReferenceStyle:=xlR1C1) & ")"
+    Range("F" & lastRow + 4).FormulaR1C1 = "=SUMIF(" & rangoE.Address(ReferenceStyle:=xlR1C1) & ",""x""," & rangoF.Address(ReferenceStyle:=xlR1C1) & ")"
+    Range("F" & lastRow + 5).FormulaR1C1 = "=SUMIF(" & rangoE.Address(ReferenceStyle:=xlR1C1) & ",""x""," & rangoF.Address(ReferenceStyle:=xlR1C1) & ")"
+    Range("F" & lastRow + 6).FormulaR1C1 = "=SUMIF(" & rangoE.Address(ReferenceStyle:=xlR1C1) & ",""x""," & rangoF.Address(ReferenceStyle:=xlR1C1) & ")"
     
     'Suma total
     Range("F" & lastRow + 7).Formula = "=SUM(F" & lastRow + 4 & ":F" & lastRow + 6 & ")"
@@ -361,7 +353,7 @@ Sub crea_reportes()
     End With
     
     Range("A10:H10").Merge
-    Range("A10").Value = "PAGOS ADICIONALES AYUDA DE DEFUNCIÓN"
+    Range("A10").Value = "PAGOS ADICIONALES AYUDA DE DEFUNCIÃ“N"
     Range("A11").Value = "Proveedor (31)"
     Range("B11").Value = "Numero SAP"
     Range("C11").Value = "Div."
@@ -459,17 +451,17 @@ Sub crea_reportes()
     
     'Copiar texto
     Range("A2").Value = "30445"
-    Range("A4").Value = "4900000"
+    Range("A4").Value = ""
     Range("A6").Value = "4900010"
     Range("C2").Value = "1412"
     Range("C4").Value = "1421"
     Range("C6").Value = "1411"
-    Range("D2").Value = "CARLOS OROPEZA CHONA"
-    Range("D4").Value = "SINDICATO DE TRABAJADORES DE CEMENTO SECCION 40"
-    Range("D6").Value = "SINDICATO NACIONAL DE LA INDUSTRIA DEL CEMENTO SECCION 51"
-    Range("F2").Value = "PLANTA CEMENTOS ACAPULCO"
-    Range("F4").Value = "PLANTA CEMENTOS ORIZABA"
-    Range("F6").Value = "PLANTA CEMENTOS APAXCO"
+    Range("D2").Value = "x"
+    Range("D4").Value = "x"
+    Range("D6").Value = "x"
+    Range("F2").Value = "x"
+    Range("F4").Value = "x"
+    Range("F6").Value = "x"
     Range("G2").Value = "20206055"
     Range("G4").Value = "20206055"
     Range("G6").Value = "20206055"
@@ -498,9 +490,9 @@ Sub crea_reportes()
 '----------- Trabaja en el wbZPYMX025_Relacion sociedad completo -----------
 
 'Trabaja en wbZPYMX025_completo
-    Set wbZPYMX025_completo = Workbooks.Open(Ruta_organizado & "\" & "ZPYMX025 CAT " & catorcena & " - " & año & "_Relacion Sociedad COMPLETO" & ".xlsx")
+    Set wbZPYMX025_completo = Workbooks.Open(Ruta_organizado & "\" & "ZPYMX025 CAT " & 14 & " - " & aÃ±o & "_Relacion Sociedad COMPLETO" & ".xlsx")
     wbZPYMX025_completo.Activate
-    Sheets("Sheet1").Name = "ZPYMX025 CAT " & catorcena & " - " & año
+    Sheets("Sheet1").Name = "ZPYMX025 CAT " & 14 & " - " & aÃ±o
     Columns("O:P").Select
     Selection.Delete
     
@@ -603,13 +595,13 @@ Sub crea_reportes()
 
 '----------- Trabaja en el wbZPYMX025_ MX02 relacion sociedad -----------
 
-    Set wbZPYMX025_MX02 = Workbooks.Open(Ruta_organizado & "\" & "ZPYMX025 CAT " & catorcena & " - " & año & " MX02_Relacion Sociedad" & ".xlsx")
+    Set wbZPYMX025_MX02 = Workbooks.Open(Ruta_organizado & "\" & "ZPYMX025 CAT " & 14 & " - " & aÃ±o & " MX02_Relacion Sociedad" & ".xlsx")
     wbZPYMX025_MX02.Activate
-    Sheets("Hoja1").Name = "ZPYMX025 CAT " & catorcena & " - " & año
-    wbZPYMX025_MX02.Sheets("ACREEDOR 30445 LOCAL").Move Before:=wbZPYMX025_MX02.Sheets(2)
-    wbZPYMX025_MX02.Sheets("ACREEDOR 4900000 LOCAL ").Move Before:=wbZPYMX025_MX02.Sheets(3)
+    Sheets("Hoja1").Name = "ZPYMX025 CAT " & 14 & " - " & aÃ±o
+    wbZPYMX025_MX02.Sheets("Y 30445 LOCAL").Move Before:=wbZPYMX025_MX02.Sheets(2)
+    wbZPYMX025_MX02.Sheets("Y  LOCAL ").Move Before:=wbZPYMX025_MX02.Sheets(3)
 
-'Hoja inicial "ZPYMX025 CAT " & catorcena & " - " & año ---------------------
+'Hoja inicial "ZPYMX025 CAT " & 14 & " - " & aÃ±o ---------------------
 
     Sheets(1).Activate
     lastRow = Cells(Rows.Count, "A").End(xlUp).Row
@@ -706,7 +698,7 @@ Sub crea_reportes()
     Columns("A:U").AutoFit
     wbZPYMX025_MX02.Save
  
-'Hoja ACREEDOR 30445 LOCAL ---------------------
+'Hoja Y  LOCAL ---------------------
 
     Sheets(2).Activate
     lastRow = Cells(Rows.Count, "A").End(xlUp).Row
@@ -804,7 +796,7 @@ Sub crea_reportes()
     Columns("A:U").AutoFit
     wbZPYMX025_MX02.Save
 
-'Hoja ACREEDOR  4900000 LOCAL ---------------------
+'Hoja Y   LOCAL ---------------------
     Sheets(3).Activate
     lastRow = Cells(Rows.Count, "A").End(xlUp).Row
     ActiveSheet.Tab.Color = RGB(255, 192, 0)
@@ -901,7 +893,7 @@ Sub crea_reportes()
     Columns("A:U").AutoFit
     wbZPYMX025_MX02.Save
     
-'Hoja ACREEDOR 4900010 LOCAL ---------------------
+'Hoja Y 4900010 LOCAL ---------------------
     Sheets(4).Activate
     lastRow = Cells(Rows.Count, "A").End(xlUp).Row
     ActiveSheet.Tab.Color = RGB(255, 192, 0)
