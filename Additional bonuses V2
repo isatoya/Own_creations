@@ -1,9 +1,8 @@
-Attribute VB_Name = "PRIMA_EXTRA_ADC"
 Option Explicit
 'variables para todo el proyecto
 
     Dim MAESTRO, wb_auditoria As Workbook
-    Dim Fecha1, Fecha2, inicio_sem, fin_sem, mes, Mes_texto, A, variante, ruta, Ruta_A, Ruta_Mes, Ruta_Audi, ruta_maestroA, promedioFormula As String
+    Dim Fecha1, Fecha2, inicio_sem, fin_sem, mes, Mes_texto, Aﾃｱo, variante, ruta, Ruta_Aﾃｱo, Ruta_Mes, Ruta_Audi, ruta_maestroA, promedioFormula As String
     Dim LastRow, i As Long
     Dim CelsAG As Object
     Dim rng, row, visibleRange As Range
@@ -15,32 +14,32 @@ Sub InicializarVariables()
     '------------ Variables originales del archivo -----------
     mes = ThisWorkbook.Sheets("Reportes").Range("N8").Value
     Mes_texto = ThisWorkbook.Sheets("Reportes").Range("I12").Value
-    A = ThisWorkbook.Sheets("Reportes").Range("I10").Value
+    Aﾃｱo = ThisWorkbook.Sheets("Reportes").Range("I10").Value
     Fecha1 = ThisWorkbook.Sheets("Reportes").Range("I8").Value
     Fecha2 = ThisWorkbook.Sheets("Reportes").Range("M8").Value
     
     '------------ Rutas -----------
     ruta = ThisWorkbook.Path & "\"
-    Ruta_A = ruta & A
-    Ruta_Mes = Ruta_A & "\" & mes & ". " & Mes_texto
-    Ruta_Audi = Ruta_Mes & "\" & "AUDITORIAS DE NOMINA"
+    Ruta_Aﾃｱo = ruta & Aﾃｱo
+    Ruta_Mes = Ruta_Aﾃｱo & "\" & mes & ". " & Mes_texto
+    Ruta_Audi = Ruta_Mes & "\" & "audits"
     
     
     '------------ Calcular fechas de los semestres-----------
     'Define el primer dia del semestre
     Select Case Mes_texto
         Case "Junio"
-            inicio_sem = Format(DateSerial(A, 1, 1), "dd.mm.yyyy")
+            inicio_sem = Format(DateSerial(Aﾃｱo, 1, 1), "dd.mm.yyyy")
         Case "Diciembre"
-            inicio_sem = Format(DateSerial(A, 7, 1), "dd.mm.yyyy")
+            inicio_sem = Format(DateSerial(Aﾃｱo, 7, 1), "dd.mm.yyyy")
     End Select
     
     'Define el ultimo dia del semestre
     Select Case Mes_texto
         Case "Junio"
-            fin_sem = Format(DateSerial(A, 6, 30), "dd.mm.yyyy")
+            fin_sem = Format(DateSerial(Aﾃｱo, 6, 30), "dd.mm.yyyy")
         Case "Diciembre"
-            fin_sem = Format(DateSerial(A, 12, 31), "dd.mm.yyyy")
+            fin_sem = Format(DateSerial(Aﾃｱo, 12, 31), "dd.mm.yyyy")
     End Select
 
 End Sub
@@ -69,28 +68,28 @@ End Sub
 
 Sub CrearCarpetas()
     
-    'Creaci y validacion de las carpetas
+    'Creaciﾃｳn y validacion de las carpetas
     InicializarVariables
     '''''''
-    ''AﾑO''
+    ''Aﾃ前''
     '''''''
-    Ruta_A = ruta & A
-    If Dir(Ruta_A, vbDirectory + vbHidden) = "" Then
+    Ruta_Aﾃｱo = ruta & Aﾃｱo
+    If Dir(Ruta_Aﾃｱo, vbDirectory + vbHidden) = "" Then
         'Comprueba que la carpeta no exista para crear el directorio.
-        If Dir(Ruta_A & vbDirectory + vbHidden) = "" Then MkDir Ruta_A
+        If Dir(Ruta_Aﾃｱo & vbDirectory + vbHidden) = "" Then MkDir Ruta_Aﾃｱo
     End If
     '''''''
     ''MES''
     '''''''
-    Ruta_Mes = Ruta_A & "\" & mes & ". " & Mes_texto
+    Ruta_Mes = Ruta_Aﾃｱo & "\" & mes & ". " & Mes_texto
     If Dir(Ruta_Mes, vbDirectory + vbHidden) = "" Then
         'Comprueba que la carpeta no exista para crear el directorio.
         If Dir(Ruta_Mes & vbDirectory + vbHidden) = "" Then MkDir Ruta_Mes
     End If
     ''''''''''''''''''''
-    ''AUDITORIA NﾓMINA''
+    ''AUDITORIA Nﾃ溺INA''
     ''''''''''''''''''''
-    Ruta_Audi = Ruta_Mes & "\" & "AUDITORIAS DE NOMINA"
+    Ruta_Audi = Ruta_Mes & "\" & "audits"
     If Dir(Ruta_Audi, vbDirectory + vbHidden) = "" Then
         'Comprueba que la carpeta no exista para crear el directorio.
         If Dir(Ruta_Audi & vbDirectory + vbHidden) = "" Then MkDir Ruta_Audi
@@ -126,19 +125,19 @@ Sub Copia_maestro()
         Application.CutCopyMode = False
 
         ' Verifica si el archivo ya existe en la ruta y lo elimina
-        If Dir(Ruta_Audi & "\" & A & "." & mes & "." & "AUDITORIA PRIMA EXTRALEGAL ADC" & ".XLSX") <> "" Then
-            Kill Ruta_Audi & "\" & A & "." & mes & "." & "AUDITORIA PRIMA EXTRALEGAL ADC" & ".XLSX"
+        If Dir(Ruta_Audi & "\" & Aﾃｱo & "." & mes & "." & "AUDIT" & ".XLSX") <> "" Then
+            Kill Ruta_Audi & "\" & Aﾃｱo & "." & mes & "." & "AUDIT" & ".XLSX"
         End If
         
         'Crea el archivo nuevo
         ActiveSheet.Name = "MAESTRO"
-        ActiveWorkbook.SaveAs Ruta_Audi & "\" & A & "." & mes & "." & "AUDITORIA PRIMA EXTRALEGAL ADC" & ".XLSX"
+        ActiveWorkbook.SaveAs Ruta_Audi & "\" & Aﾃｱo & "." & mes & "." & "AUDIT" & ".XLSX"
         ActiveWorkbook.Close SaveChanges:=True
         MAESTRO.Close
         Application.AskToUpdateLinks = True
         
     Else
-        MsgBox "Operaci cancelada por el usuario.", vbInformation
+        MsgBox "Operaciﾃｳn cancelada por el usuario.", vbInformation
     End If
 End Sub
 
@@ -147,7 +146,7 @@ Sub Auditoria()
     InicializarVariables
  
     'Abre el archivo de la auditoria
-    Set wb_auditoria = Workbooks.Open(Ruta_Audi & "\" & A & "." & mes & "." & "AUDITORIA PRIMA EXTRALEGAL ADC" & ".XLSX")
+    Set wb_auditoria = Workbooks.Open(Ruta_Audi & "\" & Aﾃｱo & "." & mes & "." & "AUDIT" & ".XLSX")
     wb_auditoria.Activate
     Sheets.Add(After:=Sheets(Sheets.Count)).Name = "AUDITORIA"
     Sheets.Add(After:=Sheets(Sheets.Count)).Name = "LNR"
@@ -208,9 +207,9 @@ Sub Auditoria()
     
     Sheets("AUDITORIA").Range("K2:K" & LastRow) = "=VLOOKUP(RC[-10],MAESTRO!R2C1:R1758C16,16,0)"
     
-    Sheets("AUDITORIA").Range("L2:L" & LastRow) = "=IF(RC[-1]<(DATE(" & A & "," & 1 & ",1)),(DATE(" & A & "," & 1 & ",1)),RC[-1])"
+    Sheets("AUDITORIA").Range("L2:L" & LastRow) = "=IF(RC[-1]<(DATE(" & Aﾃｱo & "," & 1 & ",1)),(DATE(" & Aﾃｱo & "," & 1 & ",1)),RC[-1])"
 
-    Sheets("AUDITORIA").Range("M2:M" & LastRow) = "=DATE(" & A & "," & 6 & ",30)"
+    Sheets("AUDITORIA").Range("M2:M" & LastRow) = "=DATE(" & Aﾃｱo & "," & 6 & ",30)"
     
     Sheets("AUDITORIA").Range("N2:N" & LastRow) = "=DAYS360(RC[-2],RC[-1])+1"
     
@@ -266,7 +265,7 @@ Sub Auditoria()
                 Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks _
                     :=False, Transpose:=False
                 For i = LastRow To 2 Step -1
-                    If Cells(i, "D").Value = A - 1 Then
+                    If Cells(i, "D").Value = Aﾃｱo - 1 Then
                         Rows(i).Delete
                     End If
                 Next i
@@ -280,7 +279,7 @@ Sub Auditoria()
                 Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks _
                     :=False, Transpose:=False
                 For i = LastRow To 1 Step -1
-                    If InStr(1, A - 1, ActiveSheet.Cells(i, "D").Value) > 0 Then
+                    If InStr(1, Aﾃｱo - 1, ActiveSheet.Cells(i, "D").Value) > 0 Then
                         ActiveSheet.Rows(i).Delete
                     End If
                 Next i
@@ -323,7 +322,7 @@ Sub Auditoria()
             celdaTablaDinamica1, TableName:="tablaDinamica1", DefaultVersion:=6
             
         Sheets("BASES").Select
-        With ActiveSheet.PivotTables("tablaDinamica1").PivotFields("Nｺ pers.")
+        With ActiveSheet.PivotTables("tablaDinamica1").PivotFields("Nﾂｺ pers.")
         .Orientation = xlRowField
         .Position = 1
         End With
@@ -338,7 +337,7 @@ Sub Auditoria()
         ActiveSheet.PivotTables("tablaDinamica1").PivotFields("Fecha pago").AutoGroup
         ActiveSheet.PivotTables("tablaDinamica1").AddDataField ActiveSheet.PivotTables( _
             "tablaDinamica1").PivotFields("Importe"), "Suma de Importe", xlSum
-        ActiveSheet.PivotTables("tablaDinamica1").PivotFields("Nｺ pers.").Subtotals = _
+        ActiveSheet.PivotTables("tablaDinamica1").PivotFields("Nﾂｺ pers.").Subtotals = _
             Array(False, False, False, False, False, False, False, False, False, False, False, False)
         ActiveSheet.PivotTables("tablaDinamica1").PivotFields("Apellido Nombre"). _
             Subtotals = Array(False, False, False, False, False, False, False, False, False, False, _
@@ -350,7 +349,7 @@ Sub Auditoria()
             )
         ActiveSheet.PivotTables("tablaDinamica1").PivotFields("CC-n.").Subtotals = _
             Array(False, False, False, False, False, False, False, False, False, False, False, False)
-        ActiveSheet.PivotTables("tablaDinamica1").PivotFields("Texto expl.CC-nina"). _
+        ActiveSheet.PivotTables("tablaDinamica1").PivotFields("Texto expl.CC-nﾃｳmina"). _
             Subtotals = Array(False, False, False, False, False, False, False, False, False, False, _
             False, False)
         ActiveSheet.PivotTables("tablaDinamica1").PivotFields("Cantidad").Subtotals = _
@@ -440,7 +439,7 @@ InicializarVariables
     Set session = Connection.Children(0)
     
 
-'-------------------- DESCARGA EL SEGUNDO REPORTE DE LA CWTR : CON CC NOM 1028 ---------------------
+'-------------------- DESCARGA EL SEGUNDO REPORTE DE LA CWTR ---------------------
     'Vuelve a la pantalla inicial
     session.findById("wnd[0]/tbar[0]/okcd").Text = "/n"
     session.findById("wnd[0]").sendVKey 0
@@ -451,8 +450,8 @@ InicializarVariables
     
     'Busca la variante
     session.findById("wnd[0]/tbar[1]/btn[17]").press
-    session.findById("wnd[1]/usr/txtV-LOW").Text = "TCPRIMAEXTADC"
-    session.findById("wnd[1]/usr/txtENAME-LOW").Text = "ASANC1K"
+    session.findById("wnd[1]/usr/txtV-LOW").Text = "VARIANTE"
+    session.findById("wnd[1]/usr/txtENAME-LOW").Text = "DUEﾃ前"
     session.findById("wnd[1]/usr/txtV-LOW").caretPosition = 14
     session.findById("wnd[1]/tbar[0]/btn[8]").press
     
@@ -558,7 +557,7 @@ InicializarVariables
     Set session = Connection.Children(0)
     
 
-'-------------------- DESCARGA EL SEGUNDO REPORTE DE LA CWTR : BASE PRIMA--------------------
+'-------------------- DESCARGA EL SEGUNDO REPORTE DE LA CWT--------------------
     'Vuelve a la pantalla inicial
     session.findById("wnd[0]/tbar[0]/okcd").Text = "/n"
     session.findById("wnd[0]").sendVKey 0
@@ -569,8 +568,8 @@ InicializarVariables
     
     'Busca la variante
     session.findById("wnd[0]/tbar[1]/btn[17]").press
-    session.findById("wnd[1]/usr/txtV-LOW").Text = "TC_BASEPRIABS"
-    session.findById("wnd[1]/usr/txtENAME-LOW").Text = "ASANC1K"
+    session.findById("wnd[1]/usr/txtV-LOW").Text = "VARIANTE"
+    session.findById("wnd[1]/usr/txtENAME-LOW").Text = "DUEﾃ前"
     session.findById("wnd[1]/usr/txtV-LOW").caretPosition = 14
     session.findById("wnd[1]/tbar[0]/btn[8]").press
     
@@ -676,7 +675,7 @@ InicializarVariables
     Set session = Connection.Children(0)
     
 
-'-------------------- DESCARGA EL SEGUNDO REPORTE DE LA CWTR : CON CC NOM 1028 ---------------------
+'-------------------- DESCARGA EL SEGUNDO REPORTE DE LA CWTR---------------------
     'Vuelve a la pantalla inicial
     session.findById("wnd[0]/tbar[0]/okcd").Text = "/n"
     session.findById("wnd[0]").sendVKey 0
@@ -687,8 +686,8 @@ InicializarVariables
     
     'Busca la variante
     session.findById("wnd[0]/tbar[1]/btn[17]").press
-    session.findById("wnd[1]/usr/txtV-LOW").Text = "TC_LNR_LIQUIDA"
-    session.findById("wnd[1]/usr/txtENAME-LOW").Text = "ASANC1K"
+    session.findById("wnd[1]/usr/txtV-LOW").Text = "VARIANTE"
+    session.findById("wnd[1]/usr/txtENAME-LOW").Text = "DUEﾃ前"
     session.findById("wnd[1]/usr/txtV-LOW").caretPosition = 14
     session.findById("wnd[1]/tbar[0]/btn[8]").press
     
