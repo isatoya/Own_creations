@@ -1,9 +1,8 @@
-Attribute VB_Name = "Fontacot"
 Option Explicit
 'variables para todo el proyecto
 
-    Dim Fecha1, Fecha2, mes, Mes_Texto, año, dia As String
-    Dim ruta, Ruta_Año, Ruta_Mes, Ruta_soporte As String
+    Dim Fecha1, Fecha2, mes, Mes_Texto, aÃ±o, dia As String
+    Dim ruta, Ruta_AÃ±o, Ruta_Mes, Ruta_soporte As String
     Dim mes_f_inicial, mes_f_fin, cator_f_inicial, cator_f_fin, sem_f_inicial, sem_f_fin As String
     Dim wbConsolidado, wbCreditosInicial As Workbook
     Dim wbMensual, wbCatorcenal, wbSemanal, wbAnalisis As Workbook
@@ -11,7 +10,7 @@ Option Explicit
     Dim lastRow, i As Long
     Dim CelsAG As Object
     
-Sub Ejecutar_fanacot_P1()
+Sub Ejecutar()
 
     ' Verificar si hay datos en las celdas I8 y M8
     If ThisWorkbook.Sheets("Principal").Range("L7").Value = "" Or ThisWorkbook.Sheets("Principal").Range("H7").Value = "" Then
@@ -23,14 +22,14 @@ Sub Ejecutar_fanacot_P1()
     CrearCarpetas
     Consolidado
     sap
-    Fanacot
+    Auditoria
     
-    MsgBox "El informe ha sido completado. Por favor, proceda con la revisión de las fórmulas faltantes que están vinculadas a otros archivos, así como con cualquier otro ajuste necesario para el análisis.", vbInformation
+    MsgBox "El informe ha sido completado. Por favor, proceda con la revisiÃ³n de las fÃ³rmulas faltantes que estÃ¡n vinculadas a otros archivos, asÃ­ como con cualquier otro ajuste necesario para el anÃ¡lisis.", vbInformation
 
 
 End Sub
 
-Sub Ejecutar_fanacot_P2()
+Sub Ejecutar_Auditoria_P2()
 
     ' Verificar si hay datos en las celdas I8 y M8
     If ThisWorkbook.Sheets("Principal").Range("L7").Value = "" Or ThisWorkbook.Sheets("Principal").Range("H7").Value = "" Then
@@ -47,7 +46,7 @@ Sub Ejecutar_fanacot_P2()
 End Sub
 
 
-Sub Ejecutar_fanacot_P3()
+Sub Ejecutar_Auditoria_P3()
 
     ' Verificar si hay datos en las celdas I8 y M8
     If ThisWorkbook.Sheets("Principal").Range("L7").Value = "" Or ThisWorkbook.Sheets("Principal").Range("H7").Value = "" Then
@@ -69,39 +68,37 @@ Sub InicializarVariables()
     'Fechas
     mes = ThisWorkbook.Sheets("Principal").Range("M7").Text
     Mes_Texto = ThisWorkbook.Sheets("Principal").Range("H11").Value
-    año = ThisWorkbook.Sheets("Principal").Range("M13").Value
+    aÃ±o = ThisWorkbook.Sheets("Principal").Range("M13").Value
     Fecha1 = ThisWorkbook.Sheets("Principal").Range("H7").Value
     Fecha2 = ThisWorkbook.Sheets("Principal").Range("I7").Value
     
     'Rutas
     'ruta = ThisWorkbook.Path & "\"
     ruta = "G:\H2R\Mexico\PAYROLL\Conciliacion Cuentas\"
-    'Ruta_Año = ruta & "FONACOT"
-    Ruta_Año = ruta & año & "\" & "FONACOT"
-    Ruta_Mes = Ruta_Año & "\" & Mes_Texto & " " & año
+    'Ruta_AÃ±o = ruta & "Auditoria"
+    Ruta_AÃ±o = ruta & aÃ±o & "\" & "Auditoria"
+    Ruta_Mes = Ruta_AÃ±o & "\" & Mes_Texto & " " & aÃ±o
     Ruta_soporte = Ruta_Mes & "\" & "Soportes"
-    'ORIGINAL: 'G:\H2R\Mexico\PAYROLL\Conciliacion Cuentas\2024\FONACOT
-    
 
 End Sub
 
 Sub CrearCarpetas()
     
-    'Creación y validacion de las carpetas
+    'CreaciÃ³n y validacion de las carpetas
     InicializarVariables
     
     '''''''
-    ''AÑO''
+    ''AÃ‘O''
     '''''''
-    Ruta_Año = ruta & "FONACOT"
-    If Dir(Ruta_Año, vbDirectory + vbHidden) = "" Then
+    Ruta_AÃ±o = ruta & "Auditoria"
+    If Dir(Ruta_AÃ±o, vbDirectory + vbHidden) = "" Then
         'Comprueba que la carpeta no exista para crear el directorio.
-        If Dir(Ruta_Año & vbDirectory + vbHidden) = "" Then MkDir Ruta_Año
+        If Dir(Ruta_AÃ±o & vbDirectory + vbHidden) = "" Then MkDir Ruta_AÃ±o
     End If
     '''''''
     ''MES''
     '''''''
-    Ruta_Mes = Ruta_Año & "\" & Mes_Texto & " " & año
+    Ruta_Mes = Ruta_AÃ±o & "\" & Mes_Texto & " " & aÃ±o
     If Dir(Ruta_Mes, vbDirectory + vbHidden) = "" Then
         'Comprueba que la carpeta no exista para crear el directorio.
         If Dir(Ruta_Mes & vbDirectory + vbHidden) = "" Then MkDir Ruta_Mes
@@ -123,47 +120,47 @@ Sub Consolidado()
     InicializarVariables
     Dim wbPlantilla As Workbook
     Dim wbPlantilla_creditos As Workbook
-    Dim wbMX02 As Workbook
-    Dim wbMX08 As Workbook
-    Dim wbMX021 As Workbook
-    Dim wbMX081 As Workbook
+    Dim wbAudit02 As Workbook
+    Dim wbAudit08 As Workbook
+    Dim wbAudit021 As Workbook
+    Dim wbAudit081 As Workbook
     Dim lastRowA As Long
     Dim lastRowC As Long
     
     'Elimina una copia si existe
     On Error Resume Next
-    Kill Ruta_Mes & "\" & "Consolidado " & Mes_Texto & " " & año & ".xlsx"
+    Kill Ruta_Mes & "\" & "Consolidado " & Mes_Texto & " " & aÃ±o & ".xlsx"
     On Error GoTo 0
     
     'Hace copia de la plantilla
-    Set wbPlantilla = Workbooks.Open(Ruta_Año & "\" & "Consolidado Plantilla.xlsx")
+    Set wbPlantilla = Workbooks.Open(Ruta_AÃ±o & "\" & "Consolidado Plantilla.xlsx")
     wbPlantilla.Activate
-    ActiveWorkbook.SaveCopyAs Filename:=Ruta_Mes & "\" & "Consolidado " & Mes_Texto & " " & año & ".xlsx"
+    ActiveWorkbook.SaveCopyAs Filename:=Ruta_Mes & "\" & "Consolidado " & Mes_Texto & " " & aÃ±o & ".xlsx"
     wbPlantilla.Close False
     
     'Abrir archivos
-    Set wbConsolidado = Workbooks.Open(Ruta_Mes & "\" & "Consolidado " & Mes_Texto & " " & año & ".xlsx")
-    Set wbMX02 = Workbooks.Open(Ruta_Mes & "\" & "MX02.csv")
-    Set wbMX021 = Workbooks.Open(Ruta_Mes & "\" & "MX02-1.csv")
-    Set wbMX08 = Workbooks.Open(Ruta_Mes & "\" & "MX08.csv")
-    Set wbMX081 = Workbooks.Open(Ruta_Mes & "\" & "MX08-1.csv")
+    Set wbConsolidado = Workbooks.Open(Ruta_Mes & "\" & "Consolidado " & Mes_Texto & " " & aÃ±o & ".xlsx")
+    Set wbAudit02 = Workbooks.Open(Ruta_Mes & "\" & "Audit02.csv")
+    Set wbAudit021 = Workbooks.Open(Ruta_Mes & "\" & "Audit02-1.csv")
+    Set wbAudit08 = Workbooks.Open(Ruta_Mes & "\" & "Audit08.csv")
+    Set wbAudit081 = Workbooks.Open(Ruta_Mes & "\" & "Audit08-1.csv")
     
  '--------------- Crea copia de la plantilla de creditos activos ---------------
     
     'Elimina una copia si existe
     On Error Resume Next
-    Kill Ruta_soporte & "\" & "Creditos activos " & Mes_Texto & " " & año & "Inicial " & ".xlsx"
+    Kill Ruta_soporte & "\" & "Creditos activos " & Mes_Texto & " " & aÃ±o & "Inicial " & ".xlsx"
     On Error GoTo 0
     
     'Hace copia de la plantilla
-    Set wbPlantilla_creditos = Workbooks.Open(Ruta_Año & "\" & "Creditos activos Plantilla.xlsx")
+    Set wbPlantilla_creditos = Workbooks.Open(Ruta_AÃ±o & "\" & "Creditos activos Plantilla.xlsx")
     wbPlantilla_creditos.Activate
-    ActiveWorkbook.SaveCopyAs Filename:=Ruta_soporte & "\" & "Creditos activos " & Mes_Texto & " " & año & " Inicial " & ".xlsx"
+    ActiveWorkbook.SaveCopyAs Filename:=Ruta_soporte & "\" & "Creditos activos " & Mes_Texto & " " & aÃ±o & " Inicial " & ".xlsx"
     wbPlantilla_creditos.Close False
     
     
-'--------------- Copia los datos de MX02 ---------------
-    wbMX02.Activate
+'--------------- Copia los datos de Audit02 ---------------
+    wbAudit02.Activate
     Sheets(1).Activate
     lastRowA = ActiveSheet.Cells(Rows.Count, 1).End(xlUp).Row
     Range("A2:M" & lastRowA).Select
@@ -174,12 +171,12 @@ Sub Consolidado()
     
     'Coloca el indicativo del archivo
     lastRowC = ActiveSheet.Cells(Rows.Count, 3).End(xlUp).Row
-    ActiveSheet.Range("A3:A" & lastRowC).Value = "MX02"
+    ActiveSheet.Range("A3:A" & lastRowC).Value = "Audit02"
     wbConsolidado.Save
-    wbMX02.Close False
+    wbAudit02.Close False
     
-'--------------- Copia los datos de MX02-1 ---------------
-    wbMX021.Activate
+'--------------- Copia los datos de Audit02-1 ---------------
+    wbAudit021.Activate
     Sheets(1).Activate
     lastRowA = ActiveSheet.Cells(Rows.Count, 1).End(xlUp).Row
     Range("A2:M" & lastRowA).Select
@@ -192,12 +189,12 @@ Sub Consolidado()
     'Coloca el indicativo del archivo
     lastRowA = ActiveSheet.Cells(ActiveSheet.Rows.Count, "A").End(xlUp).Row
     lastRowC = ActiveSheet.Cells(ActiveSheet.Rows.Count, "C").End(xlUp).Row
-    ActiveSheet.Range("A" & lastRowA + 1 & ":A" & lastRowC).Value = "MX02-1"
+    ActiveSheet.Range("A" & lastRowA + 1 & ":A" & lastRowC).Value = "Audit02-1"
     wbConsolidado.Save
-    wbMX021.Close False
+    wbAudit021.Close False
     
-'--------------- Copia los datos de MX08 ---------------
-    wbMX08.Activate
+'--------------- Copia los datos de Audit08 ---------------
+    wbAudit08.Activate
     Sheets(1).Activate
     lastRowA = ActiveSheet.Cells(Rows.Count, 1).End(xlUp).Row
     Range("A2:M" & lastRowA).Select
@@ -210,12 +207,12 @@ Sub Consolidado()
     'Coloca el indicativo del archivo
     lastRowA = ActiveSheet.Cells(ActiveSheet.Rows.Count, "A").End(xlUp).Row
     lastRowC = ActiveSheet.Cells(ActiveSheet.Rows.Count, "C").End(xlUp).Row
-    ActiveSheet.Range("A" & lastRowA + 1 & ":A" & lastRowC).Value = "MX08"
+    ActiveSheet.Range("A" & lastRowA + 1 & ":A" & lastRowC).Value = "Audit08"
     wbConsolidado.Save
-    wbMX08.Close False
+    wbAudit08.Close False
     
-'--------------- Copia los datos de MX08-1 ---------------
-    wbMX081.Activate
+'--------------- Copia los datos de Audit08-1 ---------------
+    wbAudit081.Activate
     Sheets(1).Activate
     lastRowA = ActiveSheet.Cells(Rows.Count, 1).End(xlUp).Row
     Range("A2:M" & lastRowA).Select
@@ -228,9 +225,9 @@ Sub Consolidado()
     'Coloca el indicativo del archivo
     lastRowA = ActiveSheet.Cells(ActiveSheet.Rows.Count, "A").End(xlUp).Row
     lastRowC = ActiveSheet.Cells(ActiveSheet.Rows.Count, "C").End(xlUp).Row
-    ActiveSheet.Range("A" & lastRowA + 1 & ":A" & lastRowC).Value = "MX08-1"
+    ActiveSheet.Range("A" & lastRowA + 1 & ":A" & lastRowC).Value = "Audit08-1"
     wbConsolidado.Save
-    wbMX081.Close False
+    wbAudit081.Close False
     
 '--------------- Termina ---------------
     MsgBox "Archivos consolidados exitosamente.", vbInformation
@@ -241,7 +238,6 @@ Sub sap()
 
 
 '-------------------- DESCARGA ZHRMX27 --------------------
-'Variante ACTIVOS FONACO de JULNOVOA
 
     InicializarVariables
     'Descargar datos
@@ -267,8 +263,8 @@ Sub sap()
     
     'Variante
     session.findById("wnd[0]/tbar[1]/btn[17]").press
-    session.findById("wnd[1]/usr/txtV-LOW").Text = "ACTIVOS FONACO"
-    session.findById("wnd[1]/usr/txtENAME-LOW").Text = "JULNOVOA"
+    session.findById("wnd[1]/usr/txtV-LOW").Text = "VARIANTE"
+    session.findById("wnd[1]/usr/txtENAME-LOW").Text = "DUEÃ‘O"
     session.findById("wnd[1]/usr/txtV-LOW").caretPosition = 8
     session.findById("wnd[1]/tbar[0]/btn[8]").press
     
@@ -330,7 +326,6 @@ Sub sap()
 
 
 '-------------------- DESCARGA QUERY DE LA SQ01 --------------------
-'Query JULNOVOA_FONAC en el H6
 
     'Vuelve a la pantalla inicial
     session.findById("wnd[0]/tbar[0]/okcd").Text = "/n"
@@ -345,13 +340,13 @@ Sub sap()
     session.findById("wnd[1]/usr/cntlGRID1/shellcont/shell").currentCellRow = -1
     session.findById("wnd[1]/usr/cntlGRID1/shellcont/shell").selectColumn "DBGBNUM"
     session.findById("wnd[1]/tbar[0]/btn[29]").press
-    session.findById("wnd[2]/usr/ssub%_SUBSCREEN_FREESEL:SAPLSSEL:1105/ctxt%%DYN001-LOW").Text = "/SAPQUERY/H6"
+    session.findById("wnd[2]/usr/ssub%_SUBSCREEN_FREESEL:SAPLSSEL:1105/ctxt%%DYN001-LOW").Text = "LUGAR"
     session.findById("wnd[2]/tbar[0]/btn[0]").press
     session.findById("wnd[1]/usr/cntlGRID1/shellcont/shell").selectedRows = "0"
     session.findById("wnd[1]/tbar[0]/btn[0]").press
     
     'Ingresa el query IT377
-    session.findById("wnd[0]/usr/ctxtRS38R-QNUM").Text = "JULNOVOA_FONAC"
+    session.findById("wnd[0]/usr/ctxtRS38R-QNUM").Text = "DUEÃ‘O"
     session.findById("wnd[0]").sendVKey 0
     session.findById("wnd[0]/tbar[1]/btn[8]").press
     
@@ -425,12 +420,12 @@ Sub sap()
     
 End Sub
 
-Sub Fanacot()
+Sub Auditoria()
 
     InicializarVariables
 
 '-------------- Hace formulas de en el archivo del consolidado --------------
-    Set wbConsolidado = Workbooks("Consolidado " & Mes_Texto & " " & año & ".xlsx")
+    Set wbConsolidado = Workbooks("Consolidado " & Mes_Texto & " " & aÃ±o & ".xlsx")
     Workbooks("ZHRMX27.XLSX").Activate
     Sheets(1).Activate
     Columns("A:O").Select
@@ -465,8 +460,8 @@ Sub Fanacot()
     
 
 '-------------- Hace formulas de en el archivo de creditos iniciales --------------
-    Set wbCreditosInicial = Workbooks.Open(Ruta_soporte & "\" & "Creditos activos " & Mes_Texto & " " & año & " Inicial " & ".xlsx")
-    Set wbCreditosInicial = Workbooks("Creditos activos " & Mes_Texto & " " & año & " Inicial " & ".xlsx")
+    Set wbCreditosInicial = Workbooks.Open(Ruta_soporte & "\" & "Creditos activos " & Mes_Texto & " " & aÃ±o & " Inicial " & ".xlsx")
+    Set wbCreditosInicial = Workbooks("Creditos activos " & Mes_Texto & " " & aÃ±o & " Inicial " & ".xlsx")
     
     Workbooks("Creditos activos.XLSX").Activate
     Sheets(1).Activate
@@ -496,8 +491,8 @@ Sub Fanacot()
     Range("AB2").AutoFill Destination:=Range("AB2:AB" & lastRow), Type:=xlFillDefault
     
     'Fechas
-    Range("AJ1").Value = "01" & "/" & mes & "/" & año
-    Range("AJ2").Value = "01" & "/" & mes & "/" & año
+    Range("AJ1").Value = "01" & "/" & mes & "/" & aÃ±o
+    Range("AJ2").Value = "01" & "/" & mes & "/" & aÃ±o
     Columns("AJ:AJ").NumberFormat = "DD/MM/YYYY"
     Columns("H:H").NumberFormat = "DD/MM/YYYY"
     Columns("I:I").NumberFormat = "DD/MM/YYYY"
@@ -528,7 +523,7 @@ Sub Fanacot()
     Sheets("Modelo Batch").Range("D2").PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks:=False, Transpose:=False
     Application.CutCopyMode = False
     
-    'N Fonacot
+    'N Auditoria
     Sheets("Cedula descargada").Range("C3:C" & lastRow).Copy
     Sheets("Modelo Batch").Range("E2").PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks:=False, Transpose:=False
     Application.CutCopyMode = False
@@ -596,14 +591,14 @@ Sub Analisis_consolidado()
     MsgBox "Por favor ingrese los datos que se le piden en el siguiente formulario.", vbInformation
     UserForm1.Show
 
-    Set wbConsolidado = Workbooks.Open(Ruta_Mes & "\" & "Consolidado " & Mes_Texto & " " & año & ".xlsx")
-    Set wbConsolidado = Workbooks("Consolidado " & Mes_Texto & " " & año & ".xlsx")
+    Set wbConsolidado = Workbooks.Open(Ruta_Mes & "\" & "Consolidado " & Mes_Texto & " " & aÃ±o & ".xlsx")
+    Set wbConsolidado = Workbooks("Consolidado " & Mes_Texto & " " & aÃ±o & ".xlsx")
 
 '--------- ORGANIZA EL REPORTE DE LAS MENSUALES ---------
      InicializarVariables
     'Organiza documentos
-    Set wbMensual = Workbooks.Open(Ruta_soporte & "\" & "ZPYMX025 FONACOT MES.XLSX")
-    Set wbMensual = Workbooks("ZPYMX025 FONACOT MES.XLSX")
+    Set wbMensual = Workbooks.Open(Ruta_soporte & "\" & "ZPYAudit025 Auditoria MES.XLSX")
+    Set wbMensual = Workbooks("ZPYAudit025 Auditoria MES.XLSX")
     wbMensual.Activate
     Sheets(1).Activate
     Rows("1").Delete
@@ -670,8 +665,8 @@ Sub Analisis_consolidado()
 '--------- ORGANIZA EL REPORTE DE LAS CATORCENALES ---------
 
     'Organiza documentos
-    Set wbCatorcenal = Workbooks.Open(Ruta_soporte & "\" & "ZPYMX025 FONACOT CATORCENA.XLSX")
-    Set wbCatorcenal = Workbooks("ZPYMX025 FONACOT CATORCENA.XLSX")
+    Set wbCatorcenal = Workbooks.Open(Ruta_soporte & "\" & "ZPYAudit025 Auditoria CATORCENA.XLSX")
+    Set wbCatorcenal = Workbooks("ZPYAudit025 Auditoria CATORCENA.XLSX")
     wbCatorcenal.Activate
     Sheets(1).Activate
     Rows("1").Delete
@@ -736,8 +731,8 @@ Sub Analisis_consolidado()
 '--------- ORGANIZA EL REPORTE DE LAS SEMANALES ---------
 
     'Organiza documentos
-    Set wbSemanal = Workbooks.Open(Ruta_soporte & "\" & "ZPYMX025 FONACOT SEMANA.XLSX")
-    Set wbSemanal = Workbooks("ZPYMX025 FONACOT SEMANA.XLSX")
+    Set wbSemanal = Workbooks.Open(Ruta_soporte & "\" & "ZPYAudit025 Auditoria SEMANA.XLSX")
+    Set wbSemanal = Workbooks("ZPYAudit025 Auditoria SEMANA.XLSX")
     wbSemanal.Activate
     Sheets(1).Activate
     Rows("1").Delete
@@ -805,31 +800,31 @@ Sub Analisis_consolidado()
     Dim archivoExistente As String
     
     
-    ' Solicitar al usuario que seleccione el archivo de análisis del mes anterior
-    archivoSeleccionado = Application.GetOpenFilename("Archivos de Excel (*.xlsx; *.xlsb), *.xlsx; *.xlsb", , "Selecciona el archivo de análisis del mes anterior")
+    ' Solicitar al usuario que seleccione el archivo de anÃ¡lisis del mes anterior
+    archivoSeleccionado = Application.GetOpenFilename("Archivos de Excel (*.xlsx; *.xlsb), *.xlsx; *.xlsb", , "Selecciona el archivo de anÃ¡lisis del mes anterior")
     
-    ' Salir si el usuario cancela la selección
+    ' Salir si el usuario cancela la selecciÃ³n
     If archivoSeleccionado = False Then Exit Sub
     
     ' Obtener el nombre del archivo seleccionado
     nombre_anterior = Dir(archivoSeleccionado)
     
-    archivoExistente = Dir(Ruta_Mes & "\" & "Consolidado Analisis Fonacot " & Mes_Texto & " " & año & ".xlsb")
+    archivoExistente = Dir(Ruta_Mes & "\" & "Consolidado Analisis Auditoria " & Mes_Texto & " " & aÃ±o & ".xlsb")
 
     ' Eliminar el archivo existente si se encuentra
     If archivoExistente <> "" Then
-        Kill Ruta_Mes & "\" & "Consolidado Analisis Fonacot " & Mes_Texto & " " & año & ".xlsb"
+        Kill Ruta_Mes & "\" & "Consolidado Analisis Auditoria " & Mes_Texto & " " & aÃ±o & ".xlsb"
     End If
     
     ' Crear una copia del archivo en la ruta de soporte
     FileCopy archivoSeleccionado, Ruta_Mes & "\" & nombre_anterior
     
     ' Renombrar la copia como "consolidado_analisis_mes_actual.xlsx" '------ corregir a que si ya existe borrarlo
-    Name Ruta_Mes & "\" & nombre_anterior As Ruta_Mes & "\" & "Consolidado Analisis Fonacot " & Mes_Texto & " " & año & ".xlsb"
+    Name Ruta_Mes & "\" & nombre_anterior As Ruta_Mes & "\" & "Consolidado Analisis Auditoria " & Mes_Texto & " " & aÃ±o & ".xlsb"
     
     'Abre archivo del analisis
-    Set wbAnalisis = Workbooks.Open(Ruta_Mes & "\" & "Consolidado Analisis Fonacot " & Mes_Texto & " " & año & ".xlsb")
-    Set wbAnalisis = Workbooks("Consolidado Analisis Fonacot " & Mes_Texto & " " & año & ".xlsb")
+    Set wbAnalisis = Workbooks.Open(Ruta_Mes & "\" & "Consolidado Analisis Auditoria " & Mes_Texto & " " & aÃ±o & ".xlsb")
+    Set wbAnalisis = Workbooks("Consolidado Analisis Auditoria " & Mes_Texto & " " & aÃ±o & ".xlsb")
 
     
     'Copia y pega los datos de los archivos descargados al archivo de analisis
@@ -917,7 +912,7 @@ Sub ultima_parte()
 
     InicializarVariables
 '--------- Pega los datos que tengan "papel de trabajo" ---------
-    Set wbConsolidado = Workbooks("Consolidado Analisis Fonacot " & Mes_Texto & " " & año & ".xlsb")
+    Set wbConsolidado = Workbooks("Consolidado Analisis Auditoria " & Mes_Texto & " " & aÃ±o & ".xlsb")
 '    wbAnalisis.Activate
 '    Sheets("Cedulas").Activate
 '    If ActiveSheet.FilterMode Then
@@ -964,8 +959,8 @@ Sub ultima_parte()
 
     'Variante
     session.findById("wnd[0]/tbar[1]/btn[17]").press
-    session.findById("wnd[1]/usr/txtV-LOW").Text = "ACTIVOS FONACOO"
-    session.findById("wnd[1]/usr/txtENAME-LOW").Text = "JULNOVOA"
+    session.findById("wnd[1]/usr/txtV-LOW").Text = "VARIANTE"
+    session.findById("wnd[1]/usr/txtENAME-LOW").Text = "DUEÃ‘O"
     session.findById("wnd[1]/usr/txtV-LOW").caretPosition = 8
     session.findById("wnd[1]/tbar[0]/btn[8]").press
 
