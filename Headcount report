@@ -1,9 +1,8 @@
-Attribute VB_Name = "Headcount_toronto"
 Option Explicit
 'variables para todo el proyecto
 
     Dim MAESTRO, wb_auditoria As Workbook
-    Dim Año, Mes_texto, fechaInicio, ruta, Ruta_Mes As String
+    Dim AÃ±o, Mes_texto, fechaInicio, ruta, Ruta_Mes As String
     Dim LastRow, i As Long
     Dim CelsAG As Object
     Dim rng, row, visibleRange As Range
@@ -13,30 +12,30 @@ Sub InicializarVariables()
 'Definicion de las variables
     
     '------------ Variables originales del archivo -----------
-    Año = ThisWorkbook.Sheets("HC").Range("F10").Value
+    AÃ±o = ThisWorkbook.Sheets("HC").Range("F10").Value
     Mes_texto = ThisWorkbook.Sheets("HC").Range("F8").Value
     
     '------------ Rutas -----------
     ruta = ThisWorkbook.Path & "\"
-    Ruta_Mes = ruta & Año & "\" & Mes_texto
+    Ruta_Mes = ruta & AÃ±o & "\" & Mes_texto
 
     '------------ Calcular fechas de los semestres-----------
-    If Mes_texto = "January" Then fechaInicio = Format(DateSerial(Año - 1, 12, 31), "MM/DD/YYYY")
-    If Mes_texto = "February" Then fechaInicio = Format(DateSerial(Año, 1, 31), "MM/DD/YYYY")
-    If Mes_texto = "March" Then fechaInicio = Format(DateSerial(Año, 2, 28), "MM/DD/YYYY")
-    If Mes_texto = "April" Then fechaInicio = Format(DateSerial(Año, 3, 31), "MM/DD/YYYY")
-    If Mes_texto = "May" Then fechaInicio = Format(DateSerial(Año, 4, 30), "MM/DD/YYYY")
-    If Mes_texto = "June" Then fechaInicio = Format(DateSerial(Año, 5, 31), "MM/DD/YYYY")
-    If Mes_texto = "July" Then fechaInicio = Format(DateSerial(Año, 6, 30), "MM/DD/YYYY")
-    If Mes_texto = "August" Then fechaInicio = Format(DateSerial(Año, 7, 31), "MM/DD/YYYY")
-    If Mes_texto = "September" Then fechaInicio = Format(DateSerial(Año, 8, 31), "MM/DD/YYYY")
-    If Mes_texto = "October" Then fechaInicio = Format(DateSerial(Año, 9, 30), "MM/DD/YYYY")
-    If Mes_texto = "November" Then fechaInicio = Format(DateSerial(Año, 10, 31), "MM/DD/YYYY")
-    If Mes_texto = "December" Then fechaInicio = Format(DateSerial(Año, 11, 30), "MM/DD/YYYY")
+    If Mes_texto = "January" Then fechaInicio = Format(DateSerial(AÃ±o - 1, 12, 31), "MM/DD/YYYY")
+    If Mes_texto = "February" Then fechaInicio = Format(DateSerial(AÃ±o, 1, 31), "MM/DD/YYYY")
+    If Mes_texto = "March" Then fechaInicio = Format(DateSerial(AÃ±o, 2, 28), "MM/DD/YYYY")
+    If Mes_texto = "April" Then fechaInicio = Format(DateSerial(AÃ±o, 3, 31), "MM/DD/YYYY")
+    If Mes_texto = "May" Then fechaInicio = Format(DateSerial(AÃ±o, 4, 30), "MM/DD/YYYY")
+    If Mes_texto = "June" Then fechaInicio = Format(DateSerial(AÃ±o, 5, 31), "MM/DD/YYYY")
+    If Mes_texto = "July" Then fechaInicio = Format(DateSerial(AÃ±o, 6, 30), "MM/DD/YYYY")
+    If Mes_texto = "August" Then fechaInicio = Format(DateSerial(AÃ±o, 7, 31), "MM/DD/YYYY")
+    If Mes_texto = "September" Then fechaInicio = Format(DateSerial(AÃ±o, 8, 31), "MM/DD/YYYY")
+    If Mes_texto = "October" Then fechaInicio = Format(DateSerial(AÃ±o, 9, 30), "MM/DD/YYYY")
+    If Mes_texto = "November" Then fechaInicio = Format(DateSerial(AÃ±o, 10, 31), "MM/DD/YYYY")
+    If Mes_texto = "December" Then fechaInicio = Format(DateSerial(AÃ±o, 11, 30), "MM/DD/YYYY")
 
     
     'Crear carpetas
-    Ruta_Mes = ruta & Año & "\" & Mes_texto
+    Ruta_Mes = ruta & AÃ±o & "\" & Mes_texto
     If Dir(Ruta_Mes, vbDirectory + vbHidden) = "" Then
         'Comprueba que la carpeta no exista para crear el directorio.
         If Dir(Ruta_Mes & vbDirectory + vbHidden) = "" Then MkDir Ruta_Mes
@@ -50,7 +49,7 @@ Sub Boton1()
 InicializarVariables
     
 '---------------------- DESCARGA PRIMER REPORTE DE LA SQ01 ----------------------
-    'Código SAP
+    'CÃ³digo SAP
     Dim SapGuiAuto As Object
     Dim App As Object
     Dim Connection As Object
@@ -85,18 +84,18 @@ InicializarVariables
     session.findById("wnd[0]/tbar[1]/btn[19]").press
     session.findById("wnd[1]/usr/cntlGRID1/shellcont/shell").selectColumn "DBGBNUM"
     session.findById("wnd[1]/tbar[0]/btn[29]").press
-    session.findById("wnd[2]/usr/ssub%_SUBSCREEN_FREESEL:SAPLSSEL:1105/ctxt%%DYN001-LOW").Text = "HR_ALL_SITE"
+    session.findById("wnd[2]/usr/ssub%_SUBSCREEN_FREESEL:SAPLSSEL:1105/ctxt%%DYN001-LOW").Text = "LUGAR"
     session.findById("wnd[2]/tbar[0]/btn[0]").press
     session.findById("wnd[1]/usr/cntlGRID1/shellcont/shell").selectedRows = "0"
     session.findById("wnd[1]/tbar[0]/btn[0]").press
     
     'Entramos al qry
-    session.findById("wnd[0]/usr/ctxtRS38R-QNUM").Text = "EMPL_LIST-H2R"
+    session.findById("wnd[0]/usr/ctxtRS38R-QNUM").Text = "QUERY"
     session.findById("wnd[0]/tbar[1]/btn[8]").press
     
     'Elegimos la variante
     session.findById("wnd[0]/tbar[1]/btn[17]").press
-    session.findById("wnd[1]/usr/txtV-LOW").Text = "NASS REPORTING"
+    session.findById("wnd[1]/usr/txtV-LOW").Text = "VARIANTE"
     session.findById("wnd[1]/usr/txtENAME-LOW").Text = ""
     session.findById("wnd[1]/tbar[0]/btn[8]").press
     
@@ -105,7 +104,7 @@ InicializarVariables
     session.findById("wnd[0]/usr/ctxtSP$00007-HIGH").Text = "12/31/9999"
        
     'Cambia el layout
-    session.findById("wnd[0]/usr/ctxt%ALVL").Text = "/ABS TORONTO"
+    session.findById("wnd[0]/usr/ctxt%ALVL").Text = "LAYOUT"
     session.findById("wnd[0]/usr/ctxt%ALVL").SetFocus
         
     'Ejecutamos
@@ -116,27 +115,27 @@ InicializarVariables
     session.findById("wnd[1]/usr/subSUBSCREEN_STEPLOOP:SAPLSPO5:0150/sub:SAPLSPO5:0150/radSPOPLI-SELFLAG[1,0]").Select
     session.findById("wnd[1]/tbar[0]/btn[0]").press
     session.findById("wnd[1]/usr/ctxtDY_PATH").Text = Ruta_Mes
-    session.findById("wnd[1]/usr/ctxtDY_FILENAME").Text = "ABS TORONTO HeadCount " & Mes_texto & " " & Año & ".XLS"
+    session.findById("wnd[1]/usr/ctxtDY_FILENAME").Text = "REPORT HeadCount " & Mes_texto & " " & AÃ±o & ".XLS"
     session.findById("wnd[1]/tbar[0]/btn[11]").press
 
     'Organizar documento
     Application.CutCopyMode = False
-    Workbooks.Open Ruta_Mes & "\" & "ABS TORONTO HeadCount " & Mes_texto & " " & Año & ".XLS"
+    Workbooks.Open Ruta_Mes & "\" & "REPORT HeadCount " & Mes_texto & " " & AÃ±o & ".XLS"
     ActiveSheet.Cells.Select
     Selection.Copy
     Workbooks.Add
     ActiveSheet.Paste
-    ActiveWorkbook.SaveAs Ruta_Mes & "\" & "ABS TORONTO HeadCount " & Mes_texto & " " & Año & ".XLSX"
+    ActiveWorkbook.SaveAs Ruta_Mes & "\" & "REPORT HeadCount " & Mes_texto & " " & AÃ±o & ".XLSX"
     ActiveWorkbook.Close SaveChanges:=True
-    Workbooks("ABS TORONTO HeadCount " & Mes_texto & " " & Año & ".XLS").Close
-    Kill Ruta_Mes & "\" & "ABS TORONTO HeadCount " & Mes_texto & " " & Año & ".XLS"
+    Workbooks("REPORT HeadCount " & Mes_texto & " " & AÃ±o & ".XLS").Close
+    Kill Ruta_Mes & "\" & "REPORT HeadCount " & Mes_texto & " " & AÃ±o & ".XLS"
     
 
 '---------------------- EMPIEZA A ORGANIZAR LA INFORMACION PARA CREAR EL REPORTE ----------------------
 
     'Cambios de formato
-    Workbooks.Open Ruta_Mes & "\" & "ABS TORONTO HeadCount " & Mes_texto & " " & Año & ".XLSX"
-    Workbooks("ABS TORONTO HeadCount " & Mes_texto & " " & Año & ".XLSX").Activate
+    Workbooks.Open Ruta_Mes & "\" & "REPORT HeadCount " & Mes_texto & " " & AÃ±o & ".XLSX"
+    Workbooks("REPORT HeadCount " & Mes_texto & " " & AÃ±o & ".XLSX").Activate
     Rows("1:4").Delete
     Rows("2").Delete
     Columns("A").Delete
@@ -188,7 +187,7 @@ InicializarVariables
     End If
     LastRow = ActiveSheet.Cells(ActiveSheet.Rows.Count, 1).End(xlUp).row
     Rows("1:1").AutoFilter
-    Rows("1:1").AutoFilter Field:=8, Criteria1:=Array("ABS Toronto - O2C", "ABS Toronto - P2P", "ABS Toronto - H2R", "Canada-HR"), Operator:=xlFilterValues
+    Rows("1:1").AutoFilter Field:=8, Criteria1:=Array(""CONDICIONES"), Operator:=xlFilterValues
     Rows("1:1").AutoFilter Field:=5, Criteria1:="7207", Operator:=xlFilterValues
     
     For i = LastRow To 2 Step -1 'Elimina las filas visibles
@@ -204,9 +203,9 @@ InicializarVariables
     
     'Filtrar los que nos interesan
     Rows("1:1").AutoFilter
-    Rows("1:1").AutoFilter Field:=8, Criteria1:=Array("ABS Toronto - O2C", "ABS Toronto - P2P", "ABS Toronto - H2R", "Canada-HR"), Operator:=xlFilterValues
-    Rows("1:1").AutoFilter Field:=5, Criteria1:=Array("7018", "7382"), Operator:=xlFilterValues
-    Rows("1:1").AutoFilter Field:=4, Criteria1:=Array("Active Employee", "LTD"), Operator:=xlFilterValues
+    Rows("1:1").AutoFilter Field:=8, Criteria1:=Array("CONDICIONES"), Operator:=xlFilterValues
+    Rows("1:1").AutoFilter Field:=5, Criteria1:=Array("CONDICIONES"), Operator:=xlFilterValues
+    Rows("1:1").AutoFilter Field:=4, Criteria1:=Array("CONDICIONES"), Operator:=xlFilterValues
     
     'Copia y pega para empezar a organizar la info
     'SAP ID
@@ -280,13 +279,13 @@ InicializarVariables
     session.findById("wnd[0]/tbar[1]/btn[19]").press
     session.findById("wnd[1]/usr/cntlGRID1/shellcont/shell").selectColumn "DBGBNUM"
     session.findById("wnd[1]/tbar[0]/btn[29]").press
-    session.findById("wnd[2]/usr/ssub%_SUBSCREEN_FREESEL:SAPLSSEL:1105/ctxt%%DYN001-LOW").Text = "HR_ALL_SITE"
+    session.findById("wnd[2]/usr/ssub%_SUBSCREEN_FREESEL:SAPLSSEL:1105/ctxt%%DYN001-LOW").Text = "LUGAR"
     session.findById("wnd[2]/tbar[0]/btn[0]").press
     session.findById("wnd[1]/usr/cntlGRID1/shellcont/shell").selectedRows = "0"
     session.findById("wnd[1]/tbar[0]/btn[0]").press
     
     'Entramos al qry
-    session.findById("wnd[0]/usr/ctxtRS38R-QNUM").Text = "HR_IT0001_CHG"
+    session.findById("wnd[0]/usr/ctxtRS38R-QNUM").Text = "QUERY"
     session.findById("wnd[0]/tbar[1]/btn[8]").press
     
     'Cambia la fecha a today
@@ -294,7 +293,7 @@ InicializarVariables
     session.findById("wnd[0]/usr/btn%_PNPPERNR_%_APP_%-VALU_PUSH").press
     
     'Copia los numeros de empleado
-    Workbooks("ABS TORONTO HeadCount " & Mes_texto & " " & Año & ".XLSX").Activate
+    Workbooks("REPORT HeadCount " & Mes_texto & " " & AÃ±o & ".XLSX").Activate
     Sheets("EMPL_LIST-H2R").Activate
     LastRow = ActiveSheet.Cells(ActiveSheet.Rows.Count, 1).End(xlUp).row
     Range("A2:A" & LastRow).Copy
