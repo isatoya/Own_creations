@@ -1,5 +1,3 @@
-Attribute VB_Name = "Template"
-
 Sub Template()
 
 If IsEmpty(ThisWorkbook.Sheets("Position").Range("C6").Value) Then
