@@ -1,4 +1,4 @@
-Attribute VB_Name = "Desarrollo"
+
 Option Explicit
 'variables para todo el proyecto
     Dim pais As String
@@ -359,7 +359,7 @@ Sub sap()
     session.findById("wnd[1]/tbar[0]/btn[0]").press
     
     'Entra el nombre del query
-    session.findById("wnd[0]/usr/ctxtRS38R-QNUM").Text = "SF_IT006_AUDIT"
+    session.findById("wnd[0]/usr/ctxtRS38R-QNUM").Text = "NOMBRE DEL QUERY"
     session.findById("wnd[0]/usr/ctxtRS38R-QNUM").SetFocus
     session.findById("wnd[0]/usr/ctxtRS38R-QNUM").caretPosition = 14
     session.findById("wnd[0]").sendVKey 0
