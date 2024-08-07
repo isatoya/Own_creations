@@ -1,4 +1,3 @@
-Attribute VB_Name = "Template"
 Sub Template()
 
 If IsEmpty(ThisWorkbook.Sheets("JobInfoImportTemplate").Range("G6").Value) Then
