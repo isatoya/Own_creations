@@ -1,9 +1,9 @@
-Attribute VB_Name = "PRIMA_ANTIGUEDAD_CO"
+
 Option Explicit
 'variables para todo el proyecto
 
-    Dim Fecha1, Fecha2, Fecha3, mes, mes2, Mes_texto, Año, mes_2, Mes_siguiente, nombreArchivo As String
-    Dim ruta, Ruta_Año, Ruta_Mes As String
+    Dim Fecha1, Fecha2, Fecha3, mes, mes2, Mes_texto, AÃ±o, mes_2, Mes_siguiente, nombreArchivo As String
+    Dim ruta, Ruta_AÃ±o, Ruta_Mes As String
     Dim LastRow, i As Long
     Dim CelsAG As Object
     
@@ -34,34 +34,34 @@ Sub InicializarVariables()
     mes = ThisWorkbook.Sheets("Reportes").Range("N8").Text
     mes_2 = ThisWorkbook.Sheets("Reportes").Range("M12").Value
     Mes_texto = ThisWorkbook.Sheets("Reportes").Range("I12").Value
-    Año = ThisWorkbook.Sheets("Reportes").Range("I10").Value
+    AÃ±o = ThisWorkbook.Sheets("Reportes").Range("I10").Value
     Fecha1 = ThisWorkbook.Sheets("Reportes").Range("I8").Value
     Fecha2 = ThisWorkbook.Sheets("Reportes").Range("M8").Value
     
     '------------ Rutas -----------
     ruta = ThisWorkbook.Path & "\"
-    Ruta_Año = ruta & Año
-    Ruta_Mes = Ruta_Año & "\" & mes & ". " & Mes_texto
+    Ruta_AÃ±o = ruta & AÃ±o
+    Ruta_Mes = Ruta_AÃ±o & "\" & mes & ". " & Mes_texto
     
 
 End Sub
 
 Sub CrearCarpetas()
     
-    'Creación y validacion de las carpetas
+    'CreaciÃ³n y validacion de las carpetas
     InicializarVariables
     '''''''
-    ''AÑO''
+    ''AÃ‘O''
     '''''''
-    Ruta_Año = ruta & Año
-    If Dir(Ruta_Año, vbDirectory + vbHidden) = "" Then
+    Ruta_AÃ±o = ruta & AÃ±o
+    If Dir(Ruta_AÃ±o, vbDirectory + vbHidden) = "" Then
         'Comprueba que la carpeta no exista para crear el directorio.
-        If Dir(Ruta_Año & vbDirectory + vbHidden) = "" Then MkDir Ruta_Año
+        If Dir(Ruta_AÃ±o & vbDirectory + vbHidden) = "" Then MkDir Ruta_AÃ±o
     End If
     '''''''
     ''MES''
     '''''''
-    Ruta_Mes = Ruta_Año & "\" & mes & ". " & Mes_texto
+    Ruta_Mes = Ruta_AÃ±o & "\" & mes & ". " & Mes_texto
     If Dir(Ruta_Mes, vbDirectory + vbHidden) = "" Then
         'Comprueba que la carpeta no exista para crear el directorio.
         If Dir(Ruta_Mes & vbDirectory + vbHidden) = "" Then MkDir Ruta_Mes
@@ -98,14 +98,14 @@ Sub Auditoria_Antiguedad()
     session.findById("wnd[0]").sendVKey 0
     
     'Coloca la sociedad
-    session.findById("wnd[0]/usr/ctxtPNPBUKRS-LOW").Text = "CO*"
+    session.findById("wnd[0]/usr/ctxtPNPBUKRS-LOW").Text = "CODIGO PAIS"
     
     'Cambia fechas al mes que se este realizando la auditoria
     session.findById("wnd[0]/usr/ctxtBEGD_CAL").Text = Fecha1
     session.findById("wnd[0]/usr/ctxtENDD_CAL").Text = Fecha2
     
     'Coloca cc nom 1033 y Selecciona objeto
-    session.findById("wnd[0]/usr/ctxtS_LGART-LOW").Text = "1033"
+    session.findById("wnd[0]/usr/ctxtS_LGART-LOW").Text = "CC NOMINA"
     session.findById("wnd[0]/usr/ctxtS_LGART-LOW").SetFocus
     session.findById("wnd[0]/usr/ctxtS_LGART-LOW").caretPosition = 4
     session.findById("wnd[0]/usr/btnLABEL02").press
@@ -124,27 +124,27 @@ Sub Auditoria_Antiguedad()
     session.findById("wnd[1]/usr/subSUBSCREEN_STEPLOOP:SAPLSPO5:0150/sub:SAPLSPO5:0150/radSPOPLI-SELFLAG[1,0]").SetFocus
     session.findById("wnd[1]/tbar[0]/btn[0]").press
     session.findById("wnd[1]/usr/ctxtDY_PATH").Text = Ruta_Mes
-    session.findById("wnd[1]/usr/ctxtDY_FILENAME").Text = Año & mes & "." & "AUD PRIMA ADM" & ".XLS"
+    session.findById("wnd[1]/usr/ctxtDY_FILENAME").Text = AÃ±o & mes & "." & "AUD PRIMA ADM" & ".XLS"
     session.findById("wnd[1]/usr/ctxtDY_FILENAME").caretPosition = 16
     session.findById("wnd[1]/tbar[0]/btn[11]").press
     
     
     'Copia del documento
     Application.CutCopyMode = False
-    Workbooks.Open Ruta_Mes & "\" & Año & mes & "." & "AUD PRIMA ADM" & ".XLS"
+    Workbooks.Open Ruta_Mes & "\" & AÃ±o & mes & "." & "AUD PRIMA ADM" & ".XLS"
     ActiveSheet.Cells.Select
     Selection.Copy
     Workbooks.Add
     ActiveSheet.Paste
-    ActiveWorkbook.SaveAs Ruta_Mes & "\" & Año & mes & "." & "AUD PRIMA ADM" & ".XLSX"
+    ActiveWorkbook.SaveAs Ruta_Mes & "\" & AÃ±o & mes & "." & "AUD PRIMA ADM" & ".XLSX"
     ActiveWorkbook.Close SaveChanges:=True
-    Workbooks(Año & mes & "." & "AUD PRIMA ADM" & ".XLS").Close
-    Kill Ruta_Mes & "\" & Año & mes & "." & "AUD PRIMA ADM" & ".XLS"
+    Workbooks(AÃ±o & mes & "." & "AUD PRIMA ADM" & ".XLS").Close
+    Kill Ruta_Mes & "\" & AÃ±o & mes & "." & "AUD PRIMA ADM" & ".XLS"
     
     
     'Organizar documento
-    Workbooks.Open Ruta_Mes & "\" & Año & mes & "." & "AUD PRIMA ADM" & ".XLSX"
-    Workbooks(Año & mes & "." & "AUD PRIMA ADM" & ".XLSX").Activate
+    Workbooks.Open Ruta_Mes & "\" & AÃ±o & mes & "." & "AUD PRIMA ADM" & ".XLSX"
+    Workbooks(AÃ±o & mes & "." & "AUD PRIMA ADM" & ".XLSX").Activate
     Rows("1").Delete
     Rows("2").Delete
     Columns("A").Delete
@@ -228,10 +228,10 @@ Sub Auditoria_Antiguedad()
             Selection.Copy
         
         Else
-            MsgBox "Operación cancelada por el usuario.", vbInformation
+            MsgBox "OperaciÃ³n cancelada por el usuario.", vbInformation
         End If
     
-    Workbooks(Año & mes & "." & "AUD PRIMA ADM" & ".XLSX").Activate
+    Workbooks(AÃ±o & mes & "." & "AUD PRIMA ADM" & ".XLSX").Activate
     Sheets("SALARIAL").Activate
     Range("A1").PasteSpecial Paste:=xlPasteAll
     MAESTRO.Save
@@ -243,7 +243,7 @@ Sub Auditoria_Antiguedad()
     
     
     'Activa el libro de la auditoria
-    Workbooks(Año & mes & "." & "AUD PRIMA ADM" & ".XLSX").Activate
+    Workbooks(AÃ±o & mes & "." & "AUD PRIMA ADM" & ".XLSX").Activate
     Sheets("SALARIAL").Activate
     Columns("C:D").Delete
     Columns("D:G").Delete
@@ -271,7 +271,7 @@ Sub Auditoria_Antiguedad()
     LastRow = ActiveSheet.Cells(ActiveSheet.Rows.Count, "J").End(xlUp).row
     For i = LastRow To 2 Step -1
         If Sheets("SALARIAL").Cells(i, "G").Value <> mes_2 Then
-            Sheets("SALARIAL").Rows(i).Delete ' Eliminar la fila si la condición se cumple
+            Sheets("SALARIAL").Rows(i).Delete ' Eliminar la fila si la condiciÃ³n se cumple
         End If
     Next i
     Columns("A:J").AutoFit
@@ -281,7 +281,7 @@ Sub Auditoria_Antiguedad()
     LastRow = ActiveSheet.Cells(ActiveSheet.Rows.Count, "J").End(xlUp).row
     For i = LastRow To 2 Step -1
         If Sheets("SALARIAL").Cells(i, "C").Value <> "Ley 50" Then
-            Sheets("SALARIAL").Rows(i).Delete ' Eliminar la fila si la condición se cumple
+            Sheets("SALARIAL").Rows(i).Delete ' Eliminar la fila si la condiciÃ³n se cumple
         End If
     Next i
     Columns("A:J").AutoFit
