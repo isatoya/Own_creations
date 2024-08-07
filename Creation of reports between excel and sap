@@ -1,4 +1,3 @@
-Attribute VB_Name = "Módulo1"
 Option Explicit
 
     Dim Año As Integer
@@ -11,9 +10,9 @@ Sub InicializarVariables()
 
     ruta = ThisWorkbook.Path
     Año = UserForm1.ComboBox1.Value
-    ruta2 = ruta & "\" & CStr(Año) & "\1. PW PTU"
-    ruta3 = ruta & "\" & CStr(Año) & "\3. SIND MAL ALTO - DIAS PESOS"
-    ruta4 = ruta & "\" & CStr(Año) & "\4. FACTOR DIAS PESOS"
+    ruta2 = ruta & "\" & CStr(Año) & "\1."
+    ruta3 = ruta & "\" & CStr(Año) & "\3. "
+    ruta4 = ruta & "\" & CStr(Año) & "\4. "
     
 End Sub
 
