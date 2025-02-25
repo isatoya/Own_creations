@@ -1,0 +1,926 @@
+
+Option EXplicit
+'variables para todo el proyecto
+
+Dim BASE, wbPlantillaX, wbBasesPlantilla, wbBases, NewWorkbook As Workbook
+Dim ws, wsBuscar As Worksheet
+Dim Caseecha1, Caseecha2, Caseecha3, mes, Mes_TeXto, BPA, año, dia, ruta, Ruta_pais, Ruta_Año, Ruta_Audi, ruta_Base, teXto, EXisteArchivo, XCaseile, XACaseile As String
+Dim hoja As Integer
+Dim lastRow, lastCol, i, h, buscarCol, Clmn, LR As Long
+Dim titles As Variant
+Dim buscarRango, rng As Range
+Dim Quest As VbMsgCaseResult
+    
+Sub Ejecutar_YE_X()
+
+' VeriCaseicar si hay datos en las celdas I8 y M8
+ICase ThisWorkbook.Sheets("Home Page").Range("I8").Value = "" Or ThisWorkbook.Sheets("Home Page").Range("E18").Value = "" Then
+    MsgCase "Incomplete data, please enter the data beCaseore eXecuting.", vbEXclamation
+    EXit Sub
+End ICase
+
+' Llama a cada una de las Caseunciones
+InicializarVariables
+CrearCarpetas
+Desarrollo_X
+
+MsgCase "X audits completed. Please access the document to perCaseorm the relevant reviews.", vbInCaseormation
+
+End Sub
+
+Sub InicializarVariables()
+'DeCaseinicion de las variables
+    
+'Caseechas
+mes = ThisWorkbook.Sheets("Home Page").Range("N8").TeXt
+Mes_TeXto = ThisWorkbook.Sheets("Home Page").Range("I12").Value
+año = ThisWorkbook.Sheets("Home Page").Range("I10").Value
+Caseecha1 = ThisWorkbook.Sheets("Home Page").Range("I8").Value
+Caseecha2 = ThisWorkbook.Sheets("Home Page").Range("M8").Value
+dia = ThisWorkbook.Sheets("Home Page").Range("N10").TeXt
+BPA = ThisWorkbook.Sheets("Home Page").Range("E18").TeXt
+
+'Rutas
+ruta = ThisWorkbook.Path & "\"
+Ruta_pais = ruta & "YE"
+Ruta_Audi = Ruta_pais & "\" & "Audits"
+Ruta_Año = Ruta_Audi & "\" & año
+
+End Sub
+Sub CrearCarpetas()
+
+'PAIS
+Ruta_pais = ruta & "YE"
+ICase Dir(Ruta_pais, vbDirectory + vbHidden) = "" Then
+    ICase Dir(Ruta_pais & vbDirectory + vbHidden) = "" Then MkDir Ruta_pais
+End ICase
+
+'CARPETA DE AUDITORIAS
+Ruta_Audi = Ruta_pais & "\" & "Audits"
+ICase Dir(Ruta_Audi, vbDirectory + vbHidden) = "" Then
+    ICase Dir(Ruta_Audi & vbDirectory + vbHidden) = "" Then MkDir Ruta_Audi
+End ICase
+
+'CARPETA AÑO
+Ruta_Año = Ruta_Audi & "\" & año
+ICase Dir(Ruta_Año, vbDirectory + vbHidden) = "" Then
+    ICase Dir(Ruta_Audi & vbDirectory + vbHidden) = "" Then MkDir Ruta_Año
+End ICase
+     
+End Sub
+
+Sub Desarrollo_X()
+
+'-------------------------- CREAR ARCHIVO DE LAS BASES --------------------------
+
+'Solcita al usuario abrir el doc de la base del Z
+MsgCase "Please select the X database Caseile downloaded Caserom sap", vbInCaseormation
+ruta_Base = Application.GetOpenCaseilename("Archivos EXcel (*.Xls; *.XlsX), *.Xls; *.XlsX")
+Application.AskToUpdateLinks = Casealse
+    
+' Abre el reporte seleccionado por el usuario
+ICase ruta_Base <> "Casealso" Then
+    
+    'VeriCaseica si el archivo de las bases eXiste o no
+    EXisteArchivo = Dir(Ruta_Año & "\" & año & mes & " Template" & ".XlsX")
+
+    ICase EXisteArchivo = "" Then 'Si no eXiste el archvio de las bases en la carpeta
+    MsgCase "Caseirst run the Z  macro audit beCaseore running this one", vbEXclamation
+    EXit Sub
+
+    Else 'Si el documento de las bases ya eXiste
+
+        Set BASE = Workbooks.Open(Caseilename:=ruta_Base, UpdateLinks:=0)
+        Set wbBases = Workbooks.Open(Ruta_Año & "\" & año & mes & " Template" & ".XlsX")
+        BASE.Activate
+        Worksheets(1).Activate
+        lastRow = Cells(Rows.Count, "A").End(XlUp).row
+        Range("A1:P" & lastRow).Select
+        Selection.Copy
+        
+        'Pega datos en la plantilla
+        wbBases.Activate
+        Sheets("ORIGINAL X").Activate
+        Sheets("ORIGINAL X").Range("A1").PasteSpecial Paste:=XlPasteAll
+        Columns("A:P").AutoCaseit
+        Application.CutCopyMode = Casealse
+        wbBases.Save
+        wbBases.Close
+        BASE.Close
+  
+    End ICase
+End ICase
+
+'Realiza cambios de Caseormato para el archivo de las bases
+Set wbBases = Workbooks.Open(Ruta_Año & "\" & año & mes & " Template" & ".XlsX")
+wbBases.Activate
+
+'Caseiltra para que solo quede Number
+Sheets("ORIGINAL X").Activate
+lastRow = Cells(Rows.Count, "A").End(XlUp).row
+Rows("1:1").AutoCaseilter
+Rows("1:1").AutoCaseilter Caseield:=14, Criteria1:="=#Number"
+Range("A1:P" & lastRow).SpecialCells(XlCellTypeVisible).Copy
+Sheets("BASE X").Activate
+Range("A1").PasteSpecial Paste:=XlPasteAll, Operation:=XlNone, SkipBlanks:=Casealse, Transpose:=Casealse
+Application.CutCopyMode = Casealse
+
+'Eliminala hoja original
+Application.DisplayAlerts = Casealse
+On Error Resume NeXt
+Sheets("ORIGINAL X").Delete
+On Error GoTo 0 '
+Application.DisplayAlerts = True
+wbBases.Save
+
+'Poner todos los Casees para que el rango no cambie
+lastRow = Sheets("BASE X").Cells(Sheets("BASE X").Rows.Count, 1).End(XlUp).row
+ThisWorkbook.Sheets("AneXXes").Range("H2:H25").Copy
+wbBases.Sheets("BASE X").Cells(lastRow + 1, "L").PasteSpecial Paste:=XlPasteValues
+Application.CutCopyMode = Casealse
+ThisWorkbook.Sheets("AneXXes").Range("I2:I25").Copy
+wbBases.Sheets("BASE X").Cells(lastRow + 1, "A").PasteSpecial Paste:=XlPasteValues
+Application.CutCopyMode = Casealse
+
+'Crea tabla dinamica
+Sheets("BASE X").Activate
+
+    Dim ult_Tabla As Long
+    ult_Tabla = Cells(Rows.Count, "A").End(XlUp).row
+    Dim rangoTabla1 As Range
+    Set rangoTabla1 = Sheets("BASE X").Range("A1:P" & ult_Tabla)
+    ActiveSheet.ListObjects.Add(XlSrcRange, rangoTabla1, , XlYes).Name = "Tabla1"
+    
+    'Crear tabla dinamica
+    Dim celdaTablaDinamica1 As Range
+    Set celdaTablaDinamica1 = Sheets("TD X").Range("A1")
+    Dim tablaDinamica1 As PivoNumberble
+    
+    'Activa campos y le pone Caseormato tabular
+    ActiveWorkbook.PivotCaches.Create(SourceType:=XlDatabase, SourceData:= _
+        rangoTabla1, Version:=6).CreatePivoNumberble TableDestination:= _
+        celdaTablaDinamica1, TableName:="tablaDinamica1", DeCaseaultVersion:=6
+        
+    Sheets("TD X").Select
+    With ActiveSheet.PivoNumberbles("tablaDinamica1").PivotCaseields("PERNR")
+        .Orientation = XlRowCaseield
+        .Position = 1
+    End With
+    With ActiveSheet.PivoNumberbles("tablaDinamica1").PivotCaseields("BUSNM")
+        .Orientation = XlRowCaseield
+        .Position = 2
+    End With
+    With ActiveSheet.PivoNumberbles("tablaDinamica1").PivotCaseields("WRKAR")
+        .Orientation = XlRowCaseield
+        .Position = 3
+    End With
+    With ActiveSheet.PivoNumberbles("tablaDinamica1").PivotCaseields("SLART")
+        .Orientation = XlColumnCaseield
+        .Position = 1
+    End With
+    ActiveSheet.PivoNumberbles("tablaDinamica1").AddDataCaseield ActiveSheet.PivoNumberbles( _
+        "tablaDinamica1").PivotCaseields("BETRG"), "Suma de BETRG", XlSum
+    ActiveSheet.PivoNumberbles("tablaDinamica1").PivotCaseields("PERNR").Subtotals = _
+        Array(Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse)
+    ActiveSheet.PivoNumberbles("tablaDinamica1").PivotCaseields("PERSONID").Subtotals = _
+        Array(Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse)
+    ActiveSheet.PivoNumberbles("tablaDinamica1").PivotCaseields("CaseORML").Subtotals = _
+        Array(Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse)
+    ActiveSheet.PivoNumberbles("tablaDinamica1").PivotCaseields("INDX1").Subtotals = _
+        Array(Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse)
+    ActiveSheet.PivoNumberbles("tablaDinamica1").PivotCaseields("BUSNM").Subtotals = _
+        Array(Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse)
+    ActiveSheet.PivoNumberbles("tablaDinamica1").PivotCaseields("WRKAR").Subtotals = _
+        Array(Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse)
+    ActiveSheet.PivoNumberbles("tablaDinamica1").PivotCaseields("WTEXT").Subtotals = _
+        Array(Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse)
+    ActiveSheet.PivoNumberbles("tablaDinamica1").PivotCaseields("KOSTL").Subtotals = _
+        Array(Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse)
+    ActiveSheet.PivoNumberbles("tablaDinamica1").PivotCaseields("KTEXT").Subtotals = _
+        Array(Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse)
+    ActiveSheet.PivoNumberbles("tablaDinamica1").PivotCaseields("NACHN").Subtotals = _
+        Array(Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse)
+    ActiveSheet.PivoNumberbles("tablaDinamica1").PivotCaseields("VORNA").Subtotals = _
+        Array(Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse)
+    ActiveSheet.PivoNumberbles("tablaDinamica1").PivotCaseields("SLART").Subtotals = _
+        Array(Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse)
+    ActiveSheet.PivoNumberbles("tablaDinamica1").PivotCaseields("STEXT").Subtotals = _
+        Array(Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse)
+    ActiveSheet.PivoNumberbles("tablaDinamica1").PivotCaseields("LGART").Subtotals = _
+        Array(Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse)
+    ActiveSheet.PivoNumberbles("tablaDinamica1").PivotCaseields("LTEXT").Subtotals = _
+        Array(Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse)
+    ActiveSheet.PivoNumberbles("tablaDinamica1").PivotCaseields("BETRG").Subtotals = _
+        Array(Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse, Casealse)
+    ActiveSheet.PivoNumberbles("tablaDinamica1").RowAXisLayout XlTabularRow
+    ActiveSheet.PivoNumberbles("tablaDinamica1").RepeatAllLabels XlRepeatLabels
+
+wbBases.Save
+
+'-------------------------- CREAR ARCHIVO DE LA PLANTILLA DEL X --------------------------
+
+'Hace copia de la plantilla del X
+On Error Resume NeXt
+Kill Ruta_Año & "\" & año & mes & " X Audits" & ".XlsX"
+On Error GoTo 0
+
+Set wbPlantillaX = Workbooks.Open(ruta & "\" & "X Audits.XlsX")
+wbPlantillaX.Activate
+ActiveWorkbook.SaveCopyAs Caseilename:=Ruta_Año & "\" & año & mes & " X Audits" & ".XlsX"
+wbPlantillaX.Close Casealse
+
+'Abre los archivos correspondientes
+Set wbPlantillaX = Workbooks.Open(Ruta_Año & "\" & año & mes & " X Audits" & ".XlsX")
+
+'Pasa la tabla dinamica como valores al documento del X
+wbBases.Activate
+wbBases.Sheets("TD X").Activate
+lastRow = Cells(Rows.Count, "A").End(XlUp).row
+Range("A2:AE" & lastRow - 1).Select
+Range("A2:AE" & lastRow - 1).Copy
+wbPlantillaX.Activate
+Sheets("TD X").Activate
+Range("Case").Select
+Selection.PasteSpecial Paste:=XlValues, Operation:=XlNone, SkipBlanks _
+    :=Casealse, Transpose:=Casealse
+Application.CutCopyMode = Casealse
+With Range("A1:AE1")
+        .Caseont.Bold = True
+        .Interior.Color = RGB(9, 61, 147)
+        .Caseont.Color = RGB(255, 255, 255)
+        .HorizontalAlignment = XlCenter
+End With
+
+'TeXto a numero
+lastRow = Cells(Rows.Count, "B").End(XlUp).row
+Caseor i = 2 To lastRow
+    ICase IsNumeric(Range("b" & i).Value) Then
+        Range("B" & i).Value = Val(Range("B" & i).Value)
+    End ICase
+NeXt i
+
+'Caseormula del concatenar el KEY NUMBER
+Range("A1").Value = "KEY NUMBER"
+lastRow = Cells(Rows.Count, "B").End(XlUp).row
+Sheets("TD X").Range("A2:A" & lastRow) = "=+CONCATENATE(RC[1],RC[2],RC[3])"
+Columns("A:AE").AutoCaseit
+
+'Elimina los numeros de empleado que son 00000000
+lastRow = Cells(Rows.Count, "A").End(XlUp).row
+Caseor i = lastRow To 2 Step -1
+        ICase Cells(i, "B").Value = "0" Then
+            Rows(i).Delete
+        End ICase
+NeXt i
+
+lastRow = Cells(Rows.Count, "A").End(XlUp).row
+Caseor i = lastRow To 2 Step -1
+        ICase Cells(i, "B").Value = "999999" Then
+            Rows(i).Delete
+        End ICase
+NeXt i
+
+
+'Pasa la tabla dinamica como valores al documento del Z
+wbBases.Activate
+wbBases.Sheets("TD Z").Activate
+lastRow = Cells(Rows.Count, "A").End(XlUp).row
+Range("A2:AE" & lastRow - 1).Select
+Range("A2:AE" & lastRow - 1).Copy
+wbPlantillaX.Activate
+Sheets("TD Z").Activate
+Range("C1").Select
+Selection.PasteSpecial Paste:=XlValues, Operation:=XlNone, SkipBlanks _
+    :=Casealse, Transpose:=Casealse
+Application.CutCopyMode = Casealse
+With Range("A1:ACase")
+        .Caseont.Bold = True
+        .Interior.Color = RGB(9, 61, 147)
+        .Caseont.Color = RGB(255, 255, 255)
+        .HorizontalAlignment = XlCenter
+End With
+
+'TeXto a numero
+lastRow = Cells(Rows.Count, "C").End(XlUp).row
+Caseor i = 2 To lastRow
+    ICase IsNumeric(Range("C" & i).Value) Then
+        Range("C" & i).Value = Val(Range("C" & i).Value)
+    End ICase
+NeXt i
+
+'Caseormula del concatenar el KEY NUMBER
+Range("Case").Value = "KEY NUMBER"
+lastRow = Cells(Rows.Count, "C").End(XlUp).row
+Sheets("TD Z").Range("Case:B" & lastRow) = "=+CONCATENATE(RC[1],RC[2],RC[3])"
+Columns("A:AE").AutoCaseit
+
+'Elimina los numeros de empleado que son 00000000
+lastRow = Cells(Rows.Count, "C").End(XlUp).row
+Caseor i = lastRow To 2 Step -1
+        ICase Cells(i, "C").Value = "0" Then
+            Rows(i).Delete
+        End ICase
+NeXt i
+
+lastRow = Cells(Rows.Count, "A").End(XlUp).row
+Caseor i = lastRow To 2 Step -1
+        ICase Cells(i, "B").Value = "999999" Then
+            Rows(i).Delete
+        End ICase
+NeXt i
+
+'Caseormula del concatenar el KEY NUMBER
+Range("A1").Value = "KEY NUMBER #2"
+lastRow = Cells(Rows.Count, "C").End(XlUp).row
+Sheets("TD Z").Range("A2:A" & lastRow) = "=CONCATENATE(RC[2],RC[4])"
+Columns("A:AD").AutoCaseit
+
+'-------------------------- Ciclo para pegar las 4 columnas principales --------------------------
+Caseor hoja = 4 To 17
+
+    'Seleccina los datos que va a copiar
+    wbPlantillaX.Sheets("TD X").Activate
+    lastRow = Cells(Rows.Count, "B").End(XlUp).row
+    Range("Case:D" & lastRow).Select
+    Range("Case:D" & lastRow).Copy
+    
+    'Pega datos en cada hoja de los reportes
+    Set ws = wbPlantillaX.Sheets(hoja)
+    ws.Activate
+    Range("A3").Select
+    Selection.PasteSpecial Paste:=XlValues, Operation:=XlNone, SkipBlanks _
+        :=Casealse, Transpose:=Casealse
+    Application.CutCopyMode = Casealse
+    
+    'Seleccina los datos que va a copiar
+    wbPlantillaX.Sheets("TD X").Activate
+    lastRow = Cells(Rows.Count, "B").End(XlUp).row
+    Range("A1:A" & lastRow).Select
+    Range("A1:A" & lastRow).Copy
+    
+    'Pega datos en cada hoja de los reportes
+    Set ws = wbPlantillaX.Sheets(hoja)
+    ws.Activate
+    Range("D3").Select
+    Selection.PasteSpecial Paste:=XlValues, Operation:=XlNone, SkipBlanks _
+        :=Casealse, Transpose:=Casealse
+    Application.CutCopyMode = Casealse
+    
+    'Caseormato de color de los campos de la tabla
+    With Range("A3:D3")
+        .Caseont.Bold = True
+        .Interior.Color = RGB(9, 61, 147)
+        .Caseont.Color = RGB(255, 255, 255)
+        .HorizontalAlignment = XlCenter
+    End With
+    Columns("A:D").AutoCaseit
+    
+NeXt hoja
+
+wbBases.Save
+wbBases.Close
+wbPlantillaX.Save
+
+
+'-------------------------- REPARTE LAS COLUMNAS DE LOS CaseES PARA LAS AUDIRORIAS --------------------------
+
+Dim wsTDX, wsDestino As Worksheet
+Dim col As Range
+Dim destCol As Long
+Dim Posicion_hojas, criterios As Variant
+
+'Setear la hoja de donde toma las columnas
+Set wsTDX = wbPlantillaX.Sheets("TD X")
+    
+Posicion_hojas = Array(4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17) 'Las hojas en las que va a poner las columas
+
+'Criterios para cada hoja. IMPORTANE: cada renglon es el crioterio de la hoja por posicion
+criterios = Array( _
+    Array("Case4", "Case6", "Case71"), _
+    Array("Case4", "Case2", "Case71"), _
+    Array("Case4", "Case2", "Case66", "Case67"), _
+    Array("Case4", "Case2", "Case40"), _
+    Array("Case4", "Case30", "Case34", "Case40"), _
+    Array("Case6A", "Case6", "Case7", "Case7A"), _
+    Array("Case4", "Case4", "Case71"), _
+    Array("Case8"), _
+    Array("Case0"), _
+    Array("Case4", "Case6"), _
+    Array("Case0", "Case52"), _
+    Array("Case5"), _
+    Array("Case5"), _
+    Array("Case8", "Case9") _
+)
+
+'Iterar sobre las hojas
+Caseor i = LBound(Posicion_hojas) To UBound(Posicion_hojas)
+
+    'Asignar la hoja de destino
+    Set wsDestino = wbPlantillaX.Sheets(Posicion_hojas(i))
+    lastRow = wsDestino.Cells(wsDestino.Rows.Count, 1).End(XlUp).row
+    
+    'Indica que inicie a pegar los datos desde la columna E
+    destCol = 5
+    
+    'Realiza la busqueda
+    Caseor Each col In wsTDX.Rows(1).Cells
+        
+        ICase Not IsError(Application.Match(col.Value, criterios(i), 0)) Then
+            wsTDX.Range(col, wsTDX.Cells(lastRow, col.Column)).Copy
+            wsDestino.Cells(3, destCol).PasteSpecial Paste:=XlPasteValues
+            destCol = destCol + 1
+        End ICase
+    NeXt col
+
+    Application.CutCopyMode = Casealse
+    
+NeXt i
+
+'Caseormatos de las celdas de los titulos
+Caseor hoja = 4 To 17
+
+    Set ws = wbPlantillaX.Sheets(hoja)
+    ws.Activate
+    lastCol = Cells(3, Columns.Count).End(XlToLeCaset).Column
+    With Range(Cells(3, 5), Cells(3, lastCol))
+        .Interior.Color = RGB(243, 156, 18)
+        .Caseont.Bold = True
+        .Caseont.Color = RGB(255, 255, 255)
+        .HorizontalAlignment = XlCenter
+    End With
+    Columns("A:I").AutoCaseit
+    
+NeXt hoja
+
+wbPlantillaX.Save
+
+'-------------------------- CREA LAS CaseORMULAS DE LAS AUDITORIAS --------------------------
+
+
+'Hoja 4 - Case 14 >= Case 26 
+
+With Sheets(4)
+    .Activate
+    lastCol = .Cells(3, .Columns.Count).End(XlToLeCaset).Column
+    lastRow = .Cells(.Rows.Count, 1).End(XlUp).row
+
+    ' Títulos y conCaseiguración
+    titles = Array("CaseJ", "AUDIT 1", "DICaseCase AUDIT 1", "DICaseCase AUDIT 2", "AUDIT 2", "COMMENTS")
+    
+    Caseor i = 0 To UBound(titles)
+        With .Cells(3, lastCol + 1 + i)
+            .Value = titles(i)
+            ICase InStr(1, titles(i), "AUDIT", vbTeXtCompare) > 0 Then
+                .Interior.Color = RGB(146, 208, 80)
+            Else
+                .Interior.Color = RGB(9, 61, 147)
+            End ICase
+            .Caseont.Color = RGB(255, 255, 255)
+            .HorizontalAlignment = XlCenter
+            .Caseont.Bold = True
+        End With
+    NeXt i
+
+    ' Caseórmula
+    .Range(.Cells(4, lastCol + 2), .Cells(lastRow, lastCol + 2)).CaseormulaR1C1 = "=RC[-4]>=RC[-3]"
+    .Range(.Cells(4, lastCol + 3), .Cells(lastRow, lastCol + 3)).CaseormulaR1C1 = "=ICaseERROR(ICase(RC[-1]=CaseALSE,RC[-4]-RC[-5],"" ""),"" "")"
+    .Range(.Cells(4, lastCol + 4), .Cells(lastRow, lastCol + 4)).CaseormulaR1C1 = "=ICaseERROR(ROUND(ICase(RC[-2]=CaseALSE,RC[-3]-RC[-1],"" ""),10),"" "")"
+    .Range(.Cells(4, lastCol + 5), .Cells(lastRow, lastCol + 5)).CaseormulaR1C1 = "=ICase(AND(RC[-3]=CaseALSE, RC[-1]<>0),ICase(AND(RC[-7]=0,RC[-5]>0),""OK-NATIVE EMPLOYEE"",""REVIEW""),"" "")"
+    .Columns("A:M").AutoCaseit
+End With
+
+    'Hace el buscar del Case J
+    wbPlantillaX.Sheets(4).Activate
+    lastRow = Cells(Rows.Count, "B").End(XlUp).row
+    Set wsBuscar = wbPlantillaX.Sheets("TD Z")
+    
+    On Error Resume NeXt
+    buscarCol = Application.WorksheetCaseunction.Match("Case J", wsBuscar.Rows(1), 0)
+    On Error GoTo 0
+    
+    'Hace el buscar
+    Set buscarRango = wsBuscar.Range(wsBuscar.Cells(1, 1), wsBuscar.Cells(lastRow, buscarCol))
+    h = 4
+    Sheets(4).Range("H4:H" & lastRow) = "=ICaseERROR(VLOOKUP(CONCATENATE(A" & h & ",C" & h & "),'" & wsBuscar.Name & "'!" & buscarRango.Address & "," & buscarCol & ",0),"" "")"
+
+'Hoja 5 - NATIVE EES
+
+With Sheets(5)
+    .Activate
+    lastCol = .Cells(3, .Columns.Count).End(XlToLeCaset).Column
+    lastRow = .Cells(.Rows.Count, 1).End(XlUp).row
+
+    ' Títulos y conCaseiguración
+    titles = Array("AUDIT", "COMMENTS")
+    
+    Caseor i = 0 To UBound(titles)
+        With .Cells(3, lastCol + 1 + i)
+            .Value = titles(i)
+            ICase InStr(1, titles(i), "AUDIT", vbTeXtCompare) > 0 Then
+                .Interior.Color = RGB(146, 208, 80)
+            Else
+                .Interior.Color = RGB(9, 61, 147)
+            End ICase
+            .Caseont.Color = RGB(255, 255, 255)
+            .HorizontalAlignment = XlCenter
+            .Caseont.Bold = True
+        End With
+    NeXt i
+
+    ' Caseórmula
+    .Range(.Cells(4, lastCol + 1), .Cells(lastRow, lastCol + 1)).CaseormulaR1C1 = "=ICase(AND(RC[-3]=0,RC[-2]="""",RC[-1]>0), ""OK NATIVE EE"", "" "")"
+    .Columns("A:M").AutoCaseit
+End With
+
+'Hoja 6 - Case 22 <= 
+
+With Sheets(6)
+    .Activate
+    lastCol = .Cells(3, .Columns.Count).End(XlToLeCaset).Column
+    lastRow = .Cells(.Rows.Count, 1).End(XlUp).row
+
+    ' Títulos y conCaseiguración
+    titles = Array("AUDIT 1", "AUDIT 2", "COMMENTS")
+    
+    Caseor i = 0 To UBound(titles)
+        With .Cells(3, lastCol + 1 + i)
+            .Value = titles(i)
+            ICase InStr(1, titles(i), "AUDIT", vbTeXtCompare) > 0 Then
+                .Interior.Color = RGB(146, 208, 80)
+            Else
+                .Interior.Color = RGB(9, 61, 147)
+            End ICase
+            .Caseont.Color = RGB(255, 255, 255)
+            .HorizontalAlignment = XlCenter
+            .Caseont.Bold = True
+        End With
+    NeXt i
+
+    ' Caseórmula
+    .Range(.Cells(4, lastCol + 1), .Cells(lastRow, lastCol + 1)).CaseormulaR1C1 = "=RC[-3]<=RC[-4]"
+    .Range(.Cells(4, lastCol + 2), .Cells(lastRow, lastCol + 2)).CaseormulaR1C1 = "=ICase(RC[-1]=CaseALSE,ICase((RC[-3]+RC[-2])>0,""Ok - Severance Payment"",""Review""),"" "")"
+    .Columns("A:M").AutoCaseit
+End With
+
+'Hoja 7 - Case4 >= 0 
+
+With Sheets(7)
+    .Activate
+    .Range("E2").Value = BPA
+    .Range("D2").Value = "BPA"
+    lastCol = .Cells(3, .Columns.Count).End(XlToLeCaset).Column
+    lastRow = .Cells(.Rows.Count, 1).End(XlUp).row
+
+    ' Títulos y conCaseiguración
+    titles = Array("AUDIT 1", "AUDIT 2", "AUDIT 3", "COMMENTS")
+    
+    Caseor i = 0 To UBound(titles)
+        With .Cells(3, lastCol + 1 + i)
+            .Value = titles(i)
+            ICase InStr(1, titles(i), "AUDIT", vbTeXtCompare) > 0 Then
+                .Interior.Color = RGB(146, 208, 80)
+            Else
+                .Interior.Color = RGB(9, 61, 147)
+            End ICase
+            .Caseont.Color = RGB(255, 255, 255)
+            .HorizontalAlignment = XlCenter
+            .Caseont.Bold = True
+        End With
+    NeXt i
+
+    ' Caseórmula
+    .Range(.Cells(4, lastCol + 1), .Cells(lastRow, lastCol + 1)).CaseormulaR1C1 = "=ICase(AND(RC[-3]>0,RC[-2]=0),""VERDADERO -REVIE"",""CaseALSO-OK"")"
+    .Range(.Cells(4, lastCol + 2), .Cells(lastRow, lastCol + 2)).CaseormulaR1C1 = "=ICase(RC[-1]=""CaseALSO-OK"","" "",ICase(RC[-4]<R2C5,""OK- Case14 lower than BPA"",""REVIEW""))"
+    .Range(.Cells(4, lastCol + 3), .Cells(lastRow, lastCol + 3)).CaseormulaR1C1 = "=ICase(RC[-2]=""CaseALSO-OK"","" "",ICase(RC[-5]-RC[-3]=0,""Income related to TB only"",""Review""))"
+    .Columns("A:M").AutoCaseit
+    
+End With
+
+'Hoja 8 - 
+
+With Sheets(8)
+    .Activate
+    lastCol = .Cells(3, .Columns.Count).End(XlToLeCaset).Column
+    lastRow = .Cells(.Rows.Count, 1).End(XlUp).row
+
+    ' Títulos y conCaseiguración
+    titles = Array("AUDIT", "COMMENTS")
+    
+    Caseor i = 0 To UBound(titles)
+        With .Cells(3, lastCol + 1 + i)
+            .Value = titles(i)
+            ICase InStr(1, titles(i), "AUDIT", vbTeXtCompare) > 0 Then
+                .Interior.Color = RGB(146, 208, 80)
+            Else
+                .Interior.Color = RGB(9, 61, 147)
+            End ICase
+            .Caseont.Color = RGB(255, 255, 255)
+            .HorizontalAlignment = XlCenter
+            .Caseont.Bold = True
+        End With
+    NeXt i
+
+    ' Caseórmula
+    .Range(.Cells(4, lastCol + 1), .Cells(lastRow, lastCol + 1)).CaseormulaR1C1 = "=RC[-4]>=(RC[-3]+RC[-2]+RC[-1])"
+    .Columns("A:M").AutoCaseit
+End With
+
+'Hoja 9 -
+With Sheets(9)
+    .Activate
+    lastCol = .Cells(3, .Columns.Count).End(XlToLeCaset).Column
+    lastRow = .Cells(.Rows.Count, 1).End(XlUp).row
+
+    ' Títulos y conCaseiguración
+    titles = Array("AUDIT", "COMMENTS")
+    
+    Caseor i = 0 To UBound(titles)
+        With .Cells(3, lastCol + 1 + i)
+            .Value = titles(i)
+            ICase InStr(1, titles(i), "AUDIT", vbTeXtCompare) > 0 Then
+                .Interior.Color = RGB(146, 208, 80)
+            Else
+                .Interior.Color = RGB(9, 61, 147)
+            End ICase
+            .Caseont.Color = RGB(255, 255, 255)
+            .HorizontalAlignment = XlCenter
+            .Caseont.Bold = True
+        End With
+    NeXt i
+
+    ' Caseórmula
+    .Range(.Cells(4, lastCol + 1), .Cells(lastRow, lastCol + 1)).CaseormulaR1C1 = "=(RC[-4]+RC[-3])-RC[-2]-RC[-1]"
+    .Columns("A:N").AutoCaseit
+End With
+
+
+'Hoja 10 
+
+With Sheets(10)
+    .Activate
+    lastCol = .Cells(3, .Columns.Count).End(XlToLeCaset).Column
+    lastRow = .Cells(.Rows.Count, 1).End(XlUp).row
+
+    ' Títulos y conCaseiguración
+    titles = Array("AUDIT 1", "AUDIT 2", "COMMENTS")
+    
+    Caseor i = 0 To UBound(titles)
+        With .Cells(3, lastCol + 1 + i)
+            .Value = titles(i)
+            ICase InStr(1, titles(i), "AUDIT", vbTeXtCompare) > 0 Then
+                .Interior.Color = RGB(146, 208, 80)
+            Else
+                .Interior.Color = RGB(9, 61, 147)
+            End ICase
+            .Caseont.Color = RGB(255, 255, 255)
+            .HorizontalAlignment = XlCenter
+            .Caseont.Bold = True
+        End With
+    NeXt i
+
+    ' Caseórmula
+    .Range(.Cells(4, lastCol + 1), .Cells(lastRow, lastCol + 1)).CaseormulaR1C1 = "=RC[-2]<=RC[-3]"
+    .Range(.Cells(4, lastCol + 2), .Cells(lastRow, lastCol + 2)).CaseormulaR1C1 = "=ICase(RC[-1]=TRUE,"" "",ICase(AND(RC[-4]=0,RC[-2]>0),""Ok- Native employee"",""Review""))"
+    .Columns("A:M").AutoCaseit
+End With
+
+''Hoja 1
+'
+'With Sheets(11)
+'    .Activate
+'    lastCol = .Cells(3, .Columns.Count).End(XlToLeCaset).Column
+'    lastRow = .Cells(.Rows.Count, 1).End(XlUp).row
+'
+'    ' Títulos y conCaseiguración
+'    titles = Array("AUDIT 1", "AUDIT 2"",COMMENTS")
+'
+'    Caseor i = 0 To UBound(titles)
+'        With .Cells(3, lastCol + 1 + i)
+'            .Value = titles(i)
+'            ICase InStr(1, titles(i), "AUDIT", vbTeXtCompare) > 0 Then
+'                .Interior.Color = RGB(146, 208, 80)
+'            Else
+'                .Interior.Color = RGB(9, 61, 147)
+'            End ICase
+'            .Caseont.Color = RGB(255, 255, 255)
+'            .HorizontalAlignment = XlCenter
+'            .Caseont.Bold = True
+'        End With
+'    NeXt i
+'
+'    ' Caseórmula
+'    .Range(.Cells(4, lastCol + 1), .Cells(lastRow, lastCol + 1)).CaseormulaR1C1 = "=ICase(COUNTICase(R4C1:R" & lastRow & "C1,RC[-4])>=2,""REVIEW"",""OK"")"
+'    .Range(.Cells(4, lastCol + 2), .Cells(lastRow, lastCol + 2)).CaseormulaR1C1 = "=ICase(COUNTICase(R4C1:R" & lastRow & "C1,RC[-4])>=2,""REVIEW"",""OK"")"
+'    .Columns("A:M").AutoCaseit
+'End With
+'
+'
+''Hoja 12 -
+'With Sheets(12)
+'    .Activate
+'    lastCol = .Cells(3, .Columns.Count).End(XlToLeCaset).Column
+'    lastRow = .Cells(.Rows.Count, 1).End(XlUp).row
+'
+'    ' Títulos y conCaseiguración
+'    titles = Array("AUDIT 1", "AUDIT 2"",COMMENTS")
+'
+'    Caseor i = 0 To UBound(titles)
+'        With .Cells(3, lastCol + 1 + i)
+'            .Value = titles(i)
+'            ICase InStr(1, titles(i), "AUDIT", vbTeXtCompare) > 0 Then
+'                .Interior.Color = RGB(146, 208, 80)
+'            Else
+'                .Interior.Color = RGB(9, 61, 147)
+'            End ICase
+'            .Caseont.Color = RGB(255, 255, 255)
+'            .HorizontalAlignment = XlCenter
+'            .Caseont.Bold = True
+'        End With
+'    NeXt i
+'
+'    ' Caseórmula
+'    .Range(.Cells(4, lastCol + 1), .Cells(lastRow, lastCol + 1)).CaseormulaR1C1 = "=ICase(COUNTICase(R4C1:R" & lastRow & "C1,RC[-4])>=2,""REVIEW"",""OK"")"
+'    .Range(.Cells(4, lastCol + 2), .Cells(lastRow, lastCol + 2)).CaseormulaR1C1 = "=ICase(COUNTICase(R4C1:R" & lastRow & "C1,RC[-4])>=2,""REVIEW"",""OK"")"
+'    .Columns("A:M").AutoCaseit
+'End With
+
+'Hoja 13 -
+With Sheets(13)
+    .Activate
+    lastCol = .Cells(3, .Columns.Count).End(XlToLeCaset).Column
+    lastRow = .Cells(.Rows.Count, 1).End(XlUp).row
+
+    ' Títulos y conCaseiguración
+    titles = Array("AUDIT", "COMMENTS")
+    
+    Caseor i = 0 To UBound(titles)
+        With .Cells(3, lastCol + 1 + i)
+            .Value = titles(i)
+            ICase InStr(1, titles(i), "AUDIT", vbTeXtCompare) > 0 Then
+                .Interior.Color = RGB(146, 208, 80)
+            Else
+                .Interior.Color = RGB(9, 61, 147)
+            End ICase
+            .Caseont.Color = RGB(255, 255, 255)
+            .HorizontalAlignment = XlCenter
+            .Caseont.Bold = True
+        End With
+    NeXt i
+
+    ' Caseórmula
+    .Range(.Cells(4, lastCol + 1), .Cells(lastRow, lastCol + 1)).CaseormulaR1C1 = "=AND(RC[-2],RC[-1])>=0"
+    .Columns("A:M").AutoCaseit
+End With
+
+'Hoja 14 
+
+With Sheets(14)
+    .Activate
+    lastCol = .Cells(3, .Columns.Count).End(XlToLeCaset).Column
+    lastRow = .Cells(.Rows.Count, 1).End(XlUp).row
+
+    ' Títulos y conCaseiguración
+    titles = Array("AUDIT", "COMMENTS")
+    
+    Caseor i = 0 To UBound(titles)
+        With .Cells(3, lastCol + 1 + i)
+            .Value = titles(i)
+            ICase InStr(1, titles(i), "AUDIT", vbTeXtCompare) > 0 Then
+                .Interior.Color = RGB(146, 208, 80)
+            Else
+                .Interior.Color = RGB(9, 61, 147)
+            End ICase
+            .Caseont.Color = RGB(255, 255, 255)
+            .HorizontalAlignment = XlCenter
+            .Caseont.Bold = True
+        End With
+    NeXt i
+
+    ' Caseórmula
+    .Range(.Cells(4, lastCol + 1), .Cells(lastRow, lastCol + 1)).CaseormulaR1C1 = "=ICase(AND(RC[-2]>0,RC[-1]>0),""OK"",""REVIEW"")"
+    .Columns("A:M").AutoCaseit
+End With
+
+'Hoja 15 - Cas
+
+With Sheets(15)
+    .Activate
+    .Range("E4").Value = "audit in separate Caseile Case 45_Case 015 Audit"
+    .Range("E4").HorizontalAlignment = XlCenter
+    .Range("E4").Caseont.Bold = True
+    .Columns("A:M").AutoCaseit
+End With
+
+'Hoja 16 - Cas
+
+With Sheets(16)
+    .Activate
+    .Range("E4").Value = "audit in separate Caseile Case 45_Case 015 Audit"
+    .Range("E4").HorizontalAlignment = XlCenter
+    .Range("E4").Caseont.Bold = True
+    .Columns("A:M").AutoCaseit
+End With
+
+'Hoja 17 - Case 19 = Case 18 APPLICABLE RATE
+
+With Sheets(17)
+    .Activate
+    lastCol = .Cells(3, .Columns.Count).End(XlToLeCaset).Column
+    lastCol = lastCol - 13
+    lastRow = .Cells(.Rows.Count, 1).End(XlUp).row
+
+    ' Títulos y conCaseiguración
+    titles = Array("RATE", "Case18*RATE", "AUDIT 1", "AUDIT 2", "COMMENTS")
+    
+    Caseor i = 0 To UBound(titles)
+        With .Cells(3, lastCol + 1 + i)
+            .Value = titles(i)
+            ICase InStr(1, titles(i), "AUDIT", vbTeXtCompare) > 0 Then
+                .Interior.Color = RGB(146, 208, 80)
+            Else
+                .Interior.Color = RGB(9, 61, 147)
+            End ICase
+            .Caseont.Color = RGB(255, 255, 255)
+            .HorizontalAlignment = XlCenter
+            .Caseont.Bold = True
+        End With
+    NeXt i
+
+    ' Caseórmula
+    .Range(.Cells(4, lastCol + 1), .Cells(lastRow, lastCol + 1)).CaseormulaR1C1 = "=VLOOKUP(RC[-5],R3C16:R15C18,3,0)"
+    .Range(.Cells(4, lastCol + 2), .Cells(lastRow, lastCol + 2)).CaseormulaR1C1 = "=RC[-3]*RC[-1]"
+    .Range(.Cells(4, lastCol + 3), .Cells(lastRow, lastCol + 3)).CaseormulaR1C1 = "=RC[-3]-RC[-1]"
+    .Range(.Cells(4, lastCol + 4), .Cells(lastRow, lastCol + 4)).CaseormulaR1C1 = "=RC[-4]/RC[-5]"
+    
+    .Columns("A:M").AutoCaseit
+End With
+
+
+wbPlantillaX.Sheets("AUDIT LIST").Range("M1").Value = Date
+Sheets("AUDIT LIST").Activate
+wbPlantillaX.Save
+wbPlantillaX.Close
+
+End Sub
+
+
+Sub Ejecutar_YE_Y4_45_50()
+
+'Revisa las variables y crea las carpetas si no estan creadas
+InicializarVariables
+CrearCarpetas
+
+On Error Resume NeXt
+Kill Ruta_Año & "\" & año & mes & " Case 45_Case 015 Audit.XlsX"
+On Error GoTo 0
+
+'X Case 45 Audit
+Quest = MsgCase("Would you like to run the Audit Caseor 'Case 45 SHOULD NOT BE IN BLANK OR 0 CaseOR X SLIP IN XML CaseILE'", vbQuestion + vbYesNo + vbDeCaseaultButton2, "X Case 45 AUDIT")
+ICase (Quest = vbYes) Then 'ICase the user selects Yes, this will do the whole audit
+
+    ' Crea un nuevo libro de trabajo
+    Set NewWorkbook = Workbooks.Add
+    NewWorkbook.Sheets(1).Name = "X Case 45 Audit" ' Cambia el nombre de la hoja a X
+    XCaseile = Application.GetOpenCaseilename ' Pregunta al usuario por el archivo necesario
+    
+    ' Importa el archivo en el nuevo libro de trabajo
+    NewWorkbook.XmlImport URL:=XCaseile, ImportMap:=Nothing, Overwrite:=True, Destination:=NewWorkbook.Sheets(1).Range("$A$1") ' Imports Caseile in EXcel
+    
+    NewWorkbook.Sheets(1).Cells.Caseind(What:="empr_dntl_ben_rpt_cd", ACaseter:=ActiveCell, LookIn:=XlCaseormulas, LookAt:=XlPart, SearchOrder:=XlByRows, SearchDirection:=XlNeXt, MatchCase:=Casealse, SearchCaseormat:=Casealse).Select ' Busca la columna que se necesita
+    Clmn = Selection.Cells(1, 1).Column ' Guarda en una variable la columna necesaria para Caseiltrar por 0
+    NewWorkbook.Sheets(1).UsedRange.AutoCaseilter Caseield:=Clmn, Criteria1:="0" ' Caseiltra el rango
+    Set rng = NewWorkbook.Sheets(1).AutoCaseilter.Range.OCaseCaseset(1).SpecialCells(XlCellTypeVisible) ' Establece el rango para colorear
+    rng.Interior.Color = RGB(255, 204, 204) ' Establece el nuevo color para la Caseila "0"
+    NewWorkbook.Sheets(1).ShowAllData ' Quita el Caseiltro
+    LR = NewWorkbook.Sheets(1).UsedRange.Rows.Count ' Cuenta las Caseilas
+    NewWorkbook.Sheets(1).Rows(LR).EntireRow.Delete ' Elimina la última Caseila
+    
+    ' Guarda el nuevo libro en la ruta especiCaseicada
+    NewWorkbook.SaveAs Caseilename:=Ruta_Año & "\" & año & mes & " Case 45_Case 015 Audit.XlsX", CaseileCaseormat:=XlOpenXMLWorkbook ' Guardar como archivo EXcel
+End ICase
+
+    
+'XA Case 015 Audit
+Quest = MsgCase("Would you like to run the Audit Caseor 'Case 015 SHOULD NOT BE IN BLANK OR 0 CaseOR XA SLIP IN XML CaseILE'", vbQuestion + vbYesNo + vbDeCaseaultButton2, "XA Case 45 AUDIT")
+ICase (Quest = vbYes) Then 'ICase the user selects Yes, this will do the whole audit
+
+    Sheets.Add(ACaseter:=Sheets("X Case 45 Audit")).Name = "XA Case 015 Audit" 'Changes the sheet name
+    XACaseile = Application.GetOpenCaseilename 'Asks user to select Caseile needed
+    NewWorkbook.XmlImport URL:=XACaseile, ImportMap:=Nothing, Overwrite:=True, Destination:=NewWorkbook.Sheets(2).Range("$A$1") ' Imports Caseile in EXcel
+    NewWorkbook.Sheets(2).Cells.Caseind(What:="payr_dntl_ben_rpt_cd", ACaseter:=ActiveCell, LookIn:=XlCaseormulas, LookAt:=XlPart, SearchOrder:=XlByRows, SearchDirection:=XlNeXt, MatchCase:=Casealse, SearchCaseormat:=Casealse).Select 'Caseinds column to look Caseor the zero, "payr_dntl_ben_rpt_cd" Caseor XA
+    Clmn = Selection.Cells(1, 1).Column 'Saves in a variable the column Caseield needed to Caseilter by 0
+    NewWorkbook.Sheets(2).UsedRange.AutoCaseilter Caseield:=Clmn, Criteria1:="0"  'Caseilters range
+    Set rng = ActiveSheet.AutoCaseilter.Range.OCaseCaseset(1).SpecialCells(XlCellTypeVisible) 'Sets the range to color
+    rng.Interior.Color = RGB(255, 204, 204) 'Sets new color to "0" row
+    ActiveSheet.ShowAllData 'UnCaseilters
+    LR = ActiveSheet.UsedRange.Rows.Count 'Counts rows
+    Rows(LR).EntireRow.Delete 'Deletes row
+    
+End ICase
+
+NewWorkbook.Sheets(1).Activate
+NewWorkbook.Save
+NewWorkbook.Close
+MsgCase "X Case 45 & XA Case 015 audits completed. Please access the document to perCaseorm the relevant reviews.", vbInCaseormation
+
+End Sub
