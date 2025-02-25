@@ -1,20 +1,20 @@
-Attribute VB_Name = "IT2210_Entries_Validation"
+
 Option Explicit
 'variables para todo el proyecto
 
 Dim wbauditoria, archivoBase As Workbook
 Dim hojaBase, hojaOrigen As Worksheet
-Dim Fecha1, Fecha2, Fecha3, mes, Mes_Texto, BPA, año, dia, auditoria, ruta, Ruta_pais, Ruta_Año, Ruta_Audi, ruta_Base, texto, ExisteArchivo As String
+Dim Fecha1, Fecha2, Fecha3, mes, Mes_Texto, BPA, aÃ±o, dia, auditoria, ruta, Ruta_pais, Ruta_AÃ±o, Ruta_Audi, ruta_Base, texto, ExisteArchivo As String
 Dim hoja As Integer
 Dim lastRow, lastCol, i As Long
 Dim titulos As Variant
 Dim rng As Range
 
-Sub Ejecutar_IT221()
+Sub Ejecutar_Audit()
 
 ' Verificar si hay datos en las celdas I8 y M8
 If ThisWorkbook.Sheets("Home Page").Range("I8").Value = "" Or ThisWorkbook.Sheets("Home Page").Range("E18").Value = "" Then
-    MsgBox "Incomplete data, please enter the data before executing.", vbExclamation
+    MsgCase "Incomplete data, please enter the data before executing.", vbExclamation
     Exit Sub
 End If
 
@@ -31,7 +31,7 @@ Sub InicializarVariables()
 'Fechas
 mes = ThisWorkbook.Sheets("Home Page").Range("N8").Text
 Mes_Texto = ThisWorkbook.Sheets("Home Page").Range("I12").Value
-año = ThisWorkbook.Sheets("Home Page").Range("I10").Value
+aÃ±o = ThisWorkbook.Sheets("Home Page").Range("I10").Value
 Fecha1 = ThisWorkbook.Sheets("Home Page").Range("I8").Value
 Fecha2 = ThisWorkbook.Sheets("Home Page").Range("M8").Value
 dia = ThisWorkbook.Sheets("Home Page").Range("N10").Text
@@ -40,29 +40,29 @@ auditoria = ThisWorkbook.Sheets("Home Page").Range("M17").Text
 
 'Rutas
 ruta = ThisWorkbook.Path & "\"
-Ruta_pais = ruta & "YEAR END CA"
-Ruta_Audi = Ruta_pais & "\" & "ENTRIES VALIDATION"
-Ruta_Año = Ruta_Audi & "\" & año
+Ruta_pais = ruta & "YE"
+Ruta_Audi = Ruta_pais & "\" & "Audit"
+Ruta_AÃ±o = Ruta_Audi & "\" & aÃ±o
 
 End Sub
 Sub CrearCarpetas()
 
 'PAIS
-Ruta_pais = ruta & "YEAR END CA"
+Ruta_pais = ruta & "YE"
 If Dir(Ruta_pais, vbDirectory + vbHidden) = "" Then
     If Dir(Ruta_pais & vbDirectory + vbHidden) = "" Then MkDir Ruta_pais
 End If
 
 'CARPETA DE AUDITORIAS
-Ruta_Audi = Ruta_pais & "\" & "ENTRIES VALIDATION"
+Ruta_Audi = Ruta_pais & "\" & "Audit"
 If Dir(Ruta_Audi, vbDirectory + vbHidden) = "" Then
     If Dir(Ruta_Audi & vbDirectory + vbHidden) = "" Then MkDir Ruta_Audi
 End If
 
-'CARPETA AÑO
-Ruta_Año = Ruta_Audi & "\" & año
-If Dir(Ruta_Año, vbDirectory + vbHidden) = "" Then
-    If Dir(Ruta_Audi & vbDirectory + vbHidden) = "" Then MkDir Ruta_Año
+'CARPETA AÃ‘O
+Ruta_AÃ±o = Ruta_Audi & "\" & aÃ±o
+If Dir(Ruta_AÃ±o, vbDirectory + vbHidden) = "" Then
+    If Dir(Ruta_Audi & vbDirectory + vbHidden) = "" Then MkDir Ruta_AÃ±o
 End If
      
 End Sub
@@ -71,35 +71,35 @@ Sub Desarrollo_Entries_Validation()
 
 'Crear un nuevo libro de Excel y le pone el nombre correspondiente a la auditoria
 Set wbauditoria = Workbooks.Add
-wbauditoria.SaveAs Ruta_Año & "\" & año & mes & " " & auditoria & ".xlsx"
+wbauditoria.SaveAs Ruta_AÃ±o & "\" & aÃ±o & mes & " " & auditoria & ".xlsx"
 
 'Crea las hojas
-wbauditoria.Sheets.Add(After:=wbauditoria.Sheets(wbauditoria.Sheets.Count)).Name = "BoxJ entry"
-wbauditoria.Sheets.Add(After:=wbauditoria.Sheets(wbauditoria.Sheets.Count)).Name = "CCYR T4 before"
-wbauditoria.Sheets.Add(After:=wbauditoria.Sheets(wbauditoria.Sheets.Count)).Name = "PT T4 Before"
-wbauditoria.Sheets.Add(After:=wbauditoria.Sheets(wbauditoria.Sheets.Count)).Name = "PT T4 Before-values"
-wbauditoria.Sheets.Add(After:=wbauditoria.Sheets(wbauditoria.Sheets.Count)).Name = "CCYR T4 After"
-wbauditoria.Sheets.Add(After:=wbauditoria.Sheets(wbauditoria.Sheets.Count)).Name = "PT T4 After"
-wbauditoria.Sheets.Add(After:=wbauditoria.Sheets(wbauditoria.Sheets.Count)).Name = "PT T4 After-values"
-wbauditoria.Sheets.Add(After:=wbauditoria.Sheets(wbauditoria.Sheets.Count)).Name = "CCYR RL1 before"
-wbauditoria.Sheets.Add(After:=wbauditoria.Sheets(wbauditoria.Sheets.Count)).Name = "PT RL1 Before"
-wbauditoria.Sheets.Add(After:=wbauditoria.Sheets(wbauditoria.Sheets.Count)).Name = "PT RL1 Before-values"
-wbauditoria.Sheets.Add(After:=wbauditoria.Sheets(wbauditoria.Sheets.Count)).Name = "CCYR RL1 After"
-wbauditoria.Sheets.Add(After:=wbauditoria.Sheets(wbauditoria.Sheets.Count)).Name = "PT RL1 After"
-wbauditoria.Sheets.Add(After:=wbauditoria.Sheets(wbauditoria.Sheets.Count)).Name = "PT RL1 After-values"
-wbauditoria.Sheets.Add(After:=wbauditoria.Sheets(wbauditoria.Sheets.Count)).Name = "Validation RL1"
-wbauditoria.Sheets.Add(After:=wbauditoria.Sheets(wbauditoria.Sheets.Count)).Name = "Validation T4"
+wbauditoria.Sheets.Add(After:=wbauditoria.Sheets(wbauditoria.Sheets.Count)).Name = "CaseJ entry"
+wbauditoria.Sheets.Add(After:=wbauditoria.Sheets(wbauditoria.Sheets.Count)).Name = "Base X before"
+wbauditoria.Sheets.Add(After:=wbauditoria.Sheets(wbauditoria.Sheets.Count)).Name = "PT X Before"
+wbauditoria.Sheets.Add(After:=wbauditoria.Sheets(wbauditoria.Sheets.Count)).Name = "PT X Before-values"
+wbauditoria.Sheets.Add(After:=wbauditoria.Sheets(wbauditoria.Sheets.Count)).Name = "Base X After"
+wbauditoria.Sheets.Add(After:=wbauditoria.Sheets(wbauditoria.Sheets.Count)).Name = "PT X After"
+wbauditoria.Sheets.Add(After:=wbauditoria.Sheets(wbauditoria.Sheets.Count)).Name = "PT X After-values"
+wbauditoria.Sheets.Add(After:=wbauditoria.Sheets(wbauditoria.Sheets.Count)).Name = "Base Z before"
+wbauditoria.Sheets.Add(After:=wbauditoria.Sheets(wbauditoria.Sheets.Count)).Name = "PT Z Before"
+wbauditoria.Sheets.Add(After:=wbauditoria.Sheets(wbauditoria.Sheets.Count)).Name = "PT Z Before-values"
+wbauditoria.Sheets.Add(After:=wbauditoria.Sheets(wbauditoria.Sheets.Count)).Name = "Base Z After"
+wbauditoria.Sheets.Add(After:=wbauditoria.Sheets(wbauditoria.Sheets.Count)).Name = "PT Z After"
+wbauditoria.Sheets.Add(After:=wbauditoria.Sheets(wbauditoria.Sheets.Count)).Name = "PT Z After-values"
+wbauditoria.Sheets.Add(After:=wbauditoria.Sheets(wbauditoria.Sheets.Count)).Name = "Validation Z"
+wbauditoria.Sheets.Add(After:=wbauditoria.Sheets(wbauditoria.Sheets.Count)).Name = "Validation X"
 Application.DisplayAlerts = False
 Sheets(1).Delete
 Application.DisplayAlerts = True
 
 
-'---------------------------------- ABRE ARCHIVO DE T4 (BEFORE) ----------------------------------
-MsgBox "Please select the T4 (BEFORE) database file downloaded from SAP", vbInformation
+'---------------------------------- ABRE ARCHIVO DE X (BEFORE) ----------------------------------
+MsgCase "Please select the X (BEFORE) database file downloaded from SAP", vbInformation
 ruta_Base = Application.GetOpenFilename("Archivos Excel (*.xls; *.xlsx), *.xls; *.xlsx")
 Application.AskToUpdateLinks = False
 
-' Verifica si el usuario seleccionó un archivo
+' Verifica si el usuario seleccionÃ³ un archivo
 If ruta_Base <> "Falso" Then
     'Abre el archivo base
     Set archivoBase = Workbooks.Open(Filename:=ruta_Base, UpdateLinks:=0)
@@ -110,9 +110,9 @@ If ruta_Base <> "Falso" Then
     Sheets(1).Activate
     lastRow = Cells(Rows.Count, "A").End(xlUp).row
     Rows("1:1").AutoFilter
-    Rows("1:1").AutoFilter Field:=14, Criteria1:="=#TTA"
+    Rows("1:1").AutoFilter Field:=14, Criteria1:="=###"
     Range("A1:P" & lastRow).SpecialCells(xlCellTypeVisible).Copy
-    wbauditoria.Sheets("CCYR T4 before").Cells(1, 1).PasteSpecial Paste:=xlPasteValues
+    wbauditoria.Sheets("Base X before").Cells(1, 1).PasteSpecial Paste:=xlPasteValues
     Application.CutCopyMode = False
     
     'Guarda el archivo nuevo y cierra el de la base
@@ -123,29 +123,29 @@ Else
 End If
 
 'Poner todos los boxes para que el rango no cambie
-lastRow = Sheets("CCYR T4 before").Cells(Sheets("CCYR T4 before").Rows.Count, 1).End(xlUp).row
-lastCol = Sheets("CCYR T4 before").Cells(2, Sheets("CCYR T4 before").Columns.Count).End(xlToLeft).Column
+lastRow = Sheets("Base X before").Cells(Sheets("Base X before").Rows.Count, 1).End(xlUp).row
+lastCol = Sheets("Base X before").Cells(2, Sheets("Base X before").Columns.Count).End(xlToLeft).Column
 
 ThisWorkbook.Sheets("Anexxes").Range("H2:H25").Copy
-wbauditoria.Sheets("CCYR T4 before").Cells(lastRow + 1, "L").PasteSpecial Paste:=xlPasteValues
+wbauditoria.Sheets("Base X before").Cells(lastRow + 1, "L").PasteSpecial Paste:=xlPasteValues
 Application.CutCopyMode = False
 ThisWorkbook.Sheets("Anexxes").Range("I2:I25").Copy
-wbauditoria.Sheets("CCYR T4 before").Cells(lastRow + 1, "A").PasteSpecial Paste:=xlPasteValues
+wbauditoria.Sheets("Base X before").Cells(lastRow + 1, "A").PasteSpecial Paste:=xlPasteValues
 Application.CutCopyMode = False
 
 
 'Crea tabla dinamica
-Sheets("CCYR T4 before").Activate
+Sheets("Base X before").Activate
 
     Dim ult_Tabla As Long
     ult_Tabla = Cells(Rows.Count, "A").End(xlUp).row
     Dim rangoTabla1 As Range
-    Set rangoTabla1 = Sheets("CCYR T4 before").Range("A1:P" & ult_Tabla)
+    Set rangoTabla1 = Sheets("Base X before").Range("A1:P" & ult_Tabla)
     ActiveSheet.ListObjects.Add(xlSrcRange, rangoTabla1, , xlYes).Name = "Tabla1"
     
     'Crear tabla dinamica
     Dim celdaTablaDinamica1 As Range
-    Set celdaTablaDinamica1 = Sheets("PT T4 Before").Range("A1")
+    Set celdaTablaDinamica1 = Sheets("PT X Before").Range("A1")
     Dim tablaDinamica1 As PivotTable
     
     'Activa campos y le pone formato tabular
@@ -153,7 +153,7 @@ Sheets("CCYR T4 before").Activate
         rangoTabla1, Version:=6).CreatePivotTable TableDestination:= _
         celdaTablaDinamica1, TableName:="tablaDinamica1", DefaultVersion:=6
         
-    Sheets("PT T4 Before").Select
+    Sheets("PT X Before").Select
     With ActiveSheet.PivotTables("tablaDinamica1").PivotFields("PERNR")
         .Orientation = xlRowField
         .Position = 1
@@ -223,14 +223,14 @@ Sheets("CCYR T4 before").Activate
 wbauditoria.Save
 
 'Copia y pega los datos en la hoja de valores
-lastRow = Sheets("PT T4 Before").Cells(Sheets("PT T4 Before").Rows.Count, 1).End(xlUp).row
-lastCol = Sheets("PT T4 Before").Cells(2, Sheets("PT T4 Before").Columns.Count).End(xlToLeft).Column
-Sheets("PT T4 Before").Range(Cells(2, 1), Cells(lastRow - 1, lastCol)).Copy
-Sheets("PT T4 Before-values").Range("B1").PasteSpecial Paste:=xlPasteValues
+lastRow = Sheets("PT X Before").Cells(Sheets("PT X Before").Rows.Count, 1).End(xlUp).row
+lastCol = Sheets("PT X Before").Cells(2, Sheets("PT X Before").Columns.Count).End(xlToLeft).Column
+Sheets("PT X Before").Range(Cells(2, 1), Cells(lastRow - 1, lastCol)).Copy
+Sheets("PT X Before-values").Range("B1").PasteSpecial Paste:=xlPasteValues
 Application.CutCopyMode = False
 
 'Texto a numero
-Sheets("PT T4 Before-values").Activate
+Sheets("PT X Before-values").Activate
 lastRow = Cells(Rows.Count, "B").End(xlUp).row
 For i = 2 To lastRow
     If IsNumeric(Range("b" & i).Value) Then
@@ -241,7 +241,7 @@ Next i
 'Formula del concatenar el KEY NUMBER
 Range("A1").Value = "KEY NUMBER"
 lastRow = Cells(Rows.Count, "B").End(xlUp).row
-Sheets("PT T4 Before-values").Range("A2:A" & lastRow) = "=+CONCATENATE(RC[1],RC[2])"
+Sheets("PT X Before-values").Range("A2:A" & lastRow) = "=+CONCATENATE(RC[1],RC[2])"
 Columns("A:AB").AutoFit
 
 'Elimina los numeros de empleado que son 00000000
@@ -263,12 +263,12 @@ Next i
 wbauditoria.Save
 
 
-'---------------------------------- ABRE ARCHIVO DE T4 (AFTER) ----------------------------------
-MsgBox "Please select the T4 (AFTER) database file downloaded from SAP", vbInformation
+'---------------------------------- ABRE ARCHIVO DE X (AFTER) ----------------------------------
+MsgCase "Please select the X (AFTER) database file downloaded from SAP", vbInformation
 ruta_Base = Application.GetOpenFilename("Archivos Excel (*.xls; *.xlsx), *.xls; *.xlsx")
 Application.AskToUpdateLinks = False
 
-' Verifica si el usuario seleccionó un archivo
+' Verifica si el usuario seleccionÃ³ un archivo
 If ruta_Base <> "Falso" Then
     'Abre el archivo base
     Set archivoBase = Workbooks.Open(Filename:=ruta_Base, UpdateLinks:=0)
@@ -279,9 +279,9 @@ If ruta_Base <> "Falso" Then
     Sheets(1).Activate
     lastRow = Cells(Rows.Count, "A").End(xlUp).row
     Rows("1:1").AutoFilter
-    Rows("1:1").AutoFilter Field:=14, Criteria1:="=#TTA"
+    Rows("1:1").AutoFilter Field:=14, Criteria1:="=###"
     Range("A1:P" & lastRow).SpecialCells(xlCellTypeVisible).Copy
-    wbauditoria.Sheets("CCYR T4 After").Cells(1, 1).PasteSpecial Paste:=xlPasteValues
+    wbauditoria.Sheets("Base X After").Cells(1, 1).PasteSpecial Paste:=xlPasteValues
     Application.CutCopyMode = False
     
     'Guarda el archivo nuevo y cierra el de la base
@@ -292,32 +292,32 @@ Else
 End If
 
 'Poner todos los boxes para que el rango no cambie
-lastRow = Sheets("CCYR T4 After").Cells(Sheets("CCYR T4 After").Rows.Count, 1).End(xlUp).row
-lastCol = Sheets("CCYR T4 After").Cells(2, Sheets("CCYR T4 After").Columns.Count).End(xlToLeft).Column
+lastRow = Sheets("Base X After").Cells(Sheets("Base X After").Rows.Count, 1).End(xlUp).row
+lastCol = Sheets("Base X After").Cells(2, Sheets("Base X After").Columns.Count).End(xlToLeft).Column
 
 ThisWorkbook.Sheets("Anexxes").Range("H2:H25").Copy
-wbauditoria.Sheets("CCYR T4 After").Cells(lastRow + 1, "L").PasteSpecial Paste:=xlPasteValues
+wbauditoria.Sheets("Base X After").Cells(lastRow + 1, "L").PasteSpecial Paste:=xlPasteValues
 Application.CutCopyMode = False
 ThisWorkbook.Sheets("Anexxes").Range("I2:I25").Copy
-wbauditoria.Sheets("CCYR T4 After").Cells(lastRow + 1, "A").PasteSpecial Paste:=xlPasteValues
+wbauditoria.Sheets("Base X After").Cells(lastRow + 1, "A").PasteSpecial Paste:=xlPasteValues
 Application.CutCopyMode = False
 
 'Crea tabla dinamica
-Sheets("CCYR T4 After").Activate
+Sheets("Base X After").Activate
 
     ult_Tabla = Cells(Rows.Count, "A").End(xlUp).row
-    Set rangoTabla1 = Sheets("CCYR T4 After").Range("A1:P" & ult_Tabla)
+    Set rangoTabla1 = Sheets("Base X After").Range("A1:P" & ult_Tabla)
     ActiveSheet.ListObjects.Add(xlSrcRange, rangoTabla1, , xlYes).Name = "Tabla1"
     
     'Crear tabla dinamica
-    Set celdaTablaDinamica1 = Sheets("PT T4 After").Range("A1")
+    Set celdaTablaDinamica1 = Sheets("PT X After").Range("A1")
     
     'Activa campos y le pone formato tabular
     ActiveWorkbook.PivotCaches.Create(SourceType:=xlDatabase, SourceData:= _
         rangoTabla1, Version:=6).CreatePivotTable TableDestination:= _
         celdaTablaDinamica1, TableName:="tablaDinamica1", DefaultVersion:=6
         
-    Sheets("PT T4 After").Select
+    Sheets("PT X After").Select
         With ActiveSheet.PivotTables("tablaDinamica1").PivotFields("PERNR")
         .Orientation = xlRowField
         .Position = 1
@@ -386,15 +386,15 @@ Sheets("CCYR T4 After").Activate
 wbauditoria.Save
 
 'Copia y pega los datos en la hoja de valores
-lastRow = Sheets("PT T4 After").Cells(Sheets("PT T4 After").Rows.Count, 1).End(xlUp).row
-lastCol = Sheets("PT T4 After").Cells(2, Sheets("PT T4 After").Columns.Count).End(xlToLeft).Column
-Sheets("PT T4 After").Range(Cells(2, 1), Cells(lastRow, lastCol)).Copy
-Sheets("PT T4 After-values").Range("B1").PasteSpecial Paste:=xlPasteValues
+lastRow = Sheets("PT X After").Cells(Sheets("PT X After").Rows.Count, 1).End(xlUp).row
+lastCol = Sheets("PT X After").Cells(2, Sheets("PT X After").Columns.Count).End(xlToLeft).Column
+Sheets("PT X After").Range(Cells(2, 1), Cells(lastRow, lastCol)).Copy
+Sheets("PT X After-values").Range("B1").PasteSpecial Paste:=xlPasteValues
 Application.CutCopyMode = False
 wbauditoria.Save
 
 'Texto a numero
-Sheets("PT T4 After-values").Activate
+Sheets("PT X After-values").Activate
 lastRow = Cells(Rows.Count, "B").End(xlUp).row
 For i = 2 To lastRow
     If IsNumeric(Range("b" & i).Value) Then
@@ -405,7 +405,7 @@ Next i
 'Formula del concatenar el KEY NUMBER
 Range("A1").Value = "KEY NUMBER"
 lastRow = Cells(Rows.Count, "B").End(xlUp).row
-Sheets("PT T4 After-values").Range("A2:A" & lastRow) = "=+CONCATENATE(RC[1],RC[2])"
+Sheets("PT X After-values").Range("A2:A" & lastRow) = "=+CONCATENATE(RC[1],RC[2])"
 Columns("A:AB").AutoFit
 
 'Elimina los numeros de empleado que son 00000000
@@ -426,12 +426,12 @@ Next i
 wbauditoria.Save
 
 
-'---------------------------------- ABRE ARCHIVO DE RL1 (BEFORE) ----------------------------------
-MsgBox "Please select the RL1 (BEFORE) database file downloaded from SAP", vbInformation
+'---------------------------------- ABRE ARCHIVO DE Z (BEFORE) ----------------------------------
+MsgCase "Please select the Z (BEFORE) database file downloaded from SAP", vbInformation
 ruta_Base = Application.GetOpenFilename("Archivos Excel (*.xls; *.xlsx), *.xls; *.xlsx")
 Application.AskToUpdateLinks = False
 
-' Verifica si el usuario seleccionó un archivo
+' Verifica si el usuario seleccionÃ³ un archivo
 If ruta_Base <> "Falso" Then
     'Abre el archivo base
     Set archivoBase = Workbooks.Open(Filename:=ruta_Base, UpdateLinks:=0)
@@ -442,9 +442,9 @@ If ruta_Base <> "Falso" Then
     Sheets(1).Activate
     lastRow = Cells(Rows.Count, "A").End(xlUp).row
     Rows("1:1").AutoFilter
-    Rows("1:1").AutoFilter Field:=14, Criteria1:="=#TTA"
+    Rows("1:1").AutoFilter Field:=14, Criteria1:="=###"
     Range("A1:P" & lastRow).SpecialCells(xlCellTypeVisible).Copy
-    wbauditoria.Sheets("CCYR RL1 before").Cells(1, 1).PasteSpecial Paste:=xlPasteValues
+    wbauditoria.Sheets("Base Z before").Cells(1, 1).PasteSpecial Paste:=xlPasteValues
     Application.CutCopyMode = False
 
     'Guarda el archivo nuevo y cierra el de la base
@@ -457,70 +457,70 @@ End If
 
 
 'Codigo para que cambie lo de las B
-Sheets("CCYR RL1 before").Activate
+Sheets("Base Z before").Activate
 Columns("M:M").Insert Shift:=xlToRight
-Range("M1").Value = "BOX NAME"
+Range("M1").Value = "Case"
 
-' Recorrer cada fila desde la 2 hasta la última
+' Recorrer cada fila desde la 2 hasta la Ãºltima
 lastRow = Cells(Rows.Count, "A").End(xlUp).row
 For i = 2 To lastRow
-    texto = Sheets("CCYR RL1 before").Cells(i, "L").Value
+    texto = Sheets("Base Z before").Cells(i, "L").Value
     Select Case texto
-        Case "B01": Sheets("CCYR RL1 before").Cells(i, "M").Value = "Box A"
-        Case "B02": Sheets("CCYR RL1 before").Cells(i, "M").Value = "Box B"
-        Case "B02S": Sheets("CCYR RL1 before").Cells(i, "M").Value = "Box Bs"
-        Case "B03": Sheets("CCYR RL1 before").Cells(i, "M").Value = "Box C"
-        Case "B04": Sheets("CCYR RL1 before").Cells(i, "M").Value = "Box D"
-        Case "B05": Sheets("CCYR RL1 before").Cells(i, "M").Value = "Box E"
-        Case "B06": Sheets("CCYR RL1 before").Cells(i, "M").Value = "Box F"
-        Case "B07": Sheets("CCYR RL1 before").Cells(i, "M").Value = "Box G"
-        Case "B22": Sheets("CCYR RL1 before").Cells(i, "M").Value = "Box H"
-        Case "B23": Sheets("CCYR RL1 before").Cells(i, "M").Value = "Box I"
-        Case "B10": Sheets("CCYR RL1 before").Cells(i, "M").Value = "Box J"
-        Case "B11": Sheets("CCYR RL1 before").Cells(i, "M").Value = "Box K"
-        Case "B12": Sheets("CCYR RL1 before").Cells(i, "M").Value = "Box L"
-        Case "B13": Sheets("CCYR RL1 before").Cells(i, "M").Value = "Box M"
-        Case "B14": Sheets("CCYR RL1 before").Cells(i, "M").Value = "Box N"
-        Case "B15": Sheets("CCYR RL1 before").Cells(i, "M").Value = "Box O"
-        Case "B16": Sheets("CCYR RL1 before").Cells(i, "M").Value = "Box P"
-        Case "B17": Sheets("CCYR RL1 before").Cells(i, "M").Value = "Box Q"
-        Case "B18": Sheets("CCYR RL1 before").Cells(i, "M").Value = "Box R"
-        Case "B19": Sheets("CCYR RL1 before").Cells(i, "M").Value = "Box S"
-        Case "B20": Sheets("CCYR RL1 before").Cells(i, "M").Value = "Box T"
-        Case "B21": Sheets("CCYR RL1 before").Cells(i, "M").Value = "Box U"
-        Case "B08": Sheets("CCYR RL1 before").Cells(i, "M").Value = "Box V"
-        Case "B09": Sheets("CCYR RL1 before").Cells(i, "M").Value = "Box W"
-        Case Else: Sheets("CCYR RL1 before").Cells(i, "M").Value = texto ' Mantener el mismo valor
+        Case "B01": Sheets("Base Z before").Cells(i, "M").Value = "Case A"
+        Case "B02": Sheets("Base Z before").Cells(i, "M").Value = "Case B"
+        Case "B02S": Sheets("Base Z before").Cells(i, "M").Value = "Case Bs"
+        Case "B03": Sheets("Base Z before").Cells(i, "M").Value = "Case C"
+        Case "B04": Sheets("Base Z before").Cells(i, "M").Value = "Case D"
+        Case "B05": Sheets("Base Z before").Cells(i, "M").Value = "Case E"
+        Case "B06": Sheets("Base Z before").Cells(i, "M").Value = "Case F"
+        Case "B07": Sheets("Base Z before").Cells(i, "M").Value = "Case G"
+        Case "B22": Sheets("Base Z before").Cells(i, "M").Value = "Case H"
+        Case "B23": Sheets("Base Z before").Cells(i, "M").Value = "Case I"
+        Case "B10": Sheets("Base Z before").Cells(i, "M").Value = "Case J"
+        Case "B11": Sheets("Base Z before").Cells(i, "M").Value = "Case K"
+        Case "B12": Sheets("Base Z before").Cells(i, "M").Value = "Case L"
+        Case "B13": Sheets("Base Z before").Cells(i, "M").Value = "Case M"
+        Case "B14": Sheets("Base Z before").Cells(i, "M").Value = "Case N"
+        Case "B15": Sheets("Base Z before").Cells(i, "M").Value = "Case O"
+        Case "B16": Sheets("Base Z before").Cells(i, "M").Value = "Case P"
+        Case "B17": Sheets("Base Z before").Cells(i, "M").Value = "Case Q"
+        Case "B18": Sheets("Base Z before").Cells(i, "M").Value = "Case R"
+        Case "B19": Sheets("Base Z before").Cells(i, "M").Value = "Case S"
+        Case "B20": Sheets("Base Z before").Cells(i, "M").Value = "Case T"
+        Case "B21": Sheets("Base Z before").Cells(i, "M").Value = "Case U"
+        Case "B08": Sheets("Base Z before").Cells(i, "M").Value = "Case V"
+        Case "B09": Sheets("Base Z before").Cells(i, "M").Value = "Case W"
+        Case Else: Sheets("Base Z before").Cells(i, "M").Value = texto ' Mantener el mismo valor
     End Select
 Next i
 
 'Poner todos los boxes para que el rango no cambie
-lastRow = Sheets("CCYR RL1 before").Cells(Sheets("CCYR RL1 before").Rows.Count, 1).End(xlUp).row
-lastCol = Sheets("CCYR RL1 before").Cells(2, Sheets("CCYR RL1 before").Columns.Count).End(xlToLeft).Column
+lastRow = Sheets("Base Z before").Cells(Sheets("Base Z before").Rows.Count, 1).End(xlUp).row
+lastCol = Sheets("Base Z before").Cells(2, Sheets("Base Z before").Columns.Count).End(xlToLeft).Column
 
 ThisWorkbook.Sheets("Anexxes").Range("G2:G23").Copy
-wbauditoria.Sheets("CCYR RL1 before").Cells(lastRow + 1, "M").PasteSpecial Paste:=xlPasteValues
+wbauditoria.Sheets("Base Z before").Cells(lastRow + 1, "M").PasteSpecial Paste:=xlPasteValues
 Application.CutCopyMode = False
 ThisWorkbook.Sheets("Anexxes").Range("I2:I23").Copy
-wbauditoria.Sheets("CCYR RL1 before").Cells(lastRow + 1, "A").PasteSpecial Paste:=xlPasteValues
+wbauditoria.Sheets("Base Z before").Cells(lastRow + 1, "A").PasteSpecial Paste:=xlPasteValues
 Application.CutCopyMode = False
 
 'Crea tabla dinamica
-Sheets("CCYR RL1 before").Activate
+Sheets("Base Z before").Activate
 
     ult_Tabla = Cells(Rows.Count, "A").End(xlUp).row
-    Set rangoTabla1 = Sheets("CCYR RL1 before").Range("A1:Q" & ult_Tabla)
+    Set rangoTabla1 = Sheets("Base Z before").Range("A1:Q" & ult_Tabla)
     ActiveSheet.ListObjects.Add(xlSrcRange, rangoTabla1, , xlYes).Name = "Tabla1"
     
     'Crear tabla dinamica
-    Set celdaTablaDinamica1 = Sheets("PT RL1 Before").Range("A1")
+    Set celdaTablaDinamica1 = Sheets("PT Z Before").Range("A1")
     
     'Activa campos y le pone formato tabular
     ActiveWorkbook.PivotCaches.Create(SourceType:=xlDatabase, SourceData:= _
         rangoTabla1, Version:=6).CreatePivotTable TableDestination:= _
         celdaTablaDinamica1, TableName:="tablaDinamica1", DefaultVersion:=6
         
-    Sheets("PT RL1 Before").Select
+    Sheets("PT Z Before").Select
     With ActiveSheet.PivotTables("tablaDinamica1").PivotFields("PERNR")
         .Orientation = xlRowField
         .Position = 1
@@ -542,7 +542,7 @@ Sheets("CCYR RL1 before").Activate
         .Orientation = xlRowField
         .Position = 5
     End With
-    With ActiveSheet.PivotTables("tablaDinamica1").PivotFields("BOX NAME")
+    With ActiveSheet.PivotTables("tablaDinamica1").PivotFields("Case")
         .Orientation = xlColumnField
         .Position = 1
     End With
@@ -576,7 +576,7 @@ Sheets("CCYR RL1 before").Activate
         Array(False, False, False, False, False, False, False, False, False, False, False, False)
     ActiveSheet.PivotTables("tablaDinamica1").PivotFields("SLART").Subtotals = _
         Array(False, False, False, False, False, False, False, False, False, False, False, False)
-    ActiveSheet.PivotTables("tablaDinamica1").PivotFields("BOX NAME").Subtotals = _
+    ActiveSheet.PivotTables("tablaDinamica1").PivotFields("Case").Subtotals = _
         Array(False, False, False, False, False, False, False, False, False, False, False, False)
     ActiveSheet.PivotTables("tablaDinamica1").PivotFields("STEXT").Subtotals = _
         Array(False, False, False, False, False, False, False, False, False, False, False, False)
@@ -593,15 +593,15 @@ Sheets("CCYR RL1 before").Activate
 wbauditoria.Save
 
 'Copia y pega los datos en la hoja de valores
-lastRow = Sheets("PT RL1 Before").Cells(Sheets("PT RL1 Before").Rows.Count, 1).End(xlUp).row
-lastCol = Sheets("PT RL1 Before").Cells(2, Sheets("PT RL1 Before").Columns.Count).End(xlToLeft).Column
-Sheets("PT RL1 Before").Range(Cells(2, 1), Cells(lastRow, lastCol)).Copy
-Sheets("PT RL1 Before-values").Range("B1").PasteSpecial Paste:=xlPasteValues
+lastRow = Sheets("PT Z Before").Cells(Sheets("PT Z Before").Rows.Count, 1).End(xlUp).row
+lastCol = Sheets("PT Z Before").Cells(2, Sheets("PT Z Before").Columns.Count).End(xlToLeft).Column
+Sheets("PT Z Before").Range(Cells(2, 1), Cells(lastRow, lastCol)).Copy
+Sheets("PT Z Before-values").Range("B1").PasteSpecial Paste:=xlPasteValues
 Application.CutCopyMode = False
 wbauditoria.Save
 
 'Texto a numero
-Sheets("PT RL1 Before-values").Activate
+Sheets("PT Z Before-values").Activate
 lastRow = Cells(Rows.Count, "B").End(xlUp).row
 For i = 2 To lastRow
     If IsNumeric(Range("b" & i).Value) Then
@@ -612,7 +612,7 @@ Next i
 'Formula del concatenar el KEY NUMBER
 Range("A1").Value = "KEY NUMBER"
 lastRow = Cells(Rows.Count, "B").End(xlUp).row
-Sheets("PT RL1 Before-values").Range("A2:A" & lastRow) = "=+CONCATENATE(RC[1],RC[2])"
+Sheets("PT Z Before-values").Range("A2:A" & lastRow) = "=+CONCATENATE(RC[1],RC[2])"
 Columns("A:AC").AutoFit
 
 'Elimina los numeros de empleado que son 00000000
@@ -633,12 +633,12 @@ Next i
 wbauditoria.Save
 
 
-'---------------------------------- ABRE ARCHIVO DE RL1 (AFTER) ----------------------------------
-MsgBox "Please select the RL1 (AFTER) database file downloaded from SAP", vbInformation
+'---------------------------------- ABRE ARCHIVO DE Z (AFTER) ----------------------------------
+MsgCase "Please select the Z (AFTER) database file downloaded from SAP", vbInformation
 ruta_Base = Application.GetOpenFilename("Archivos Excel (*.xls; *.xlsx), *.xls; *.xlsx")
 Application.AskToUpdateLinks = False
 
-' Verifica si el usuario seleccionó un archivo
+' Verifica si el usuario seleccionÃ³ un archivo
 If ruta_Base <> "Falso" Then
     'Abre el archivo base
     Set archivoBase = Workbooks.Open(Filename:=ruta_Base, UpdateLinks:=0)
@@ -649,9 +649,9 @@ If ruta_Base <> "Falso" Then
     Sheets(1).Activate
     lastRow = Cells(Rows.Count, "A").End(xlUp).row
     Rows("1:1").AutoFilter
-    Rows("1:1").AutoFilter Field:=14, Criteria1:="=#TTA"
+    Rows("1:1").AutoFilter Field:=14, Criteria1:="=###"
     Range("A1:P" & lastRow).SpecialCells(xlCellTypeVisible).Copy
-    wbauditoria.Sheets("CCYR RL1 After").Cells(1, 1).PasteSpecial Paste:=xlPasteValues
+    wbauditoria.Sheets("Base Z After").Cells(1, 1).PasteSpecial Paste:=xlPasteValues
     Application.CutCopyMode = False
 
     'Guarda el archivo nuevo y cierra el de la base
@@ -662,70 +662,70 @@ Else
 End If
 
 'Codigo para que cambie lo de las B
-Sheets("CCYR RL1 After").Activate
+Sheets("Base Z After").Activate
 Columns("M:M").Insert Shift:=xlToRight
-Range("M1").Value = "BOX NAME"
+Range("M1").Value = "Case"
 
-' Recorrer cada fila desde la 2 hasta la última
+' Recorrer cada fila desde la 2 hasta la Ãºltima
 lastRow = Cells(Rows.Count, "A").End(xlUp).row
 For i = 2 To lastRow
-    texto = Sheets("CCYR RL1 After").Cells(i, "L").Value
+    texto = Sheets("Base Z After").Cells(i, "L").Value
     Select Case texto
-        Case "B01": Sheets("CCYR RL1 After").Cells(i, "M").Value = "Box A"
-        Case "B02": Sheets("CCYR RL1 After").Cells(i, "M").Value = "Box B"
-        Case "B02S": Sheets("CCYR RL1 After").Cells(i, "M").Value = "Box Bs"
-        Case "B03": Sheets("CCYR RL1 After").Cells(i, "M").Value = "Box C"
-        Case "B04": Sheets("CCYR RL1 After").Cells(i, "M").Value = "Box D"
-        Case "B05": Sheets("CCYR RL1 After").Cells(i, "M").Value = "Box E"
-        Case "B06": Sheets("CCYR RL1 After").Cells(i, "M").Value = "Box F"
-        Case "B07": Sheets("CCYR RL1 After").Cells(i, "M").Value = "Box G"
-        Case "B22": Sheets("CCYR RL1 After").Cells(i, "M").Value = "Box H"
-        Case "B23": Sheets("CCYR RL1 After").Cells(i, "M").Value = "Box I"
-        Case "B10": Sheets("CCYR RL1 After").Cells(i, "M").Value = "Box J"
-        Case "B11": Sheets("CCYR RL1 After").Cells(i, "M").Value = "Box K"
-        Case "B12": Sheets("CCYR RL1 After").Cells(i, "M").Value = "Box L"
-        Case "B13": Sheets("CCYR RL1 After").Cells(i, "M").Value = "Box M"
-        Case "B14": Sheets("CCYR RL1 After").Cells(i, "M").Value = "Box N"
-        Case "B15": Sheets("CCYR RL1 After").Cells(i, "M").Value = "Box O"
-        Case "B16": Sheets("CCYR RL1 After").Cells(i, "M").Value = "Box P"
-        Case "B17": Sheets("CCYR RL1 After").Cells(i, "M").Value = "Box Q"
-        Case "B18": Sheets("CCYR RL1 After").Cells(i, "M").Value = "Box R"
-        Case "B19": Sheets("CCYR RL1 After").Cells(i, "M").Value = "Box S"
-        Case "B20": Sheets("CCYR RL1 After").Cells(i, "M").Value = "Box T"
-        Case "B21": Sheets("CCYR RL1 After").Cells(i, "M").Value = "Box U"
-        Case "B08": Sheets("CCYR RL1 After").Cells(i, "M").Value = "Box V"
-        Case "B09": Sheets("CCYR RL1 After").Cells(i, "M").Value = "Box W"
-        Case Else: Sheets("CCYR RL1 After").Cells(i, "M").Value = texto ' Mantener el mismo valor
+        Case "B01": Sheets("Base Z After").Cells(i, "M").Value = "Case A"
+        Case "B02": Sheets("Base Z After").Cells(i, "M").Value = "Case B"
+        Case "B02S": Sheets("Base Z After").Cells(i, "M").Value = "Case Bs"
+        Case "B03": Sheets("Base Z After").Cells(i, "M").Value = "Case C"
+        Case "B04": Sheets("Base Z After").Cells(i, "M").Value = "Case D"
+        Case "B05": Sheets("Base Z After").Cells(i, "M").Value = "Case E"
+        Case "B06": Sheets("Base Z After").Cells(i, "M").Value = "Case F"
+        Case "B07": Sheets("Base Z After").Cells(i, "M").Value = "Case G"
+        Case "B22": Sheets("Base Z After").Cells(i, "M").Value = "Case H"
+        Case "B23": Sheets("Base Z After").Cells(i, "M").Value = "Case I"
+        Case "B10": Sheets("Base Z After").Cells(i, "M").Value = "Case J"
+        Case "B11": Sheets("Base Z After").Cells(i, "M").Value = "Case K"
+        Case "B12": Sheets("Base Z After").Cells(i, "M").Value = "Case L"
+        Case "B13": Sheets("Base Z After").Cells(i, "M").Value = "Case M"
+        Case "B14": Sheets("Base Z After").Cells(i, "M").Value = "Case N"
+        Case "B15": Sheets("Base Z After").Cells(i, "M").Value = "Case O"
+        Case "B16": Sheets("Base Z After").Cells(i, "M").Value = "Case P"
+        Case "B17": Sheets("Base Z After").Cells(i, "M").Value = "Case Q"
+        Case "B18": Sheets("Base Z After").Cells(i, "M").Value = "Case R"
+        Case "B19": Sheets("Base Z After").Cells(i, "M").Value = "Case S"
+        Case "B20": Sheets("Base Z After").Cells(i, "M").Value = "Case T"
+        Case "B21": Sheets("Base Z After").Cells(i, "M").Value = "Case U"
+        Case "B08": Sheets("Base Z After").Cells(i, "M").Value = "Case V"
+        Case "B09": Sheets("Base Z After").Cells(i, "M").Value = "Case W"
+        Case Else: Sheets("Base Z After").Cells(i, "M").Value = texto ' Mantener el mismo valor
     End Select
 Next i
 
 'Poner todos los boxes para que el rango no cambie
-lastRow = Sheets("CCYR RL1 After").Cells(Sheets("CCYR RL1 After").Rows.Count, 1).End(xlUp).row
-lastCol = Sheets("CCYR RL1 After").Cells(2, Sheets("CCYR RL1 After").Columns.Count).End(xlToLeft).Column
+lastRow = Sheets("Base Z After").Cells(Sheets("Base Z After").Rows.Count, 1).End(xlUp).row
+lastCol = Sheets("Base Z After").Cells(2, Sheets("Base Z After").Columns.Count).End(xlToLeft).Column
 
 ThisWorkbook.Sheets("Anexxes").Range("G2:G23").Copy
-wbauditoria.Sheets("CCYR RL1 After").Cells(lastRow + 1, "M").PasteSpecial Paste:=xlPasteValues
+wbauditoria.Sheets("Base Z After").Cells(lastRow + 1, "M").PasteSpecial Paste:=xlPasteValues
 Application.CutCopyMode = False
 ThisWorkbook.Sheets("Anexxes").Range("I2:I23").Copy
-wbauditoria.Sheets("CCYR RL1 After").Cells(lastRow + 1, "A").PasteSpecial Paste:=xlPasteValues
+wbauditoria.Sheets("Base Z After").Cells(lastRow + 1, "A").PasteSpecial Paste:=xlPasteValues
 Application.CutCopyMode = False
 
 'Crea tabla dinamica
-Sheets("CCYR RL1 After").Activate
+Sheets("Base Z After").Activate
 
     ult_Tabla = Cells(Rows.Count, "A").End(xlUp).row
-    Set rangoTabla1 = Sheets("CCYR RL1 After").Range("A1:Q" & ult_Tabla)
+    Set rangoTabla1 = Sheets("Base Z After").Range("A1:Q" & ult_Tabla)
     ActiveSheet.ListObjects.Add(xlSrcRange, rangoTabla1, , xlYes).Name = "Tabla1"
     
     'Crear tabla dinamica
-    Set celdaTablaDinamica1 = Sheets("PT RL1 After").Range("A1")
+    Set celdaTablaDinamica1 = Sheets("PT Z After").Range("A1")
     
     'Activa campos y le pone formato tabular
     ActiveWorkbook.PivotCaches.Create(SourceType:=xlDatabase, SourceData:= _
         rangoTabla1, Version:=6).CreatePivotTable TableDestination:= _
         celdaTablaDinamica1, TableName:="tablaDinamica1", DefaultVersion:=6
         
-    Sheets("PT RL1 After").Select
+    Sheets("PT Z After").Select
    With ActiveSheet.PivotTables("tablaDinamica1").PivotFields("PERNR")
         .Orientation = xlRowField
         .Position = 1
@@ -747,7 +747,7 @@ Sheets("CCYR RL1 After").Activate
         .Orientation = xlRowField
         .Position = 5
     End With
-    With ActiveSheet.PivotTables("tablaDinamica1").PivotFields("BOX NAME")
+    With ActiveSheet.PivotTables("tablaDinamica1").PivotFields("Case")
         .Orientation = xlColumnField
         .Position = 1
     End With
@@ -781,7 +781,7 @@ Sheets("CCYR RL1 After").Activate
         Array(False, False, False, False, False, False, False, False, False, False, False, False)
     ActiveSheet.PivotTables("tablaDinamica1").PivotFields("SLART").Subtotals = _
         Array(False, False, False, False, False, False, False, False, False, False, False, False)
-    ActiveSheet.PivotTables("tablaDinamica1").PivotFields("BOX NAME").Subtotals = _
+    ActiveSheet.PivotTables("tablaDinamica1").PivotFields("Case").Subtotals = _
         Array(False, False, False, False, False, False, False, False, False, False, False, False)
     ActiveSheet.PivotTables("tablaDinamica1").PivotFields("STEXT").Subtotals = _
         Array(False, False, False, False, False, False, False, False, False, False, False, False)
@@ -798,15 +798,15 @@ Sheets("CCYR RL1 After").Activate
 wbauditoria.Save
 
 'Copia y pega los datos en la hoja de valores
-lastRow = Sheets("PT RL1 After").Cells(Sheets("PT RL1 After").Rows.Count, 1).End(xlUp).row
-lastCol = Sheets("PT RL1 After").Cells(2, Sheets("PT RL1 After").Columns.Count).End(xlToLeft).Column
-Sheets("PT RL1 After").Range(Cells(2, 1), Cells(lastRow, lastCol)).Copy
-Sheets("PT RL1 After-values").Range("B1").PasteSpecial Paste:=xlPasteValues
+lastRow = Sheets("PT Z After").Cells(Sheets("PT Z After").Rows.Count, 1).End(xlUp).row
+lastCol = Sheets("PT Z After").Cells(2, Sheets("PT Z After").Columns.Count).End(xlToLeft).Column
+Sheets("PT Z After").Range(Cells(2, 1), Cells(lastRow, lastCol)).Copy
+Sheets("PT Z After-values").Range("B1").PasteSpecial Paste:=xlPasteValues
 Application.CutCopyMode = False
 wbauditoria.Save
 
 'Texto a numero
-Sheets("PT RL1 After-values").Activate
+Sheets("PT Z After-values").Activate
 lastRow = Cells(Rows.Count, "B").End(xlUp).row
 For i = 2 To lastRow
     If IsNumeric(Range("b" & i).Value) Then
@@ -817,7 +817,7 @@ Next i
 'Formula del concatenar el KEY NUMBER
 Range("A1").Value = "KEY NUMBER"
 lastRow = Cells(Rows.Count, "B").End(xlUp).row
-Sheets("PT RL1 After-values").Range("A2:A" & lastRow) = "=+CONCATENATE(RC[1],RC[2])"
+Sheets("PT Z After-values").Range("A2:A" & lastRow) = "=+CONCATENATE(RC[1],RC[2])"
 Columns("A:AC").AutoFit
 
 'Elimina los numeros de empleado que son 00000000
@@ -836,32 +836,32 @@ For i = lastRow To 2 Step -1
 Next i
 
 'Oculta hojas que ya no son necesarias
-wbauditoria.Sheets("CCYR T4 before").Visible = xlSheetHidden
-wbauditoria.Sheets("CCYR T4 After").Visible = xlSheetHidden
-wbauditoria.Sheets("CCYR RL1 before").Visible = xlSheetHidden
-wbauditoria.Sheets("CCYR RL1 After").Visible = xlSheetHidden
+wbauditoria.Sheets("Base X before").Visible = xlSheetHidden
+wbauditoria.Sheets("Base X After").Visible = xlSheetHidden
+wbauditoria.Sheets("Base Z before").Visible = xlSheetHidden
+wbauditoria.Sheets("Base Z After").Visible = xlSheetHidden
 wbauditoria.Save
 
 '---------------------------------- ELIMINAR LAS COLUMNAS QUE NO SON NECESARIAS ----------------------------------
 'La eliminacion depende de cual auditoria se esta ejecutando, solo va a dejar las que necesita
 
-'Hoja PT T4 Before-values
-Sheets("PT T4 Before-values").Activate
+'Hoja PT X Before-values
+Sheets("PT X Before-values").Activate
 Select Case auditoria
  
-     Case "Quebec Health Tax entries"
+     Case "Health Tax"
         Union(Columns("G:I"), Columns("L:P"), Columns("R:AF")).Delete
          
-     Case "Auto Taxable benefit entries"
+     Case "Taxable"
         Union(Columns("L:P"), Columns("T:Y"), Columns("Z:AF")).Delete
          
-     Case "Taxable Benefits entries (PSA - Benefits)"
+     Case "Taxable B"
         Union(Columns("L:P"), Columns("T:Z"), Columns("AB:AF")).Delete
          
-     Case "Pension Adjustment entries"
+     Case "Pension"
         Union(Columns("G:U"), Columns("W:AF")).Delete
         
-     Case "CPP QPP Boxes validation"
+     Case "Cases"
         Union(Columns("G:G"), Columns("L:P"), Columns("T:AF")).Delete
          
      Case "EI boxes validation"
@@ -869,23 +869,23 @@ Select Case auditoria
          
  End Select
 
-'PT T4 After-values
-Sheets("PT T4 After-values").Activate
+'PT X After-values
+Sheets("PT X After-values").Activate
 Select Case auditoria
  
-     Case "Quebec Health Tax entries"
+     Case "Health Tax"
         Union(Columns("G:I"), Columns("L:P"), Columns("R:AF")).Delete
          
-     Case "Auto Taxable benefit entries"
+     Case "Taxable"
         Union(Columns("L:P"), Columns("T:Y"), Columns("Z:AF")).Delete
          
-     Case "Taxable Benefits entries (PSA - Benefits)"
+     Case "Taxable B"
         Union(Columns("L:P"), Columns("T:Z"), Columns("AB:AF")).Delete
          
-     Case "Pension Adjustment entries"
+     Case "Pension"
         Union(Columns("G:U"), Columns("W:AF")).Delete
         
-     Case "CPP QPP Boxes validation"
+     Case "Cases"
         Union(Columns("G:G"), Columns("L:P"), Columns("T:AF")).Delete
          
      Case "EI boxes validation"
@@ -893,29 +893,29 @@ Select Case auditoria
          
  End Select
  
-'Hoja PT RL1 Before-values
-Sheets("PT RL1 Before-values").Activate
+'Hoja PT Z Before-values
+Sheets("PT Z Before-values").Activate
 Select Case auditoria
  
-     Case "Quebec Health Tax entries"
+     Case "Health Tax"
         Union(Columns("K:N"), Columns("P:Q"), Columns("S:AC")).Delete
          
-     Case "Auto Taxable benefit entries"
+     Case "Taxable"
         Union(Columns("K:N"), Columns("P:U"), Columns("W:AC")).Delete
          
-     Case "Taxable Benefits entries (PSA - Benefits)"
+     Case "Taxable B"
         Union(Columns("K:N"), Columns("P:R"), Columns("T:AC")).Delete
          
-     Case "Pension Adjustment entries"
+     Case "Pension"
         Application.DisplayAlerts = False
         Sheets(1).Activate
-        wbauditoria.Sheets("CCYR RL1 before").Delete
-        wbauditoria.Sheets("PT RL1 Before").Delete
-        wbauditoria.Sheets("PT RL1 Before-values").Delete
-        wbauditoria.Sheets("Validation RL1").Delete
+        wbauditoria.Sheets("Base Z before").Delete
+        wbauditoria.Sheets("PT Z Before").Delete
+        wbauditoria.Sheets("PT Z Before-values").Delete
+        wbauditoria.Sheets("Validation Z").Delete
         Application.DisplayAlerts = True
         
-     Case "CPP QPP Boxes validation"
+     Case "Cases"
         Union(Columns("G:G"), Columns("K:N"), Columns("P:R"), Columns("T:X"), Columns("AB:AC")).Delete
          
      Case "EI boxes validation"
@@ -923,28 +923,28 @@ Select Case auditoria
          
  End Select
  
-'Hoja PT RL1 After-values
-Sheets("PT RL1 After-values").Activate
+'Hoja PT Z After-values
+Sheets("PT Z After-values").Activate
 Select Case auditoria
  
-     Case "Quebec Health Tax entries"
+     Case "Health Tax"
         Union(Columns("K:N"), Columns("P:Q"), Columns("S:AC")).Delete
          
-     Case "Auto Taxable benefit entries"
+     Case "Taxable"
         Union(Columns("K:N"), Columns("P:U"), Columns("W:AC")).Delete
          
-     Case "Taxable Benefits entries (PSA - Benefits)"
+     Case "Taxable B"
         Union(Columns("K:N"), Columns("P:R"), Columns("T:AC")).Delete
          
-     Case "Pension Adjustment entries"
+     Case "Pension"
         Application.DisplayAlerts = False
         Sheets(1).Activate
-        wbauditoria.Sheets("CCYR RL1 After").Delete
-        wbauditoria.Sheets("PT RL1 After").Delete
-        wbauditoria.Sheets("PT RL1 After-values").Delete
+        wbauditoria.Sheets("Base Z After").Delete
+        wbauditoria.Sheets("PT Z After").Delete
+        wbauditoria.Sheets("PT Z After-values").Delete
         Application.DisplayAlerts = True
         
-     Case "CPP QPP Boxes validation"
+     Case "Cases"
         Union(Columns("G:G"), Columns("K:N"), Columns("P:R"), Columns("T:X"), Columns("AB:AC")).Delete
          
      Case "EI boxes validation"
@@ -959,20 +959,20 @@ Select Case auditoria
 
 Select Case auditoria
  
-     Case "Quebec Health Tax entries"
-        Call Quebec_HT_Entry
+     Case "Health Tax"
+        Call HT_Entry
        
-     Case "Auto Taxable benefit entries"
+     Case "Taxable"
         Call Auto_TB_Entries
          
-     Case "Taxable Benefits entries (PSA - Benefits)"
+     Case "Taxable B"
         Call Taxable_B_Entries
          
-     Case "Pension Adjustment entries"
+     Case "Pension"
         Call Pension_Entries
         
-     Case "CPP QPP Boxes validation"
-        Call CPP_QPP_validation
+     Case "Cases"
+        CallCases_validation
          
      Case "EI boxes validation"
         Call EI_boxes_validation
@@ -982,25 +982,25 @@ Select Case auditoria
 
 End Sub
 
-Sub Quebec_HT_Entry()
+Sub HT_Entry()
 
-     '------ Crea la hoja de validacion del RL1
+     '------ Crea la hoja de validacion del Z
         
-        'Copia los datos de la hoja de before del RL1
-        Sheets("Validation RL1").Activate
-        lastRow = Sheets("PT RL1 Before-values").Cells(Sheets("PT RL1 Before-values").Rows.Count, 3).End(xlUp).row
-        lastCol = Sheets("PT RL1 Before-values").Cells(1, Sheets("PT RL1 Before-values").Columns.Count).End(xlToLeft).Column
-        Set rng = wbauditoria.Sheets("PT RL1 Before-values").Range(wbauditoria.Sheets("PT RL1 Before-values").Cells(1, 1), wbauditoria.Sheets("PT RL1 Before-values").Cells(lastRow, lastCol))
-        wbauditoria.Sheets("Validation RL1").Range("A2").Resize(rng.Rows.Count, rng.Columns.Count).Value = rng.Value
+        'Copia los datos de la hoja de before del Z
+        Sheets("Validation Z").Activate
+        lastRow = Sheets("PT Z Before-values").Cells(Sheets("PT Z Before-values").Rows.Count, 3).End(xlUp).row
+        lastCol = Sheets("PT Z Before-values").Cells(1, Sheets("PT Z Before-values").Columns.Count).End(xlToLeft).Column
+        Set rng = wbauditoria.Sheets("PT Z Before-values").Range(wbauditoria.Sheets("PT Z Before-values").Cells(1, 1), wbauditoria.Sheets("PT Z Before-values").Cells(lastRow, lastCol))
+        wbauditoria.Sheets("Validation Z").Range("A2").Resize(rng.Rows.Count, rng.Columns.Count).Value = rng.Value
         
         'Calcula ultima fila y columna de la hoja de validacion
         Columns("A:A").Insert Shift:=xlToRight
-        lastRow = Sheets("Validation RL1").Cells(Sheets("Validation RL1").Rows.Count, 3).End(xlUp).row
-        lastCol = Sheets("Validation RL1").Cells(2, Sheets("Validation RL1").Columns.Count).End(xlToLeft).Column
+        lastRow = Sheets("Validation Z").Cells(Sheets("Validation Z").Rows.Count, 3).End(xlUp).row
+        lastCol = Sheets("Validation Z").Cells(2, Sheets("Validation Z").Columns.Count).End(xlToLeft).Column
         
         'Coloca los titulos en la fila 2
         ThisWorkbook.Sheets("Anexxes").Range("L2:AS2").Copy
-        wbauditoria.Sheets("Validation RL1").Range("A2").PasteSpecial Paste:=xlPasteValues
+        wbauditoria.Sheets("Validation Z").Range("A2").PasteSpecial Paste:=xlPasteValues
         Application.CutCopyMode = False
         Columns("A:AS").AutoFit
         
@@ -1058,53 +1058,53 @@ Sub Quebec_HT_Entry()
         Columns("A:AH").AutoFit
         
         'Formula de la columa A
-        lastRow = Sheets("Validation RL1").Cells(Sheets("Validation RL1").Rows.Count, 3).End(xlUp).row
-        lastCol = Sheets("Validation RL1").Cells(2, Sheets("Validation RL1").Columns.Count).End(xlToLeft).Column
-        Sheets("Validation RL1").Range("A3:A" & lastRow) = "=COUNTIF('PT RL1 After-values'!C[1],'Validation RL1'!RC[2])"
+        lastRow = Sheets("Validation Z").Cells(Sheets("Validation Z").Rows.Count, 3).End(xlUp).row
+        lastCol = Sheets("Validation Z").Cells(2, Sheets("Validation Z").Columns.Count).End(xlToLeft).Column
+        Sheets("Validation Z").Range("A3:A" & lastRow) = "=COUNTIF('PT Z After-values'!C[1],'Validation Z'!RC[2])"
         
         'Coloca el resto de las formulas
-        lastRow = Sheets("Validation RL1").Cells(Sheets("Validation RL1").Rows.Count, 3).End(xlUp).row
-        Sheets("Validation RL1").Range("N3:N" & lastRow) = "=VLOOKUP(RC[-12],'PT RL1 After-values'!C1:C12,7,0)"
-        Sheets("Validation RL1").Range("O3:O" & lastRow) = "=VLOOKUP(RC[-13],'PT RL1 After-values'!C1:C12,8,0)"
-        Sheets("Validation RL1").Range("P3:P" & lastRow) = "=VLOOKUP(RC[-14],'PT RL1 After-values'!C1:C12,9,0)"
-        Sheets("Validation RL1").Range("Q3:Q" & lastRow) = "=VLOOKUP(RC[-15],'PT RL1 After-values'!C1:C12,10,0)"
-        Sheets("Validation RL1").Range("R3:R" & lastRow) = "=VLOOKUP(RC[-16],'PT RL1 After-values'!C1:C12,11,0)"
-        Sheets("Validation RL1").Range("S3:S" & lastRow) = "=VLOOKUP(RC[-17],'PT RL1 After-values'!C1:C12,12,0)"
-        Sheets("Validation RL1").Range("T3:T" & lastRow) = "=RC[-6]-RC[-12]"
-        Sheets("Validation RL1").Range("U3:U" & lastRow) = "=RC[-6]-RC[-12]"
-        Sheets("Validation RL1").Range("V3:V" & lastRow) = "=RC[-6]-RC[-12]"
-        Sheets("Validation RL1").Range("W3:W" & lastRow) = "=RC[-6]-RC[-12]"
-        Sheets("Validation RL1").Range("X3:X" & lastRow) = "=RC[-6]-RC[-12]"
-        Sheets("Validation RL1").Range("Y3:Y" & lastRow) = "=RC[-6]-RC[-12]"
-        Sheets("Validation RL1").Range("Z3:Z" & lastRow) = "=VLOOKUP(RC[-23],'BoxJ entry'!C1:C4,4,0)"
-        Sheets("Validation RL1").Range("AA3:AA" & lastRow) = "=ROUND(IF(RC[-7]=0,0,RC[-7]-RC[-1]),2)"
-        Sheets("Validation RL1").Range("AB3:AB" & lastRow) = "=ROUND(IF(RC[-7]=0,0,RC[-7]-RC[-2]),2)"
-        Sheets("Validation RL1").Range("AC3:AC" & lastRow) = "=ROUND(IF(RC[-7]=0,0,RC[-7]-RC[-3]),2)"
-        Sheets("Validation RL1").Range("AD3:AD" & lastRow) = "=IF((RC[-9]+RC[-8])=RC[-7],0,RC[-7])"
-        Sheets("Validation RL1").Range("AE3:AE" & lastRow) = "=ROUND(IF(RC[-7]=0,0,RC[-7]-RC[-5]),2)"
-        Sheets("Validation RL1").Range("AF3:AF" & lastRow) = "=ROUND(IF(RC[-7]=0,0,RC[-7]-RC[-6]),2)"
-        Sheets("Validation RL1").Range("AG3:AG" & lastRow) = "=VLOOKUP(RC[-30],'BoxJ entry'!C1:C2,2,0)"
-        Sheets("Validation RL1").Range("AH3:AH" & lastRow) = "=RC[-1]-RC[-15]"
+        lastRow = Sheets("Validation Z").Cells(Sheets("Validation Z").Rows.Count, 3).End(xlUp).row
+        Sheets("Validation Z").Range("N3:N" & lastRow) = "=VLOOKUP(RC[-12],'PT Z After-values'!C1:C12,7,0)"
+        Sheets("Validation Z").Range("O3:O" & lastRow) = "=VLOOKUP(RC[-13],'PT Z After-values'!C1:C12,8,0)"
+        Sheets("Validation Z").Range("P3:P" & lastRow) = "=VLOOKUP(RC[-14],'PT Z After-values'!C1:C12,9,0)"
+        Sheets("Validation Z").Range("Q3:Q" & lastRow) = "=VLOOKUP(RC[-15],'PT Z After-values'!C1:C12,10,0)"
+        Sheets("Validation Z").Range("R3:R" & lastRow) = "=VLOOKUP(RC[-16],'PT Z After-values'!C1:C12,11,0)"
+        Sheets("Validation Z").Range("S3:S" & lastRow) = "=VLOOKUP(RC[-17],'PT Z After-values'!C1:C12,12,0)"
+        Sheets("Validation Z").Range("T3:T" & lastRow) = "=RC[-6]-RC[-12]"
+        Sheets("Validation Z").Range("U3:U" & lastRow) = "=RC[-6]-RC[-12]"
+        Sheets("Validation Z").Range("V3:V" & lastRow) = "=RC[-6]-RC[-12]"
+        Sheets("Validation Z").Range("W3:W" & lastRow) = "=RC[-6]-RC[-12]"
+        Sheets("Validation Z").Range("X3:X" & lastRow) = "=RC[-6]-RC[-12]"
+        Sheets("Validation Z").Range("Y3:Y" & lastRow) = "=RC[-6]-RC[-12]"
+        Sheets("Validation Z").Range("Z3:Z" & lastRow) = "=VLOOKUP(RC[-23],'CaseJ entry'!C1:C4,4,0)"
+        Sheets("Validation Z").Range("AA3:AA" & lastRow) = "=ROUND(IF(RC[-7]=0,0,RC[-7]-RC[-1]),2)"
+        Sheets("Validation Z").Range("AB3:AB" & lastRow) = "=ROUND(IF(RC[-7]=0,0,RC[-7]-RC[-2]),2)"
+        Sheets("Validation Z").Range("AC3:AC" & lastRow) = "=ROUND(IF(RC[-7]=0,0,RC[-7]-RC[-3]),2)"
+        Sheets("Validation Z").Range("AD3:AD" & lastRow) = "=IF((RC[-9]+RC[-8])=RC[-7],0,RC[-7])"
+        Sheets("Validation Z").Range("AE3:AE" & lastRow) = "=ROUND(IF(RC[-7]=0,0,RC[-7]-RC[-5]),2)"
+        Sheets("Validation Z").Range("AF3:AF" & lastRow) = "=ROUND(IF(RC[-7]=0,0,RC[-7]-RC[-6]),2)"
+        Sheets("Validation Z").Range("AG3:AG" & lastRow) = "=VLOOKUP(RC[-30],'CaseJ entry'!C1:C2,2,0)"
+        Sheets("Validation Z").Range("AH3:AH" & lastRow) = "=RC[-1]-RC[-15]"
         Columns("A:AH").AutoFit
 
         
-        '------ Crea la hoja de validacion del T4
+        '------ Crea la hoja de validacion del X
         
-        'Copia los datos de la hoja de before del T4
-        Sheets("Validation T4").Activate
-        lastRow = Sheets("PT T4 Before-values").Cells(Sheets("PT T4 Before-values").Rows.Count, 1).End(xlUp).row
-        lastCol = Sheets("PT T4 Before-values").Cells(1, Sheets("PT T4 Before-values").Columns.Count).End(xlToLeft).Column
-        Set rng = wbauditoria.Sheets("PT T4 Before-values").Range(wbauditoria.Sheets("PT T4 Before-values").Cells(1, 1), wbauditoria.Sheets("PT T4 Before-values").Cells(lastRow, lastCol))
-        wbauditoria.Sheets("Validation T4").Range("A2").Resize(rng.Rows.Count, rng.Columns.Count).Value = rng.Value
+        'Copia los datos de la hoja de before del X
+        Sheets("Validation X").Activate
+        lastRow = Sheets("PT X Before-values").Cells(Sheets("PT X Before-values").Rows.Count, 1).End(xlUp).row
+        lastCol = Sheets("PT X Before-values").Cells(1, Sheets("PT X Before-values").Columns.Count).End(xlToLeft).Column
+        Set rng = wbauditoria.Sheets("PT X Before-values").Range(wbauditoria.Sheets("PT X Before-values").Cells(1, 1), wbauditoria.Sheets("PT X Before-values").Cells(lastRow, lastCol))
+        wbauditoria.Sheets("Validation X").Range("A2").Resize(rng.Rows.Count, rng.Columns.Count).Value = rng.Value
         
         'Calcula ultima fila y columna de la hoja de validacion
         Columns("A:A").Insert Shift:=xlToRight
-        lastRow = Sheets("Validation T4").Cells(Sheets("Validation T4").Rows.Count, 3).End(xlUp).row
-        lastCol = Sheets("Validation T4").Cells(2, Sheets("Validation T4").Columns.Count).End(xlToLeft).Column
+        lastRow = Sheets("Validation X").Cells(Sheets("Validation X").Rows.Count, 3).End(xlUp).row
+        lastCol = Sheets("Validation X").Cells(2, Sheets("Validation X").Columns.Count).End(xlToLeft).Column
         
         'Coloca los titulos en la fila 2
         ThisWorkbook.Sheets("Anexxes").Range("L1:AL1").Copy
-        wbauditoria.Sheets("Validation T4").Range("A2").PasteSpecial Paste:=xlPasteValues
+        wbauditoria.Sheets("Validation X").Range("A2").PasteSpecial Paste:=xlPasteValues
         Application.CutCopyMode = False
         Columns("A:AC").AutoFit
         
@@ -1118,7 +1118,7 @@ Sub Quebec_HT_Entry()
         Range("R1:T1").Merge
         Range("R1").Value = "VALIDATION"
         Range("U1:AA1").Merge
-        Range("U1").Value = "RL1 VALIDATION"
+        Range("U1").Value = "Z VALIDATION"
         
         With Range("A2:G2")
             .Font.Bold = True
@@ -1170,40 +1170,40 @@ Sub Quebec_HT_Entry()
         Columns("A:AC").AutoFit
         
         'Formula de la columa A
-        lastRow = Sheets("Validation T4").Cells(Sheets("Validation T4").Rows.Count, 3).End(xlUp).row
-        lastCol = Sheets("Validation T4").Cells(2, Sheets("Validation T4").Columns.Count).End(xlToLeft).Column
-        Sheets("Validation T4").Range("A3:A" & lastRow) = "=COUNTIF('PT T4 After-values'!C[1],'Validation T4'!RC[2])"
+        lastRow = Sheets("Validation X").Cells(Sheets("Validation X").Rows.Count, 3).End(xlUp).row
+        lastCol = Sheets("Validation X").Cells(2, Sheets("Validation X").Columns.Count).End(xlToLeft).Column
+        Sheets("Validation X").Range("A3:A" & lastRow) = "=COUNTIF('PT X After-values'!C[1],'Validation X'!RC[2])"
         
         'Coloca el resto de las formulas
-        lastRow = Sheets("Validation T4").Cells(Sheets("Validation T4").Rows.Count, 3).End(xlUp).row
-        Sheets("Validation T4").Range("K3:K" & lastRow) = "=VLOOKUP(RC[-9],'PT T4 After-values'!C1:C9,7,0)"
-        Sheets("Validation T4").Range("L3:L" & lastRow) = "=VLOOKUP(RC[-10],'PT T4 After-values'!C1:C9,8,0)"
-        Sheets("Validation T4").Range("M3:M" & lastRow) = "=VLOOKUP(RC[-11],'PT T4 After-values'!C1:C9,9,0)"
-        Sheets("Validation T4").Range("N3:N" & lastRow) = "=RC[-3]-RC[-6]"
-        Sheets("Validation T4").Range("O3:O" & lastRow) = "=RC[-3]-RC[-6]"
-        Sheets("Validation T4").Range("P3:P" & lastRow) = "=RC[-3]-RC[-6]"
-        Sheets("Validation T4").Range("Q3:Q" & lastRow) = "=VLOOKUP(RC[-14],'BoxJ entry'!C1:C4,4,0)"
-        Sheets("Validation T4").Range("R3:R" & lastRow) = "=ROUND(IF(RC[-4]=0,0,RC[-4]-RC17),2)"
-        Sheets("Validation T4").Range("S3:S" & lastRow) = "=ROUND(IF(RC[-4]=0,0,RC[-4]-RC17),2)"
-        Sheets("Validation T4").Range("T3:T" & lastRow) = "=ROUND(IF(RC[-4]=0,0,RC[-4]-RC17),2)"
-        Sheets("Validation T4").Range("U3:U" & lastRow) = "=VLOOKUP(RC[-18],'Validation RL1'!C[-18]:C[-2],13,0)"
-        Sheets("Validation T4").Range("V3:V" & lastRow) = "=VLOOKUP(RC[-19],'Validation RL1'!C3:C19,14,0)"
-        Sheets("Validation T4").Range("W3:W" & lastRow) = "=RC[-2]-RC[-12]"
-        Sheets("Validation T4").Range("X3:X" & lastRow) = "=RC[-2]-RC[-12]"
-        Sheets("Validation T4").Range("Y3:Y" & lastRow) = "=VLOOKUP(RC[-22],'Validation RL1'!C3:C19,15,0)"
-        Sheets("Validation T4").Range("Z3:Z" & lastRow) = "=(RC[-5]+RC[-4])-RC[-1]"
-        Sheets("Validation T4").Range("AA3:AA" & lastRow) = "=RC[-2]-RC[-6]"
+        lastRow = Sheets("Validation X").Cells(Sheets("Validation X").Rows.Count, 3).End(xlUp).row
+        Sheets("Validation X").Range("K3:K" & lastRow) = "=VLOOKUP(RC[-9],'PT X After-values'!C1:C9,7,0)"
+        Sheets("Validation X").Range("L3:L" & lastRow) = "=VLOOKUP(RC[-10],'PT X After-values'!C1:C9,8,0)"
+        Sheets("Validation X").Range("M3:M" & lastRow) = "=VLOOKUP(RC[-11],'PT X After-values'!C1:C9,9,0)"
+        Sheets("Validation X").Range("N3:N" & lastRow) = "=RC[-3]-RC[-6]"
+        Sheets("Validation X").Range("O3:O" & lastRow) = "=RC[-3]-RC[-6]"
+        Sheets("Validation X").Range("P3:P" & lastRow) = "=RC[-3]-RC[-6]"
+        Sheets("Validation X").Range("Q3:Q" & lastRow) = "=VLOOKUP(RC[-14],'CaseJ entry'!C1:C4,4,0)"
+        Sheets("Validation X").Range("R3:R" & lastRow) = "=ROUND(IF(RC[-4]=0,0,RC[-4]-RC17),2)"
+        Sheets("Validation X").Range("S3:S" & lastRow) = "=ROUND(IF(RC[-4]=0,0,RC[-4]-RC17),2)"
+        Sheets("Validation X").Range("T3:T" & lastRow) = "=ROUND(IF(RC[-4]=0,0,RC[-4]-RC17),2)"
+        Sheets("Validation X").Range("U3:U" & lastRow) = "=VLOOKUP(RC[-18],'Validation Z'!C[-18]:C[-2],13,0)"
+        Sheets("Validation X").Range("V3:V" & lastRow) = "=VLOOKUP(RC[-19],'Validation Z'!C3:C19,14,0)"
+        Sheets("Validation X").Range("W3:W" & lastRow) = "=RC[-2]-RC[-12]"
+        Sheets("Validation X").Range("X3:X" & lastRow) = "=RC[-2]-RC[-12]"
+        Sheets("Validation X").Range("Y3:Y" & lastRow) = "=VLOOKUP(RC[-22],'Validation Z'!C3:C19,15,0)"
+        Sheets("Validation X").Range("Z3:Z" & lastRow) = "=(RC[-5]+RC[-4])-RC[-1]"
+        Sheets("Validation X").Range("AA3:AA" & lastRow) = "=RC[-2]-RC[-6]"
         Columns("A:AC").AutoFit
         
         'Ordena hojas
-        Sheets("BoxJ entry").Move Before:=Sheets(1)
-        Sheets("Validation RL1").Move After:=Sheets("BoxJ entry")
-        Sheets("Validation T4").Move After:=Sheets("Validation RL1")
-        Sheets("Validation RL1").Tab.Color = RGB(250, 219, 216)
-        Sheets("Validation T4").Tab.Color = RGB(250, 229, 211)
+        Sheets("CaseJ entry").Move Before:=Sheets(1)
+        Sheets("Validation Z").Move After:=Sheets("CaseJ entry")
+        Sheets("Validation X").Move After:=Sheets("Validation Z")
+        Sheets("Validation Z").Tab.Color = RGB(250, 219, 216)
+        Sheets("Validation X").Tab.Color = RGB(250, 229, 211)
         
-        'Organiza la hoja de BoxJ entry
-        Sheets("BoxJ entry").Activate
+        'Organiza la hoja de CaseJ entry
+        Sheets("CaseJ entry").Activate
         Range("A1").Value = "SAP ID"
         Range("B1").Value = "CORRECT BOX J"
         Range("C1").Value = "BOX J TOTAL"
@@ -1218,29 +1218,29 @@ Sub Quebec_HT_Entry()
         'Finaliza
         wbauditoria.Save
         wbauditoria.Close
-        MsgBox "The process has been completed. Please enter the document and complete the data in the 'BoxJ entry' sheet.", vbInformation
+        MsgCase "The process has been completed. Please enter the document and complete the data in the 'CaseJ entry' sheet.", vbInformation
 
 End Sub
 
 Sub Auto_TB_Entries()
 
-'------ Crea la hoja de validacion del RL1
+'------ Crea la hoja de validacion del Z
         
-        'Copia los datos de la hoja de before del RL1
-        Sheets("Validation RL1").Activate
-        lastRow = Sheets("PT RL1 Before-values").Cells(Sheets("PT RL1 Before-values").Rows.Count, 3).End(xlUp).row
-        lastCol = Sheets("PT RL1 Before-values").Cells(1, Sheets("PT RL1 Before-values").Columns.Count).End(xlToLeft).Column
-        Set rng = wbauditoria.Sheets("PT RL1 Before-values").Range(wbauditoria.Sheets("PT RL1 Before-values").Cells(1, 1), wbauditoria.Sheets("PT RL1 Before-values").Cells(lastRow, lastCol))
-        wbauditoria.Sheets("Validation RL1").Range("A2").Resize(rng.Rows.Count, rng.Columns.Count).Value = rng.Value
+        'Copia los datos de la hoja de before del Z
+        Sheets("Validation Z").Activate
+        lastRow = Sheets("PT Z Before-values").Cells(Sheets("PT Z Before-values").Rows.Count, 3).End(xlUp).row
+        lastCol = Sheets("PT Z Before-values").Cells(1, Sheets("PT Z Before-values").Columns.Count).End(xlToLeft).Column
+        Set rng = wbauditoria.Sheets("PT Z Before-values").Range(wbauditoria.Sheets("PT Z Before-values").Cells(1, 1), wbauditoria.Sheets("PT Z Before-values").Cells(lastRow, lastCol))
+        wbauditoria.Sheets("Validation Z").Range("A2").Resize(rng.Rows.Count, rng.Columns.Count).Value = rng.Value
 
         'Calcula ultima fila y columna de la hoja de validacion
         Columns("A:A").Insert Shift:=xlToRight
-        lastRow = Sheets("Validation RL1").Cells(Sheets("Validation RL1").Rows.Count, 3).End(xlUp).row
-        lastCol = Sheets("Validation RL1").Cells(2, Sheets("Validation RL1").Columns.Count).End(xlToLeft).Column
+        lastRow = Sheets("Validation Z").Cells(Sheets("Validation Z").Rows.Count, 3).End(xlUp).row
+        lastCol = Sheets("Validation Z").Cells(2, Sheets("Validation Z").Columns.Count).End(xlToLeft).Column
 
         'Coloca los titulos en la fila 2
         ThisWorkbook.Sheets("Anexxes").Range("L4:AQ4").Copy
-        wbauditoria.Sheets("Validation RL1").Range("A2").PasteSpecial Paste:=xlPasteValues
+        wbauditoria.Sheets("Validation Z").Range("A2").PasteSpecial Paste:=xlPasteValues
         Application.CutCopyMode = False
         Columns("A:AQ").AutoFit
 
@@ -1298,53 +1298,53 @@ Sub Auto_TB_Entries()
 '        Columns("A:AH").AutoFit
 '
         'Formula de la columa A
-        lastRow = Sheets("Validation RL1").Cells(Sheets("Validation RL1").Rows.Count, 3).End(xlUp).row
-        lastCol = Sheets("Validation RL1").Cells(2, Sheets("Validation RL1").Columns.Count).End(xlToLeft).Column
-        Sheets("Validation RL1").Range("A3:A" & lastRow) = "=COUNTIF('PT RL1 After-values'!C[1],'Validation RL1'!RC[2])"
+        lastRow = Sheets("Validation Z").Cells(Sheets("Validation Z").Rows.Count, 3).End(xlUp).row
+        lastCol = Sheets("Validation Z").Cells(2, Sheets("Validation Z").Columns.Count).End(xlToLeft).Column
+        Sheets("Validation Z").Range("A3:A" & lastRow) = "=COUNTIF('PT Z After-values'!C[1],'Validation Z'!RC[2])"
 '
 '        'Coloca el resto de las formulas
-'        lastRow = Sheets("Validation RL1").Cells(Sheets("Validation RL1").Rows.Count, 3).End(xlUp).row
-'        Sheets("Validation RL1").Range("N3:N" & lastRow) = "=VLOOKUP(RC[-12],'PT RL1 After-values'!C1:C12,7,0)"
-'        Sheets("Validation RL1").Range("O3:O" & lastRow) = "=VLOOKUP(RC[-13],'PT RL1 After-values'!C1:C12,8,0)"
-'        Sheets("Validation RL1").Range("P3:P" & lastRow) = "=VLOOKUP(RC[-14],'PT RL1 After-values'!C1:C12,9,0)"
-'        Sheets("Validation RL1").Range("Q3:Q" & lastRow) = "=VLOOKUP(RC[-15],'PT RL1 After-values'!C1:C12,10,0)"
-'        Sheets("Validation RL1").Range("R3:R" & lastRow) = "=VLOOKUP(RC[-16],'PT RL1 After-values'!C1:C12,11,0)"
-'        Sheets("Validation RL1").Range("S3:S" & lastRow) = "=VLOOKUP(RC[-17],'PT RL1 After-values'!C1:C12,12,0)"
-'        Sheets("Validation RL1").Range("T3:T" & lastRow) = "=RC[-6]-RC[-12]"
-'        Sheets("Validation RL1").Range("U3:U" & lastRow) = "=RC[-6]-RC[-12]"
-'        Sheets("Validation RL1").Range("V3:V" & lastRow) = "=RC[-6]-RC[-12]"
-'        Sheets("Validation RL1").Range("W3:W" & lastRow) = "=RC[-6]-RC[-12]"
-'        Sheets("Validation RL1").Range("X3:X" & lastRow) = "=RC[-6]-RC[-12]"
-'        Sheets("Validation RL1").Range("Y3:Y" & lastRow) = "=RC[-6]-RC[-12]"
-'        Sheets("Validation RL1").Range("Z3:Z" & lastRow) = "=VLOOKUP(RC[-23],'BoxJ entry'!C1:C4,4,0)"
-'        Sheets("Validation RL1").Range("AA3:AA" & lastRow) = "=ROUND(IF(RC[-7]=0,0,RC[-7]-RC[-1]),2)"
-'        Sheets("Validation RL1").Range("AB3:AB" & lastRow) = "=ROUND(IF(RC[-7]=0,0,RC[-7]-RC[-2]),2)"
-'        Sheets("Validation RL1").Range("AC3:AC" & lastRow) = "=ROUND(IF(RC[-7]=0,0,RC[-7]-RC[-3]),2)"
-'        Sheets("Validation RL1").Range("AD3:AD" & lastRow) = "=IF((RC[-9]+RC[-8])=RC[-7],0,RC[-7])"
-'        Sheets("Validation RL1").Range("AE3:AE" & lastRow) = "=ROUND(IF(RC[-7]=0,0,RC[-7]-RC[-5]),2)"
-'        Sheets("Validation RL1").Range("AF3:AF" & lastRow) = "=ROUND(IF(RC[-7]=0,0,RC[-7]-RC[-6]),2)"
-'        Sheets("Validation RL1").Range("AG3:AG" & lastRow) = "=VLOOKUP(RC[-30],'BoxJ entry'!C1:C2,2,0)"
-'        Sheets("Validation RL1").Range("AH3:AH" & lastRow) = "=RC[-1]-RC[-15]"
+'        lastRow = Sheets("Validation Z").Cells(Sheets("Validation Z").Rows.Count, 3).End(xlUp).row
+'        Sheets("Validation Z").Range("N3:N" & lastRow) = "=VLOOKUP(RC[-12],'PT Z After-values'!C1:C12,7,0)"
+'        Sheets("Validation Z").Range("O3:O" & lastRow) = "=VLOOKUP(RC[-13],'PT Z After-values'!C1:C12,8,0)"
+'        Sheets("Validation Z").Range("P3:P" & lastRow) = "=VLOOKUP(RC[-14],'PT Z After-values'!C1:C12,9,0)"
+'        Sheets("Validation Z").Range("Q3:Q" & lastRow) = "=VLOOKUP(RC[-15],'PT Z After-values'!C1:C12,10,0)"
+'        Sheets("Validation Z").Range("R3:R" & lastRow) = "=VLOOKUP(RC[-16],'PT Z After-values'!C1:C12,11,0)"
+'        Sheets("Validation Z").Range("S3:S" & lastRow) = "=VLOOKUP(RC[-17],'PT Z After-values'!C1:C12,12,0)"
+'        Sheets("Validation Z").Range("T3:T" & lastRow) = "=RC[-6]-RC[-12]"
+'        Sheets("Validation Z").Range("U3:U" & lastRow) = "=RC[-6]-RC[-12]"
+'        Sheets("Validation Z").Range("V3:V" & lastRow) = "=RC[-6]-RC[-12]"
+'        Sheets("Validation Z").Range("W3:W" & lastRow) = "=RC[-6]-RC[-12]"
+'        Sheets("Validation Z").Range("X3:X" & lastRow) = "=RC[-6]-RC[-12]"
+'        Sheets("Validation Z").Range("Y3:Y" & lastRow) = "=RC[-6]-RC[-12]"
+'        Sheets("Validation Z").Range("Z3:Z" & lastRow) = "=VLOOKUP(RC[-23],'CaseJ entry'!C1:C4,4,0)"
+'        Sheets("Validation Z").Range("AA3:AA" & lastRow) = "=ROUND(IF(RC[-7]=0,0,RC[-7]-RC[-1]),2)"
+'        Sheets("Validation Z").Range("AB3:AB" & lastRow) = "=ROUND(IF(RC[-7]=0,0,RC[-7]-RC[-2]),2)"
+'        Sheets("Validation Z").Range("AC3:AC" & lastRow) = "=ROUND(IF(RC[-7]=0,0,RC[-7]-RC[-3]),2)"
+'        Sheets("Validation Z").Range("AD3:AD" & lastRow) = "=IF((RC[-9]+RC[-8])=RC[-7],0,RC[-7])"
+'        Sheets("Validation Z").Range("AE3:AE" & lastRow) = "=ROUND(IF(RC[-7]=0,0,RC[-7]-RC[-5]),2)"
+'        Sheets("Validation Z").Range("AF3:AF" & lastRow) = "=ROUND(IF(RC[-7]=0,0,RC[-7]-RC[-6]),2)"
+'        Sheets("Validation Z").Range("AG3:AG" & lastRow) = "=VLOOKUP(RC[-30],'CaseJ entry'!C1:C2,2,0)"
+'        Sheets("Validation Z").Range("AH3:AH" & lastRow) = "=RC[-1]-RC[-15]"
 '        Columns("A:AH").AutoFit
 
 
-        '------ Crea la hoja de validacion del T4
+        '------ Crea la hoja de validacion del X
 
-        'Copia los datos de la hoja de before del T4
-        Sheets("Validation T4").Activate
-        lastRow = Sheets("PT T4 Before-values").Cells(Sheets("PT T4 Before-values").Rows.Count, 1).End(xlUp).row
-        lastCol = Sheets("PT T4 Before-values").Cells(1, Sheets("PT T4 Before-values").Columns.Count).End(xlToLeft).Column
-        Set rng = wbauditoria.Sheets("PT T4 Before-values").Range(wbauditoria.Sheets("PT T4 Before-values").Cells(1, 1), wbauditoria.Sheets("PT T4 Before-values").Cells(lastRow, lastCol))
-        wbauditoria.Sheets("Validation T4").Range("A2").Resize(rng.Rows.Count, rng.Columns.Count).Value = rng.Value
+        'Copia los datos de la hoja de before del X
+        Sheets("Validation X").Activate
+        lastRow = Sheets("PT X Before-values").Cells(Sheets("PT X Before-values").Rows.Count, 1).End(xlUp).row
+        lastCol = Sheets("PT X Before-values").Cells(1, Sheets("PT X Before-values").Columns.Count).End(xlToLeft).Column
+        Set rng = wbauditoria.Sheets("PT X Before-values").Range(wbauditoria.Sheets("PT X Before-values").Cells(1, 1), wbauditoria.Sheets("PT X Before-values").Cells(lastRow, lastCol))
+        wbauditoria.Sheets("Validation X").Range("A2").Resize(rng.Rows.Count, rng.Columns.Count).Value = rng.Value
 
         'Calcula ultima fila y columna de la hoja de validacion
         Columns("A:A").Insert Shift:=xlToRight
-        lastRow = Sheets("Validation T4").Cells(Sheets("Validation T4").Rows.Count, 3).End(xlUp).row
-        lastCol = Sheets("Validation T4").Cells(2, Sheets("Validation T4").Columns.Count).End(xlToLeft).Column
+        lastRow = Sheets("Validation X").Cells(Sheets("Validation X").Rows.Count, 3).End(xlUp).row
+        lastCol = Sheets("Validation X").Cells(2, Sheets("Validation X").Columns.Count).End(xlToLeft).Column
 
         'Coloca los titulos en la fila 2
         ThisWorkbook.Sheets("Anexxes").Range("L3:AU3").Copy
-        wbauditoria.Sheets("Validation T4").Range("A2").PasteSpecial Paste:=xlPasteValues
+        wbauditoria.Sheets("Validation X").Range("A2").PasteSpecial Paste:=xlPasteValues
         Application.CutCopyMode = False
         Columns("A:AU").AutoFit
 
@@ -1358,7 +1358,7 @@ Sub Auto_TB_Entries()
         Range("R1:T1").Merge
 '        Range("R1").Value = "VALIDATION"
 '        Range("U1:AA1").Merge
-'        Range("U1").Value = "RL1 VALIDATION"
+'        Range("U1").Value = "Z VALIDATION"
 
         With Range("A2:G2")
             .Font.Bold = True
@@ -1410,40 +1410,40 @@ Sub Auto_TB_Entries()
         Columns("A:AC").AutoFit
 
         'Formula de la columa A
-        lastRow = Sheets("Validation T4").Cells(Sheets("Validation T4").Rows.Count, 3).End(xlUp).row
-        lastCol = Sheets("Validation T4").Cells(2, Sheets("Validation T4").Columns.Count).End(xlToLeft).Column
-        Sheets("Validation T4").Range("A3:A" & lastRow) = "=COUNTIF('PT T4 After-values'!C[1],'Validation T4'!RC[2])"
+        lastRow = Sheets("Validation X").Cells(Sheets("Validation X").Rows.Count, 3).End(xlUp).row
+        lastCol = Sheets("Validation X").Cells(2, Sheets("Validation X").Columns.Count).End(xlToLeft).Column
+        Sheets("Validation X").Range("A3:A" & lastRow) = "=COUNTIF('PT X After-values'!C[1],'Validation X'!RC[2])"
 '
 '        'Coloca el resto de las formulas
-'        lastRow = Sheets("Validation T4").Cells(Sheets("Validation T4").Rows.Count, 3).End(xlUp).row
-'        Sheets("Validation T4").Range("K3:K" & lastRow) = "=VLOOKUP(RC[-9],'PT T4 After-values'!C1:C9,7,0)"
-'        Sheets("Validation T4").Range("L3:L" & lastRow) = "=VLOOKUP(RC[-10],'PT T4 After-values'!C1:C9,8,0)"
-'        Sheets("Validation T4").Range("M3:M" & lastRow) = "=VLOOKUP(RC[-11],'PT T4 After-values'!C1:C9,9,0)"
-'        Sheets("Validation T4").Range("N3:N" & lastRow) = "=RC[-3]-RC[-6]"
-'        Sheets("Validation T4").Range("O3:O" & lastRow) = "=RC[-3]-RC[-6]"
-'        Sheets("Validation T4").Range("P3:P" & lastRow) = "=RC[-3]-RC[-6]"
-'        Sheets("Validation T4").Range("Q3:Q" & lastRow) = "=VLOOKUP(RC[-14],'BoxJ entry'!C1:C4,4,0)"
-'        Sheets("Validation T4").Range("R3:R" & lastRow) = "=ROUND(IF(RC[-4]=0,0,RC[-4]-RC17),2)"
-'        Sheets("Validation T4").Range("S3:S" & lastRow) = "=ROUND(IF(RC[-4]=0,0,RC[-4]-RC17),2)"
-'        Sheets("Validation T4").Range("T3:T" & lastRow) = "=ROUND(IF(RC[-4]=0,0,RC[-4]-RC17),2)"
-'        Sheets("Validation T4").Range("U3:U" & lastRow) = "=VLOOKUP(RC[-18],'Validation RL1'!C[-18]:C[-2],13,0)"
-'        Sheets("Validation T4").Range("V3:V" & lastRow) = "=VLOOKUP(RC[-19],'Validation RL1'!C3:C19,14,0)"
-'        Sheets("Validation T4").Range("W3:W" & lastRow) = "=RC[-2]-RC[-12]"
-'        Sheets("Validation T4").Range("X3:X" & lastRow) = "=RC[-2]-RC[-12]"
-'        Sheets("Validation T4").Range("Y3:Y" & lastRow) = "=VLOOKUP(RC[-22],'Validation RL1'!C3:C19,15,0)"
-'        Sheets("Validation T4").Range("Z3:Z" & lastRow) = "=(RC[-5]+RC[-4])-RC[-1]"
-'        Sheets("Validation T4").Range("AA3:AA" & lastRow) = "=RC[-2]-RC[-6]"
+'        lastRow = Sheets("Validation X").Cells(Sheets("Validation X").Rows.Count, 3).End(xlUp).row
+'        Sheets("Validation X").Range("K3:K" & lastRow) = "=VLOOKUP(RC[-9],'PT X After-values'!C1:C9,7,0)"
+'        Sheets("Validation X").Range("L3:L" & lastRow) = "=VLOOKUP(RC[-10],'PT X After-values'!C1:C9,8,0)"
+'        Sheets("Validation X").Range("M3:M" & lastRow) = "=VLOOKUP(RC[-11],'PT X After-values'!C1:C9,9,0)"
+'        Sheets("Validation X").Range("N3:N" & lastRow) = "=RC[-3]-RC[-6]"
+'        Sheets("Validation X").Range("O3:O" & lastRow) = "=RC[-3]-RC[-6]"
+'        Sheets("Validation X").Range("P3:P" & lastRow) = "=RC[-3]-RC[-6]"
+'        Sheets("Validation X").Range("Q3:Q" & lastRow) = "=VLOOKUP(RC[-14],'CaseJ entry'!C1:C4,4,0)"
+'        Sheets("Validation X").Range("R3:R" & lastRow) = "=ROUND(IF(RC[-4]=0,0,RC[-4]-RC17),2)"
+'        Sheets("Validation X").Range("S3:S" & lastRow) = "=ROUND(IF(RC[-4]=0,0,RC[-4]-RC17),2)"
+'        Sheets("Validation X").Range("T3:T" & lastRow) = "=ROUND(IF(RC[-4]=0,0,RC[-4]-RC17),2)"
+'        Sheets("Validation X").Range("U3:U" & lastRow) = "=VLOOKUP(RC[-18],'Validation Z'!C[-18]:C[-2],13,0)"
+'        Sheets("Validation X").Range("V3:V" & lastRow) = "=VLOOKUP(RC[-19],'Validation Z'!C3:C19,14,0)"
+'        Sheets("Validation X").Range("W3:W" & lastRow) = "=RC[-2]-RC[-12]"
+'        Sheets("Validation X").Range("X3:X" & lastRow) = "=RC[-2]-RC[-12]"
+'        Sheets("Validation X").Range("Y3:Y" & lastRow) = "=VLOOKUP(RC[-22],'Validation Z'!C3:C19,15,0)"
+'        Sheets("Validation X").Range("Z3:Z" & lastRow) = "=(RC[-5]+RC[-4])-RC[-1]"
+'        Sheets("Validation X").Range("AA3:AA" & lastRow) = "=RC[-2]-RC[-6]"
 '        Columns("A:AC").AutoFit
 
         'Ordena hojas
-        Sheets("BoxJ entry").Move Before:=Sheets(1)
-        Sheets("Validation RL1").Move After:=Sheets("BoxJ entry")
-        Sheets("Validation T4").Move After:=Sheets("Validation RL1")
-        Sheets("Validation RL1").Tab.Color = RGB(250, 219, 216)
-        Sheets("Validation T4").Tab.Color = RGB(250, 229, 211)
+        Sheets("CaseJ entry").Move Before:=Sheets(1)
+        Sheets("Validation Z").Move After:=Sheets("CaseJ entry")
+        Sheets("Validation X").Move After:=Sheets("Validation Z")
+        Sheets("Validation Z").Tab.Color = RGB(250, 219, 216)
+        Sheets("Validation X").Tab.Color = RGB(250, 229, 211)
 
-        'Organiza la hoja de BoxJ entry
-        Sheets("BoxJ entry").Activate
+        'Organiza la hoja de CaseJ entry
+        Sheets("CaseJ entry").Activate
         Range("A1").Value = "SAP ID"
         Range("B1").Value = "CORRECT BOX J"
         Range("C1").Value = "BOX J TOTAL"
@@ -1458,29 +1458,29 @@ Sub Auto_TB_Entries()
         'Finaliza
         wbauditoria.Save
         wbauditoria.Close
-        MsgBox "The process has been completed. Please enter the document and complete the data in the 'BoxJ entry' sheet.", vbInformation
+        MsgCase "The process has been completed. Please enter the document and complete the data in the 'CaseJ entry' sheet.", vbInformation
 
 End Sub
 
 Sub Taxable_B_Entries()
 
-'------ Crea la hoja de validacion del RL1
+'------ Crea la hoja de validacion del Z
         
-        'Copia los datos de la hoja de before del RL1
-        Sheets("Validation RL1").Activate
-        lastRow = Sheets("PT RL1 Before-values").Cells(Sheets("PT RL1 Before-values").Rows.Count, 3).End(xlUp).row
-        lastCol = Sheets("PT RL1 Before-values").Cells(1, Sheets("PT RL1 Before-values").Columns.Count).End(xlToLeft).Column
-        Set rng = wbauditoria.Sheets("PT RL1 Before-values").Range(wbauditoria.Sheets("PT RL1 Before-values").Cells(1, 1), wbauditoria.Sheets("PT RL1 Before-values").Cells(lastRow, lastCol))
-        wbauditoria.Sheets("Validation RL1").Range("A2").Resize(rng.Rows.Count, rng.Columns.Count).Value = rng.Value
+        'Copia los datos de la hoja de before del Z
+        Sheets("Validation Z").Activate
+        lastRow = Sheets("PT Z Before-values").Cells(Sheets("PT Z Before-values").Rows.Count, 3).End(xlUp).row
+        lastCol = Sheets("PT Z Before-values").Cells(1, Sheets("PT Z Before-values").Columns.Count).End(xlToLeft).Column
+        Set rng = wbauditoria.Sheets("PT Z Before-values").Range(wbauditoria.Sheets("PT Z Before-values").Cells(1, 1), wbauditoria.Sheets("PT Z Before-values").Cells(lastRow, lastCol))
+        wbauditoria.Sheets("Validation Z").Range("A2").Resize(rng.Rows.Count, rng.Columns.Count).Value = rng.Value
 
         'Calcula ultima fila y columna de la hoja de validacion
         Columns("A:A").Insert Shift:=xlToRight
-        lastRow = Sheets("Validation RL1").Cells(Sheets("Validation RL1").Rows.Count, 3).End(xlUp).row
-        lastCol = Sheets("Validation RL1").Cells(2, Sheets("Validation RL1").Columns.Count).End(xlToLeft).Column
+        lastRow = Sheets("Validation Z").Cells(Sheets("Validation Z").Rows.Count, 3).End(xlUp).row
+        lastCol = Sheets("Validation Z").Cells(2, Sheets("Validation Z").Columns.Count).End(xlToLeft).Column
 
         'Coloca los titulos en la fila 2
         ThisWorkbook.Sheets("Anexxes").Range("L6:AK6").Copy
-        wbauditoria.Sheets("Validation RL1").Range("A2").PasteSpecial Paste:=xlPasteValues
+        wbauditoria.Sheets("Validation Z").Range("A2").PasteSpecial Paste:=xlPasteValues
         Application.CutCopyMode = False
         Columns("A:AQ").AutoFit
 
@@ -1538,53 +1538,53 @@ Sub Taxable_B_Entries()
 '        Columns("A:AH").AutoFit
 '
         'Formula de la columa A
-        lastRow = Sheets("Validation RL1").Cells(Sheets("Validation RL1").Rows.Count, 3).End(xlUp).row
-        lastCol = Sheets("Validation RL1").Cells(2, Sheets("Validation RL1").Columns.Count).End(xlToLeft).Column
-        Sheets("Validation RL1").Range("A3:A" & lastRow) = "=COUNTIF('PT RL1 After-values'!C[1],'Validation RL1'!RC[2])"
+        lastRow = Sheets("Validation Z").Cells(Sheets("Validation Z").Rows.Count, 3).End(xlUp).row
+        lastCol = Sheets("Validation Z").Cells(2, Sheets("Validation Z").Columns.Count).End(xlToLeft).Column
+        Sheets("Validation Z").Range("A3:A" & lastRow) = "=COUNTIF('PT Z After-values'!C[1],'Validation Z'!RC[2])"
 '
 '        'Coloca el resto de las formulas
-'        lastRow = Sheets("Validation RL1").Cells(Sheets("Validation RL1").Rows.Count, 3).End(xlUp).row
-'        Sheets("Validation RL1").Range("N3:N" & lastRow) = "=VLOOKUP(RC[-12],'PT RL1 After-values'!C1:C12,7,0)"
-'        Sheets("Validation RL1").Range("O3:O" & lastRow) = "=VLOOKUP(RC[-13],'PT RL1 After-values'!C1:C12,8,0)"
-'        Sheets("Validation RL1").Range("P3:P" & lastRow) = "=VLOOKUP(RC[-14],'PT RL1 After-values'!C1:C12,9,0)"
-'        Sheets("Validation RL1").Range("Q3:Q" & lastRow) = "=VLOOKUP(RC[-15],'PT RL1 After-values'!C1:C12,10,0)"
-'        Sheets("Validation RL1").Range("R3:R" & lastRow) = "=VLOOKUP(RC[-16],'PT RL1 After-values'!C1:C12,11,0)"
-'        Sheets("Validation RL1").Range("S3:S" & lastRow) = "=VLOOKUP(RC[-17],'PT RL1 After-values'!C1:C12,12,0)"
-'        Sheets("Validation RL1").Range("T3:T" & lastRow) = "=RC[-6]-RC[-12]"
-'        Sheets("Validation RL1").Range("U3:U" & lastRow) = "=RC[-6]-RC[-12]"
-'        Sheets("Validation RL1").Range("V3:V" & lastRow) = "=RC[-6]-RC[-12]"
-'        Sheets("Validation RL1").Range("W3:W" & lastRow) = "=RC[-6]-RC[-12]"
-'        Sheets("Validation RL1").Range("X3:X" & lastRow) = "=RC[-6]-RC[-12]"
-'        Sheets("Validation RL1").Range("Y3:Y" & lastRow) = "=RC[-6]-RC[-12]"
-'        Sheets("Validation RL1").Range("Z3:Z" & lastRow) = "=VLOOKUP(RC[-23],'BoxJ entry'!C1:C4,4,0)"
-'        Sheets("Validation RL1").Range("AA3:AA" & lastRow) = "=ROUND(IF(RC[-7]=0,0,RC[-7]-RC[-1]),2)"
-'        Sheets("Validation RL1").Range("AB3:AB" & lastRow) = "=ROUND(IF(RC[-7]=0,0,RC[-7]-RC[-2]),2)"
-'        Sheets("Validation RL1").Range("AC3:AC" & lastRow) = "=ROUND(IF(RC[-7]=0,0,RC[-7]-RC[-3]),2)"
-'        Sheets("Validation RL1").Range("AD3:AD" & lastRow) = "=IF((RC[-9]+RC[-8])=RC[-7],0,RC[-7])"
-'        Sheets("Validation RL1").Range("AE3:AE" & lastRow) = "=ROUND(IF(RC[-7]=0,0,RC[-7]-RC[-5]),2)"
-'        Sheets("Validation RL1").Range("AF3:AF" & lastRow) = "=ROUND(IF(RC[-7]=0,0,RC[-7]-RC[-6]),2)"
-'        Sheets("Validation RL1").Range("AG3:AG" & lastRow) = "=VLOOKUP(RC[-30],'BoxJ entry'!C1:C2,2,0)"
-'        Sheets("Validation RL1").Range("AH3:AH" & lastRow) = "=RC[-1]-RC[-15]"
+'        lastRow = Sheets("Validation Z").Cells(Sheets("Validation Z").Rows.Count, 3).End(xlUp).row
+'        Sheets("Validation Z").Range("N3:N" & lastRow) = "=VLOOKUP(RC[-12],'PT Z After-values'!C1:C12,7,0)"
+'        Sheets("Validation Z").Range("O3:O" & lastRow) = "=VLOOKUP(RC[-13],'PT Z After-values'!C1:C12,8,0)"
+'        Sheets("Validation Z").Range("P3:P" & lastRow) = "=VLOOKUP(RC[-14],'PT Z After-values'!C1:C12,9,0)"
+'        Sheets("Validation Z").Range("Q3:Q" & lastRow) = "=VLOOKUP(RC[-15],'PT Z After-values'!C1:C12,10,0)"
+'        Sheets("Validation Z").Range("R3:R" & lastRow) = "=VLOOKUP(RC[-16],'PT Z After-values'!C1:C12,11,0)"
+'        Sheets("Validation Z").Range("S3:S" & lastRow) = "=VLOOKUP(RC[-17],'PT Z After-values'!C1:C12,12,0)"
+'        Sheets("Validation Z").Range("T3:T" & lastRow) = "=RC[-6]-RC[-12]"
+'        Sheets("Validation Z").Range("U3:U" & lastRow) = "=RC[-6]-RC[-12]"
+'        Sheets("Validation Z").Range("V3:V" & lastRow) = "=RC[-6]-RC[-12]"
+'        Sheets("Validation Z").Range("W3:W" & lastRow) = "=RC[-6]-RC[-12]"
+'        Sheets("Validation Z").Range("X3:X" & lastRow) = "=RC[-6]-RC[-12]"
+'        Sheets("Validation Z").Range("Y3:Y" & lastRow) = "=RC[-6]-RC[-12]"
+'        Sheets("Validation Z").Range("Z3:Z" & lastRow) = "=VLOOKUP(RC[-23],'CaseJ entry'!C1:C4,4,0)"
+'        Sheets("Validation Z").Range("AA3:AA" & lastRow) = "=ROUND(IF(RC[-7]=0,0,RC[-7]-RC[-1]),2)"
+'        Sheets("Validation Z").Range("AB3:AB" & lastRow) = "=ROUND(IF(RC[-7]=0,0,RC[-7]-RC[-2]),2)"
+'        Sheets("Validation Z").Range("AC3:AC" & lastRow) = "=ROUND(IF(RC[-7]=0,0,RC[-7]-RC[-3]),2)"
+'        Sheets("Validation Z").Range("AD3:AD" & lastRow) = "=IF((RC[-9]+RC[-8])=RC[-7],0,RC[-7])"
+'        Sheets("Validation Z").Range("AE3:AE" & lastRow) = "=ROUND(IF(RC[-7]=0,0,RC[-7]-RC[-5]),2)"
+'        Sheets("Validation Z").Range("AF3:AF" & lastRow) = "=ROUND(IF(RC[-7]=0,0,RC[-7]-RC[-6]),2)"
+'        Sheets("Validation Z").Range("AG3:AG" & lastRow) = "=VLOOKUP(RC[-30],'CaseJ entry'!C1:C2,2,0)"
+'        Sheets("Validation Z").Range("AH3:AH" & lastRow) = "=RC[-1]-RC[-15]"
 '        Columns("A:AH").AutoFit
 
 
-        '------ Crea la hoja de validacion del T4
+        '------ Crea la hoja de validacion del X
 
-        'Copia los datos de la hoja de before del T4
-        Sheets("Validation T4").Activate
-        lastRow = Sheets("PT T4 Before-values").Cells(Sheets("PT T4 Before-values").Rows.Count, 1).End(xlUp).row
-        lastCol = Sheets("PT T4 Before-values").Cells(1, Sheets("PT T4 Before-values").Columns.Count).End(xlToLeft).Column
-        Set rng = wbauditoria.Sheets("PT T4 Before-values").Range(wbauditoria.Sheets("PT T4 Before-values").Cells(1, 1), wbauditoria.Sheets("PT T4 Before-values").Cells(lastRow, lastCol))
-        wbauditoria.Sheets("Validation T4").Range("A2").Resize(rng.Rows.Count, rng.Columns.Count).Value = rng.Value
+        'Copia los datos de la hoja de before del X
+        Sheets("Validation X").Activate
+        lastRow = Sheets("PT X Before-values").Cells(Sheets("PT X Before-values").Rows.Count, 1).End(xlUp).row
+        lastCol = Sheets("PT X Before-values").Cells(1, Sheets("PT X Before-values").Columns.Count).End(xlToLeft).Column
+        Set rng = wbauditoria.Sheets("PT X Before-values").Range(wbauditoria.Sheets("PT X Before-values").Cells(1, 1), wbauditoria.Sheets("PT X Before-values").Cells(lastRow, lastCol))
+        wbauditoria.Sheets("Validation X").Range("A2").Resize(rng.Rows.Count, rng.Columns.Count).Value = rng.Value
 
         'Calcula ultima fila y columna de la hoja de validacion
         Columns("A:A").Insert Shift:=xlToRight
-        lastRow = Sheets("Validation T4").Cells(Sheets("Validation T4").Rows.Count, 3).End(xlUp).row
-        lastCol = Sheets("Validation T4").Cells(2, Sheets("Validation T4").Columns.Count).End(xlToLeft).Column
+        lastRow = Sheets("Validation X").Cells(Sheets("Validation X").Rows.Count, 3).End(xlUp).row
+        lastCol = Sheets("Validation X").Cells(2, Sheets("Validation X").Columns.Count).End(xlToLeft).Column
 
         'Coloca los titulos en la fila 2
         ThisWorkbook.Sheets("Anexxes").Range("L5:AN5").Copy
-        wbauditoria.Sheets("Validation T4").Range("A2").PasteSpecial Paste:=xlPasteValues
+        wbauditoria.Sheets("Validation X").Range("A2").PasteSpecial Paste:=xlPasteValues
         Application.CutCopyMode = False
         Columns("A:AU").AutoFit
 
@@ -1598,7 +1598,7 @@ Sub Taxable_B_Entries()
         Range("R1:T1").Merge
 '        Range("R1").Value = "VALIDATION"
 '        Range("U1:AA1").Merge
-'        Range("U1").Value = "RL1 VALIDATION"
+'        Range("U1").Value = "Z VALIDATION"
 
         With Range("A2:G2")
             .Font.Bold = True
@@ -1650,40 +1650,40 @@ Sub Taxable_B_Entries()
         Columns("A:AC").AutoFit
 
         'Formula de la columa A
-        lastRow = Sheets("Validation T4").Cells(Sheets("Validation T4").Rows.Count, 3).End(xlUp).row
-        lastCol = Sheets("Validation T4").Cells(2, Sheets("Validation T4").Columns.Count).End(xlToLeft).Column
-        Sheets("Validation T4").Range("A3:A" & lastRow) = "=COUNTIF('PT T4 After-values'!C[1],'Validation T4'!RC[2])"
+        lastRow = Sheets("Validation X").Cells(Sheets("Validation X").Rows.Count, 3).End(xlUp).row
+        lastCol = Sheets("Validation X").Cells(2, Sheets("Validation X").Columns.Count).End(xlToLeft).Column
+        Sheets("Validation X").Range("A3:A" & lastRow) = "=COUNTIF('PT X After-values'!C[1],'Validation X'!RC[2])"
 '
 '        'Coloca el resto de las formulas
-'        lastRow = Sheets("Validation T4").Cells(Sheets("Validation T4").Rows.Count, 3).End(xlUp).row
-'        Sheets("Validation T4").Range("K3:K" & lastRow) = "=VLOOKUP(RC[-9],'PT T4 After-values'!C1:C9,7,0)"
-'        Sheets("Validation T4").Range("L3:L" & lastRow) = "=VLOOKUP(RC[-10],'PT T4 After-values'!C1:C9,8,0)"
-'        Sheets("Validation T4").Range("M3:M" & lastRow) = "=VLOOKUP(RC[-11],'PT T4 After-values'!C1:C9,9,0)"
-'        Sheets("Validation T4").Range("N3:N" & lastRow) = "=RC[-3]-RC[-6]"
-'        Sheets("Validation T4").Range("O3:O" & lastRow) = "=RC[-3]-RC[-6]"
-'        Sheets("Validation T4").Range("P3:P" & lastRow) = "=RC[-3]-RC[-6]"
-'        Sheets("Validation T4").Range("Q3:Q" & lastRow) = "=VLOOKUP(RC[-14],'BoxJ entry'!C1:C4,4,0)"
-'        Sheets("Validation T4").Range("R3:R" & lastRow) = "=ROUND(IF(RC[-4]=0,0,RC[-4]-RC17),2)"
-'        Sheets("Validation T4").Range("S3:S" & lastRow) = "=ROUND(IF(RC[-4]=0,0,RC[-4]-RC17),2)"
-'        Sheets("Validation T4").Range("T3:T" & lastRow) = "=ROUND(IF(RC[-4]=0,0,RC[-4]-RC17),2)"
-'        Sheets("Validation T4").Range("U3:U" & lastRow) = "=VLOOKUP(RC[-18],'Validation RL1'!C[-18]:C[-2],13,0)"
-'        Sheets("Validation T4").Range("V3:V" & lastRow) = "=VLOOKUP(RC[-19],'Validation RL1'!C3:C19,14,0)"
-'        Sheets("Validation T4").Range("W3:W" & lastRow) = "=RC[-2]-RC[-12]"
-'        Sheets("Validation T4").Range("X3:X" & lastRow) = "=RC[-2]-RC[-12]"
-'        Sheets("Validation T4").Range("Y3:Y" & lastRow) = "=VLOOKUP(RC[-22],'Validation RL1'!C3:C19,15,0)"
-'        Sheets("Validation T4").Range("Z3:Z" & lastRow) = "=(RC[-5]+RC[-4])-RC[-1]"
-'        Sheets("Validation T4").Range("AA3:AA" & lastRow) = "=RC[-2]-RC[-6]"
+'        lastRow = Sheets("Validation X").Cells(Sheets("Validation X").Rows.Count, 3).End(xlUp).row
+'        Sheets("Validation X").Range("K3:K" & lastRow) = "=VLOOKUP(RC[-9],'PT X After-values'!C1:C9,7,0)"
+'        Sheets("Validation X").Range("L3:L" & lastRow) = "=VLOOKUP(RC[-10],'PT X After-values'!C1:C9,8,0)"
+'        Sheets("Validation X").Range("M3:M" & lastRow) = "=VLOOKUP(RC[-11],'PT X After-values'!C1:C9,9,0)"
+'        Sheets("Validation X").Range("N3:N" & lastRow) = "=RC[-3]-RC[-6]"
+'        Sheets("Validation X").Range("O3:O" & lastRow) = "=RC[-3]-RC[-6]"
+'        Sheets("Validation X").Range("P3:P" & lastRow) = "=RC[-3]-RC[-6]"
+'        Sheets("Validation X").Range("Q3:Q" & lastRow) = "=VLOOKUP(RC[-14],'CaseJ entry'!C1:C4,4,0)"
+'        Sheets("Validation X").Range("R3:R" & lastRow) = "=ROUND(IF(RC[-4]=0,0,RC[-4]-RC17),2)"
+'        Sheets("Validation X").Range("S3:S" & lastRow) = "=ROUND(IF(RC[-4]=0,0,RC[-4]-RC17),2)"
+'        Sheets("Validation X").Range("T3:T" & lastRow) = "=ROUND(IF(RC[-4]=0,0,RC[-4]-RC17),2)"
+'        Sheets("Validation X").Range("U3:U" & lastRow) = "=VLOOKUP(RC[-18],'Validation Z'!C[-18]:C[-2],13,0)"
+'        Sheets("Validation X").Range("V3:V" & lastRow) = "=VLOOKUP(RC[-19],'Validation Z'!C3:C19,14,0)"
+'        Sheets("Validation X").Range("W3:W" & lastRow) = "=RC[-2]-RC[-12]"
+'        Sheets("Validation X").Range("X3:X" & lastRow) = "=RC[-2]-RC[-12]"
+'        Sheets("Validation X").Range("Y3:Y" & lastRow) = "=VLOOKUP(RC[-22],'Validation Z'!C3:C19,15,0)"
+'        Sheets("Validation X").Range("Z3:Z" & lastRow) = "=(RC[-5]+RC[-4])-RC[-1]"
+'        Sheets("Validation X").Range("AA3:AA" & lastRow) = "=RC[-2]-RC[-6]"
 '        Columns("A:AC").AutoFit
 
         'Ordena hojas
-        Sheets("BoxJ entry").Move Before:=Sheets(1)
-        Sheets("Validation RL1").Move After:=Sheets("BoxJ entry")
-        Sheets("Validation T4").Move After:=Sheets("Validation RL1")
-        Sheets("Validation RL1").Tab.Color = RGB(250, 219, 216)
-        Sheets("Validation T4").Tab.Color = RGB(250, 229, 211)
+        Sheets("CaseJ entry").Move Before:=Sheets(1)
+        Sheets("Validation Z").Move After:=Sheets("CaseJ entry")
+        Sheets("Validation X").Move After:=Sheets("Validation Z")
+        Sheets("Validation Z").Tab.Color = RGB(250, 219, 216)
+        Sheets("Validation X").Tab.Color = RGB(250, 229, 211)
 
-        'Organiza la hoja de BoxJ entry
-        Sheets("BoxJ entry").Activate
+        'Organiza la hoja de CaseJ entry
+        Sheets("CaseJ entry").Activate
         Range("A1").Value = "SAP ID"
         Range("B1").Value = "CORRECT BOX J"
         Range("C1").Value = "BOX J TOTAL"
@@ -1698,29 +1698,29 @@ Sub Taxable_B_Entries()
         'Finaliza
         wbauditoria.Save
         wbauditoria.Close
-        MsgBox "The process has been completed. Please enter the document and complete the data in the 'BoxJ entry' sheet.", vbInformation
+        MsgCase "The process has been completed. Please enter the document and complete the data in the 'CaseJ entry' sheet.", vbInformation
 
 End Sub
 
 Sub Pension_Entries()
 
-        '------ Crea la hoja de validacion del T4
+        '------ Crea la hoja de validacion del X
 
-        'Copia los datos de la hoja de before del T4
-        Sheets("Validation T4").Activate
-        lastRow = Sheets("PT T4 Before-values").Cells(Sheets("PT T4 Before-values").Rows.Count, 1).End(xlUp).row
-        lastCol = Sheets("PT T4 Before-values").Cells(1, Sheets("PT T4 Before-values").Columns.Count).End(xlToLeft).Column
-        Set rng = wbauditoria.Sheets("PT T4 Before-values").Range(wbauditoria.Sheets("PT T4 Before-values").Cells(1, 1), wbauditoria.Sheets("PT T4 Before-values").Cells(lastRow, lastCol))
-        wbauditoria.Sheets("Validation T4").Range("A2").Resize(rng.Rows.Count, rng.Columns.Count).Value = rng.Value
+        'Copia los datos de la hoja de before del X
+        Sheets("Validation X").Activate
+        lastRow = Sheets("PT X Before-values").Cells(Sheets("PT X Before-values").Rows.Count, 1).End(xlUp).row
+        lastCol = Sheets("PT X Before-values").Cells(1, Sheets("PT X Before-values").Columns.Count).End(xlToLeft).Column
+        Set rng = wbauditoria.Sheets("PT X Before-values").Range(wbauditoria.Sheets("PT X Before-values").Cells(1, 1), wbauditoria.Sheets("PT X Before-values").Cells(lastRow, lastCol))
+        wbauditoria.Sheets("Validation X").Range("A2").Resize(rng.Rows.Count, rng.Columns.Count).Value = rng.Value
 
         'Calcula ultima fila y columna de la hoja de validacion
         Columns("A:A").Insert Shift:=xlToRight
-        lastRow = Sheets("Validation T4").Cells(Sheets("Validation T4").Rows.Count, 3).End(xlUp).row
-        lastCol = Sheets("Validation T4").Cells(2, Sheets("Validation T4").Columns.Count).End(xlToLeft).Column
+        lastRow = Sheets("Validation X").Cells(Sheets("Validation X").Rows.Count, 3).End(xlUp).row
+        lastCol = Sheets("Validation X").Cells(2, Sheets("Validation X").Columns.Count).End(xlToLeft).Column
 
         'Coloca los titulos en la fila 2
         ThisWorkbook.Sheets("Anexxes").Range("L7:V7").Copy
-        wbauditoria.Sheets("Validation T4").Range("A2").PasteSpecial Paste:=xlPasteValues
+        wbauditoria.Sheets("Validation X").Range("A2").PasteSpecial Paste:=xlPasteValues
         Application.CutCopyMode = False
         Columns("A:K").AutoFit
 
@@ -1730,7 +1730,7 @@ Sub Pension_Entries()
         Range("J1").Value = "DIFFERENCES"
 '        Range("R1").Value = "VALIDATION"
 '        Range("U1:AA1").Merge
-'        Range("U1").Value = "RL1 VALIDATION"
+'        Range("U1").Value = "Z VALIDATION"
 
         With Range("A2:G2")
             .Font.Bold = True
@@ -1782,38 +1782,38 @@ Sub Pension_Entries()
         Columns("A:AC").AutoFit
 
         'Formula de la columa A
-        lastRow = Sheets("Validation T4").Cells(Sheets("Validation T4").Rows.Count, 3).End(xlUp).row
-        lastCol = Sheets("Validation T4").Cells(2, Sheets("Validation T4").Columns.Count).End(xlToLeft).Column
-        Sheets("Validation T4").Range("A3:A" & lastRow) = "=COUNTIF('PT T4 After-values'!C[1],'Validation T4'!RC[2])"
+        lastRow = Sheets("Validation X").Cells(Sheets("Validation X").Rows.Count, 3).End(xlUp).row
+        lastCol = Sheets("Validation X").Cells(2, Sheets("Validation X").Columns.Count).End(xlToLeft).Column
+        Sheets("Validation X").Range("A3:A" & lastRow) = "=COUNTIF('PT X After-values'!C[1],'Validation X'!RC[2])"
 '
 '        'Coloca el resto de las formulas
-'        lastRow = Sheets("Validation T4").Cells(Sheets("Validation T4").Rows.Count, 3).End(xlUp).row
-'        Sheets("Validation T4").Range("K3:K" & lastRow) = "=VLOOKUP(RC[-9],'PT T4 After-values'!C1:C9,7,0)"
-'        Sheets("Validation T4").Range("L3:L" & lastRow) = "=VLOOKUP(RC[-10],'PT T4 After-values'!C1:C9,8,0)"
-'        Sheets("Validation T4").Range("M3:M" & lastRow) = "=VLOOKUP(RC[-11],'PT T4 After-values'!C1:C9,9,0)"
-'        Sheets("Validation T4").Range("N3:N" & lastRow) = "=RC[-3]-RC[-6]"
-'        Sheets("Validation T4").Range("O3:O" & lastRow) = "=RC[-3]-RC[-6]"
-'        Sheets("Validation T4").Range("P3:P" & lastRow) = "=RC[-3]-RC[-6]"
-'        Sheets("Validation T4").Range("Q3:Q" & lastRow) = "=VLOOKUP(RC[-14],'BoxJ entry'!C1:C4,4,0)"
-'        Sheets("Validation T4").Range("R3:R" & lastRow) = "=ROUND(IF(RC[-4]=0,0,RC[-4]-RC17),2)"
-'        Sheets("Validation T4").Range("S3:S" & lastRow) = "=ROUND(IF(RC[-4]=0,0,RC[-4]-RC17),2)"
-'        Sheets("Validation T4").Range("T3:T" & lastRow) = "=ROUND(IF(RC[-4]=0,0,RC[-4]-RC17),2)"
-'        Sheets("Validation T4").Range("U3:U" & lastRow) = "=VLOOKUP(RC[-18],'Validation RL1'!C[-18]:C[-2],13,0)"
-'        Sheets("Validation T4").Range("V3:V" & lastRow) = "=VLOOKUP(RC[-19],'Validation RL1'!C3:C19,14,0)"
-'        Sheets("Validation T4").Range("W3:W" & lastRow) = "=RC[-2]-RC[-12]"
-'        Sheets("Validation T4").Range("X3:X" & lastRow) = "=RC[-2]-RC[-12]"
-'        Sheets("Validation T4").Range("Y3:Y" & lastRow) = "=VLOOKUP(RC[-22],'Validation RL1'!C3:C19,15,0)"
-'        Sheets("Validation T4").Range("Z3:Z" & lastRow) = "=(RC[-5]+RC[-4])-RC[-1]"
-'        Sheets("Validation T4").Range("AA3:AA" & lastRow) = "=RC[-2]-RC[-6]"
+'        lastRow = Sheets("Validation X").Cells(Sheets("Validation X").Rows.Count, 3).End(xlUp).row
+'        Sheets("Validation X").Range("K3:K" & lastRow) = "=VLOOKUP(RC[-9],'PT X After-values'!C1:C9,7,0)"
+'        Sheets("Validation X").Range("L3:L" & lastRow) = "=VLOOKUP(RC[-10],'PT X After-values'!C1:C9,8,0)"
+'        Sheets("Validation X").Range("M3:M" & lastRow) = "=VLOOKUP(RC[-11],'PT X After-values'!C1:C9,9,0)"
+'        Sheets("Validation X").Range("N3:N" & lastRow) = "=RC[-3]-RC[-6]"
+'        Sheets("Validation X").Range("O3:O" & lastRow) = "=RC[-3]-RC[-6]"
+'        Sheets("Validation X").Range("P3:P" & lastRow) = "=RC[-3]-RC[-6]"
+'        Sheets("Validation X").Range("Q3:Q" & lastRow) = "=VLOOKUP(RC[-14],'CaseJ entry'!C1:C4,4,0)"
+'        Sheets("Validation X").Range("R3:R" & lastRow) = "=ROUND(IF(RC[-4]=0,0,RC[-4]-RC17),2)"
+'        Sheets("Validation X").Range("S3:S" & lastRow) = "=ROUND(IF(RC[-4]=0,0,RC[-4]-RC17),2)"
+'        Sheets("Validation X").Range("T3:T" & lastRow) = "=ROUND(IF(RC[-4]=0,0,RC[-4]-RC17),2)"
+'        Sheets("Validation X").Range("U3:U" & lastRow) = "=VLOOKUP(RC[-18],'Validation Z'!C[-18]:C[-2],13,0)"
+'        Sheets("Validation X").Range("V3:V" & lastRow) = "=VLOOKUP(RC[-19],'Validation Z'!C3:C19,14,0)"
+'        Sheets("Validation X").Range("W3:W" & lastRow) = "=RC[-2]-RC[-12]"
+'        Sheets("Validation X").Range("X3:X" & lastRow) = "=RC[-2]-RC[-12]"
+'        Sheets("Validation X").Range("Y3:Y" & lastRow) = "=VLOOKUP(RC[-22],'Validation Z'!C3:C19,15,0)"
+'        Sheets("Validation X").Range("Z3:Z" & lastRow) = "=(RC[-5]+RC[-4])-RC[-1]"
+'        Sheets("Validation X").Range("AA3:AA" & lastRow) = "=RC[-2]-RC[-6]"
 '        Columns("A:AC").AutoFit
 
         'Ordena hojas
-        Sheets("BoxJ entry").Move Before:=Sheets(1)
-        Sheets("Validation T4").Move After:=Sheets("BoxJ entry")
-        Sheets("Validation T4").Tab.Color = RGB(250, 229, 211)
+        Sheets("CaseJ entry").Move Before:=Sheets(1)
+        Sheets("Validation X").Move After:=Sheets("CaseJ entry")
+        Sheets("Validation X").Tab.Color = RGB(250, 229, 211)
 
-        'Organiza la hoja de BoxJ entry
-        Sheets("BoxJ entry").Activate
+        'Organiza la hoja de CaseJ entry
+        Sheets("CaseJ entry").Activate
         Range("A1").Value = "SAP ID"
         Range("B1").Value = "CORRECT BOX J"
         Range("C1").Value = "BOX J TOTAL"
@@ -1828,29 +1828,29 @@ Sub Pension_Entries()
         'Finaliza
         wbauditoria.Save
         wbauditoria.Close
-        MsgBox "The process has been completed. Please enter the document and complete the data in the 'BoxJ entry' sheet.", vbInformation
+        MsgCase "The process has been completed. Please enter the document and complete the data in the 'CaseJ entry' sheet.", vbInformation
 
 End Sub
 
-Sub CPP_QPP_validation()
+Sub Cases_validation()
 
-'------ Crea la hoja de validacion del RL1
+'------ Crea la hoja de validacion del Z
         
-        'Copia los datos de la hoja de before del RL1
-        Sheets("Validation RL1").Activate
-        lastRow = Sheets("PT RL1 Before-values").Cells(Sheets("PT RL1 Before-values").Rows.Count, 3).End(xlUp).row
-        lastCol = Sheets("PT RL1 Before-values").Cells(1, Sheets("PT RL1 Before-values").Columns.Count).End(xlToLeft).Column
-        Set rng = wbauditoria.Sheets("PT RL1 Before-values").Range(wbauditoria.Sheets("PT RL1 Before-values").Cells(1, 1), wbauditoria.Sheets("PT RL1 Before-values").Cells(lastRow, lastCol))
-        wbauditoria.Sheets("Validation RL1").Range("A2").Resize(rng.Rows.Count, rng.Columns.Count).Value = rng.Value
+        'Copia los datos de la hoja de before del Z
+        Sheets("Validation Z").Activate
+        lastRow = Sheets("PT Z Before-values").Cells(Sheets("PT Z Before-values").Rows.Count, 3).End(xlUp).row
+        lastCol = Sheets("PT Z Before-values").Cells(1, Sheets("PT Z Before-values").Columns.Count).End(xlToLeft).Column
+        Set rng = wbauditoria.Sheets("PT Z Before-values").Range(wbauditoria.Sheets("PT Z Before-values").Cells(1, 1), wbauditoria.Sheets("PT Z Before-values").Cells(lastRow, lastCol))
+        wbauditoria.Sheets("Validation Z").Range("A2").Resize(rng.Rows.Count, rng.Columns.Count).Value = rng.Value
 
         'Calcula ultima fila y columna de la hoja de validacion
         Columns("A:A").Insert Shift:=xlToRight
-        lastRow = Sheets("Validation RL1").Cells(Sheets("Validation RL1").Rows.Count, 3).End(xlUp).row
-        lastCol = Sheets("Validation RL1").Cells(2, Sheets("Validation RL1").Columns.Count).End(xlToLeft).Column
+        lastRow = Sheets("Validation Z").Cells(Sheets("Validation Z").Rows.Count, 3).End(xlUp).row
+        lastCol = Sheets("Validation Z").Cells(2, Sheets("Validation Z").Columns.Count).End(xlToLeft).Column
 
         'Coloca los titulos en la fila 2
         ThisWorkbook.Sheets("Anexxes").Range("L9:AQ9").Copy
-        wbauditoria.Sheets("Validation RL1").Range("A2").PasteSpecial Paste:=xlPasteValues
+        wbauditoria.Sheets("Validation Z").Range("A2").PasteSpecial Paste:=xlPasteValues
         Application.CutCopyMode = False
         Columns("A:AQ").AutoFit
 
@@ -1908,53 +1908,53 @@ Sub CPP_QPP_validation()
 '        Columns("A:AH").AutoFit
 '
         'Formula de la columa A
-        lastRow = Sheets("Validation RL1").Cells(Sheets("Validation RL1").Rows.Count, 3).End(xlUp).row
-        lastCol = Sheets("Validation RL1").Cells(2, Sheets("Validation RL1").Columns.Count).End(xlToLeft).Column
-        Sheets("Validation RL1").Range("A3:A" & lastRow) = "=COUNTIF('PT RL1 After-values'!C[1],'Validation RL1'!RC[2])"
+        lastRow = Sheets("Validation Z").Cells(Sheets("Validation Z").Rows.Count, 3).End(xlUp).row
+        lastCol = Sheets("Validation Z").Cells(2, Sheets("Validation Z").Columns.Count).End(xlToLeft).Column
+        Sheets("Validation Z").Range("A3:A" & lastRow) = "=COUNTIF('PT Z After-values'!C[1],'Validation Z'!RC[2])"
 '
 '        'Coloca el resto de las formulas
-'        lastRow = Sheets("Validation RL1").Cells(Sheets("Validation RL1").Rows.Count, 3).End(xlUp).row
-'        Sheets("Validation RL1").Range("N3:N" & lastRow) = "=VLOOKUP(RC[-12],'PT RL1 After-values'!C1:C12,7,0)"
-'        Sheets("Validation RL1").Range("O3:O" & lastRow) = "=VLOOKUP(RC[-13],'PT RL1 After-values'!C1:C12,8,0)"
-'        Sheets("Validation RL1").Range("P3:P" & lastRow) = "=VLOOKUP(RC[-14],'PT RL1 After-values'!C1:C12,9,0)"
-'        Sheets("Validation RL1").Range("Q3:Q" & lastRow) = "=VLOOKUP(RC[-15],'PT RL1 After-values'!C1:C12,10,0)"
-'        Sheets("Validation RL1").Range("R3:R" & lastRow) = "=VLOOKUP(RC[-16],'PT RL1 After-values'!C1:C12,11,0)"
-'        Sheets("Validation RL1").Range("S3:S" & lastRow) = "=VLOOKUP(RC[-17],'PT RL1 After-values'!C1:C12,12,0)"
-'        Sheets("Validation RL1").Range("T3:T" & lastRow) = "=RC[-6]-RC[-12]"
-'        Sheets("Validation RL1").Range("U3:U" & lastRow) = "=RC[-6]-RC[-12]"
-'        Sheets("Validation RL1").Range("V3:V" & lastRow) = "=RC[-6]-RC[-12]"
-'        Sheets("Validation RL1").Range("W3:W" & lastRow) = "=RC[-6]-RC[-12]"
-'        Sheets("Validation RL1").Range("X3:X" & lastRow) = "=RC[-6]-RC[-12]"
-'        Sheets("Validation RL1").Range("Y3:Y" & lastRow) = "=RC[-6]-RC[-12]"
-'        Sheets("Validation RL1").Range("Z3:Z" & lastRow) = "=VLOOKUP(RC[-23],'BoxJ entry'!C1:C4,4,0)"
-'        Sheets("Validation RL1").Range("AA3:AA" & lastRow) = "=ROUND(IF(RC[-7]=0,0,RC[-7]-RC[-1]),2)"
-'        Sheets("Validation RL1").Range("AB3:AB" & lastRow) = "=ROUND(IF(RC[-7]=0,0,RC[-7]-RC[-2]),2)"
-'        Sheets("Validation RL1").Range("AC3:AC" & lastRow) = "=ROUND(IF(RC[-7]=0,0,RC[-7]-RC[-3]),2)"
-'        Sheets("Validation RL1").Range("AD3:AD" & lastRow) = "=IF((RC[-9]+RC[-8])=RC[-7],0,RC[-7])"
-'        Sheets("Validation RL1").Range("AE3:AE" & lastRow) = "=ROUND(IF(RC[-7]=0,0,RC[-7]-RC[-5]),2)"
-'        Sheets("Validation RL1").Range("AF3:AF" & lastRow) = "=ROUND(IF(RC[-7]=0,0,RC[-7]-RC[-6]),2)"
-'        Sheets("Validation RL1").Range("AG3:AG" & lastRow) = "=VLOOKUP(RC[-30],'BoxJ entry'!C1:C2,2,0)"
-'        Sheets("Validation RL1").Range("AH3:AH" & lastRow) = "=RC[-1]-RC[-15]"
+'        lastRow = Sheets("Validation Z").Cells(Sheets("Validation Z").Rows.Count, 3).End(xlUp).row
+'        Sheets("Validation Z").Range("N3:N" & lastRow) = "=VLOOKUP(RC[-12],'PT Z After-values'!C1:C12,7,0)"
+'        Sheets("Validation Z").Range("O3:O" & lastRow) = "=VLOOKUP(RC[-13],'PT Z After-values'!C1:C12,8,0)"
+'        Sheets("Validation Z").Range("P3:P" & lastRow) = "=VLOOKUP(RC[-14],'PT Z After-values'!C1:C12,9,0)"
+'        Sheets("Validation Z").Range("Q3:Q" & lastRow) = "=VLOOKUP(RC[-15],'PT Z After-values'!C1:C12,10,0)"
+'        Sheets("Validation Z").Range("R3:R" & lastRow) = "=VLOOKUP(RC[-16],'PT Z After-values'!C1:C12,11,0)"
+'        Sheets("Validation Z").Range("S3:S" & lastRow) = "=VLOOKUP(RC[-17],'PT Z After-values'!C1:C12,12,0)"
+'        Sheets("Validation Z").Range("T3:T" & lastRow) = "=RC[-6]-RC[-12]"
+'        Sheets("Validation Z").Range("U3:U" & lastRow) = "=RC[-6]-RC[-12]"
+'        Sheets("Validation Z").Range("V3:V" & lastRow) = "=RC[-6]-RC[-12]"
+'        Sheets("Validation Z").Range("W3:W" & lastRow) = "=RC[-6]-RC[-12]"
+'        Sheets("Validation Z").Range("X3:X" & lastRow) = "=RC[-6]-RC[-12]"
+'        Sheets("Validation Z").Range("Y3:Y" & lastRow) = "=RC[-6]-RC[-12]"
+'        Sheets("Validation Z").Range("Z3:Z" & lastRow) = "=VLOOKUP(RC[-23],'CaseJ entry'!C1:C4,4,0)"
+'        Sheets("Validation Z").Range("AA3:AA" & lastRow) = "=ROUND(IF(RC[-7]=0,0,RC[-7]-RC[-1]),2)"
+'        Sheets("Validation Z").Range("AB3:AB" & lastRow) = "=ROUND(IF(RC[-7]=0,0,RC[-7]-RC[-2]),2)"
+'        Sheets("Validation Z").Range("AC3:AC" & lastRow) = "=ROUND(IF(RC[-7]=0,0,RC[-7]-RC[-3]),2)"
+'        Sheets("Validation Z").Range("AD3:AD" & lastRow) = "=IF((RC[-9]+RC[-8])=RC[-7],0,RC[-7])"
+'        Sheets("Validation Z").Range("AE3:AE" & lastRow) = "=ROUND(IF(RC[-7]=0,0,RC[-7]-RC[-5]),2)"
+'        Sheets("Validation Z").Range("AF3:AF" & lastRow) = "=ROUND(IF(RC[-7]=0,0,RC[-7]-RC[-6]),2)"
+'        Sheets("Validation Z").Range("AG3:AG" & lastRow) = "=VLOOKUP(RC[-30],'CaseJ entry'!C1:C2,2,0)"
+'        Sheets("Validation Z").Range("AH3:AH" & lastRow) = "=RC[-1]-RC[-15]"
 '        Columns("A:AH").AutoFit
 
 
-        '------ Crea la hoja de validacion del T4
+        '------ Crea la hoja de validacion del X
 
-        'Copia los datos de la hoja de before del T4
-        Sheets("Validation T4").Activate
-        lastRow = Sheets("PT T4 Before-values").Cells(Sheets("PT T4 Before-values").Rows.Count, 1).End(xlUp).row
-        lastCol = Sheets("PT T4 Before-values").Cells(1, Sheets("PT T4 Before-values").Columns.Count).End(xlToLeft).Column
-        Set rng = wbauditoria.Sheets("PT T4 Before-values").Range(wbauditoria.Sheets("PT T4 Before-values").Cells(1, 1), wbauditoria.Sheets("PT T4 Before-values").Cells(lastRow, lastCol))
-        wbauditoria.Sheets("Validation T4").Range("A2").Resize(rng.Rows.Count, rng.Columns.Count).Value = rng.Value
+        'Copia los datos de la hoja de before del X
+        Sheets("Validation X").Activate
+        lastRow = Sheets("PT X Before-values").Cells(Sheets("PT X Before-values").Rows.Count, 1).End(xlUp).row
+        lastCol = Sheets("PT X Before-values").Cells(1, Sheets("PT X Before-values").Columns.Count).End(xlToLeft).Column
+        Set rng = wbauditoria.Sheets("PT X Before-values").Range(wbauditoria.Sheets("PT X Before-values").Cells(1, 1), wbauditoria.Sheets("PT X Before-values").Cells(lastRow, lastCol))
+        wbauditoria.Sheets("Validation X").Range("A2").Resize(rng.Rows.Count, rng.Columns.Count).Value = rng.Value
 
         'Calcula ultima fila y columna de la hoja de validacion
         Columns("A:A").Insert Shift:=xlToRight
-        lastRow = Sheets("Validation T4").Cells(Sheets("Validation T4").Rows.Count, 3).End(xlUp).row
-        lastCol = Sheets("Validation T4").Cells(2, Sheets("Validation T4").Columns.Count).End(xlToLeft).Column
+        lastRow = Sheets("Validation X").Cells(Sheets("Validation X").Rows.Count, 3).End(xlUp).row
+        lastCol = Sheets("Validation X").Cells(2, Sheets("Validation X").Columns.Count).End(xlToLeft).Column
 
         'Coloca los titulos en la fila 2
         ThisWorkbook.Sheets("Anexxes").Range("L8:AH8").Copy
-        wbauditoria.Sheets("Validation T4").Range("A2").PasteSpecial Paste:=xlPasteValues
+        wbauditoria.Sheets("Validation X").Range("A2").PasteSpecial Paste:=xlPasteValues
         Application.CutCopyMode = False
         Columns("A:AU").AutoFit
 
@@ -1968,7 +1968,7 @@ Sub CPP_QPP_validation()
 '        Range("R1:T1").Merge
 '        Range("R1").Value = "VALIDATION"
 '        Range("U1:AA1").Merge
-'        Range("U1").Value = "RL1 VALIDATION"
+'        Range("U1").Value = "Z VALIDATION"
 
         With Range("A2:G2")
             .Font.Bold = True
@@ -2020,40 +2020,40 @@ Sub CPP_QPP_validation()
         Columns("A:AC").AutoFit
 
         'Formula de la columa A
-        lastRow = Sheets("Validation T4").Cells(Sheets("Validation T4").Rows.Count, 3).End(xlUp).row
-        lastCol = Sheets("Validation T4").Cells(2, Sheets("Validation T4").Columns.Count).End(xlToLeft).Column
-        Sheets("Validation T4").Range("A3:A" & lastRow) = "=COUNTIF('PT T4 After-values'!C[1],'Validation T4'!RC[2])"
+        lastRow = Sheets("Validation X").Cells(Sheets("Validation X").Rows.Count, 3).End(xlUp).row
+        lastCol = Sheets("Validation X").Cells(2, Sheets("Validation X").Columns.Count).End(xlToLeft).Column
+        Sheets("Validation X").Range("A3:A" & lastRow) = "=COUNTIF('PT X After-values'!C[1],'Validation X'!RC[2])"
 '
 '        'Coloca el resto de las formulas
-'        lastRow = Sheets("Validation T4").Cells(Sheets("Validation T4").Rows.Count, 3).End(xlUp).row
-'        Sheets("Validation T4").Range("K3:K" & lastRow) = "=VLOOKUP(RC[-9],'PT T4 After-values'!C1:C9,7,0)"
-'        Sheets("Validation T4").Range("L3:L" & lastRow) = "=VLOOKUP(RC[-10],'PT T4 After-values'!C1:C9,8,0)"
-'        Sheets("Validation T4").Range("M3:M" & lastRow) = "=VLOOKUP(RC[-11],'PT T4 After-values'!C1:C9,9,0)"
-'        Sheets("Validation T4").Range("N3:N" & lastRow) = "=RC[-3]-RC[-6]"
-'        Sheets("Validation T4").Range("O3:O" & lastRow) = "=RC[-3]-RC[-6]"
-'        Sheets("Validation T4").Range("P3:P" & lastRow) = "=RC[-3]-RC[-6]"
-'        Sheets("Validation T4").Range("Q3:Q" & lastRow) = "=VLOOKUP(RC[-14],'BoxJ entry'!C1:C4,4,0)"
-'        Sheets("Validation T4").Range("R3:R" & lastRow) = "=ROUND(IF(RC[-4]=0,0,RC[-4]-RC17),2)"
-'        Sheets("Validation T4").Range("S3:S" & lastRow) = "=ROUND(IF(RC[-4]=0,0,RC[-4]-RC17),2)"
-'        Sheets("Validation T4").Range("T3:T" & lastRow) = "=ROUND(IF(RC[-4]=0,0,RC[-4]-RC17),2)"
-'        Sheets("Validation T4").Range("U3:U" & lastRow) = "=VLOOKUP(RC[-18],'Validation RL1'!C[-18]:C[-2],13,0)"
-'        Sheets("Validation T4").Range("V3:V" & lastRow) = "=VLOOKUP(RC[-19],'Validation RL1'!C3:C19,14,0)"
-'        Sheets("Validation T4").Range("W3:W" & lastRow) = "=RC[-2]-RC[-12]"
-'        Sheets("Validation T4").Range("X3:X" & lastRow) = "=RC[-2]-RC[-12]"
-'        Sheets("Validation T4").Range("Y3:Y" & lastRow) = "=VLOOKUP(RC[-22],'Validation RL1'!C3:C19,15,0)"
-'        Sheets("Validation T4").Range("Z3:Z" & lastRow) = "=(RC[-5]+RC[-4])-RC[-1]"
-'        Sheets("Validation T4").Range("AA3:AA" & lastRow) = "=RC[-2]-RC[-6]"
+'        lastRow = Sheets("Validation X").Cells(Sheets("Validation X").Rows.Count, 3).End(xlUp).row
+'        Sheets("Validation X").Range("K3:K" & lastRow) = "=VLOOKUP(RC[-9],'PT X After-values'!C1:C9,7,0)"
+'        Sheets("Validation X").Range("L3:L" & lastRow) = "=VLOOKUP(RC[-10],'PT X After-values'!C1:C9,8,0)"
+'        Sheets("Validation X").Range("M3:M" & lastRow) = "=VLOOKUP(RC[-11],'PT X After-values'!C1:C9,9,0)"
+'        Sheets("Validation X").Range("N3:N" & lastRow) = "=RC[-3]-RC[-6]"
+'        Sheets("Validation X").Range("O3:O" & lastRow) = "=RC[-3]-RC[-6]"
+'        Sheets("Validation X").Range("P3:P" & lastRow) = "=RC[-3]-RC[-6]"
+'        Sheets("Validation X").Range("Q3:Q" & lastRow) = "=VLOOKUP(RC[-14],'CaseJ entry'!C1:C4,4,0)"
+'        Sheets("Validation X").Range("R3:R" & lastRow) = "=ROUND(IF(RC[-4]=0,0,RC[-4]-RC17),2)"
+'        Sheets("Validation X").Range("S3:S" & lastRow) = "=ROUND(IF(RC[-4]=0,0,RC[-4]-RC17),2)"
+'        Sheets("Validation X").Range("T3:T" & lastRow) = "=ROUND(IF(RC[-4]=0,0,RC[-4]-RC17),2)"
+'        Sheets("Validation X").Range("U3:U" & lastRow) = "=VLOOKUP(RC[-18],'Validation Z'!C[-18]:C[-2],13,0)"
+'        Sheets("Validation X").Range("V3:V" & lastRow) = "=VLOOKUP(RC[-19],'Validation Z'!C3:C19,14,0)"
+'        Sheets("Validation X").Range("W3:W" & lastRow) = "=RC[-2]-RC[-12]"
+'        Sheets("Validation X").Range("X3:X" & lastRow) = "=RC[-2]-RC[-12]"
+'        Sheets("Validation X").Range("Y3:Y" & lastRow) = "=VLOOKUP(RC[-22],'Validation Z'!C3:C19,15,0)"
+'        Sheets("Validation X").Range("Z3:Z" & lastRow) = "=(RC[-5]+RC[-4])-RC[-1]"
+'        Sheets("Validation X").Range("AA3:AA" & lastRow) = "=RC[-2]-RC[-6]"
 '        Columns("A:AC").AutoFit
 
         'Ordena hojas
-        Sheets("BoxJ entry").Move Before:=Sheets(1)
-        Sheets("Validation RL1").Move After:=Sheets("BoxJ entry")
-        Sheets("Validation T4").Move After:=Sheets("Validation RL1")
-        Sheets("Validation RL1").Tab.Color = RGB(250, 219, 216)
-        Sheets("Validation T4").Tab.Color = RGB(250, 229, 211)
+        Sheets("CaseJ entry").Move Before:=Sheets(1)
+        Sheets("Validation Z").Move After:=Sheets("CaseJ entry")
+        Sheets("Validation X").Move After:=Sheets("Validation Z")
+        Sheets("Validation Z").Tab.Color = RGB(250, 219, 216)
+        Sheets("Validation X").Tab.Color = RGB(250, 229, 211)
 
-        'Organiza la hoja de BoxJ entry
-        Sheets("BoxJ entry").Activate
+        'Organiza la hoja de CaseJ entry
+        Sheets("CaseJ entry").Activate
         Range("A1").Value = "SAP ID"
         Range("B1").Value = "CORRECT BOX J"
         Range("C1").Value = "BOX J TOTAL"
@@ -2068,30 +2068,30 @@ Sub CPP_QPP_validation()
         'Finaliza
         wbauditoria.Save
         wbauditoria.Close
-        MsgBox "The process has been completed. Please enter the document and complete the data in the 'BoxJ entry' sheet.", vbInformation
+        MsgCase "The process has been completed. Please enter the document and complete the data in the 'CaseJ entry' sheet.", vbInformation
 
 End Sub
 
 
 Sub EI_boxes_validation()
 
-'------ Crea la hoja de validacion del RL1
+'------ Crea la hoja de validacion del Z
         
-        'Copia los datos de la hoja de before del RL1
-        Sheets("Validation RL1").Activate
-        lastRow = Sheets("PT RL1 Before-values").Cells(Sheets("PT RL1 Before-values").Rows.Count, 3).End(xlUp).row
-        lastCol = Sheets("PT RL1 Before-values").Cells(1, Sheets("PT RL1 Before-values").Columns.Count).End(xlToLeft).Column
-        Set rng = wbauditoria.Sheets("PT RL1 Before-values").Range(wbauditoria.Sheets("PT RL1 Before-values").Cells(1, 1), wbauditoria.Sheets("PT RL1 Before-values").Cells(lastRow, lastCol))
-        wbauditoria.Sheets("Validation RL1").Range("A2").Resize(rng.Rows.Count, rng.Columns.Count).Value = rng.Value
+        'Copia los datos de la hoja de before del Z
+        Sheets("Validation Z").Activate
+        lastRow = Sheets("PT Z Before-values").Cells(Sheets("PT Z Before-values").Rows.Count, 3).End(xlUp).row
+        lastCol = Sheets("PT Z Before-values").Cells(1, Sheets("PT Z Before-values").Columns.Count).End(xlToLeft).Column
+        Set rng = wbauditoria.Sheets("PT Z Before-values").Range(wbauditoria.Sheets("PT Z Before-values").Cells(1, 1), wbauditoria.Sheets("PT Z Before-values").Cells(lastRow, lastCol))
+        wbauditoria.Sheets("Validation Z").Range("A2").Resize(rng.Rows.Count, rng.Columns.Count).Value = rng.Value
 
         'Calcula ultima fila y columna de la hoja de validacion
         Columns("A:A").Insert Shift:=xlToRight
-        lastRow = Sheets("Validation RL1").Cells(Sheets("Validation RL1").Rows.Count, 3).End(xlUp).row
-        lastCol = Sheets("Validation RL1").Cells(2, Sheets("Validation RL1").Columns.Count).End(xlToLeft).Column
+        lastRow = Sheets("Validation Z").Cells(Sheets("Validation Z").Rows.Count, 3).End(xlUp).row
+        lastCol = Sheets("Validation Z").Cells(2, Sheets("Validation Z").Columns.Count).End(xlToLeft).Column
 
         'Coloca los titulos en la fila 2
         ThisWorkbook.Sheets("Anexxes").Range("L11:V11").Copy
-        wbauditoria.Sheets("Validation RL1").Range("A2").PasteSpecial Paste:=xlPasteValues
+        wbauditoria.Sheets("Validation Z").Range("A2").PasteSpecial Paste:=xlPasteValues
         Application.CutCopyMode = False
         Columns("A:AQ").AutoFit
 
@@ -2146,53 +2146,53 @@ Sub EI_boxes_validation()
 '        Columns("A:AH").AutoFit
 '
         'Formula de la columa A
-        lastRow = Sheets("Validation RL1").Cells(Sheets("Validation RL1").Rows.Count, 3).End(xlUp).row
-        lastCol = Sheets("Validation RL1").Cells(2, Sheets("Validation RL1").Columns.Count).End(xlToLeft).Column
-        Sheets("Validation RL1").Range("A3:A" & lastRow) = "=COUNTIF('PT RL1 After-values'!C[1],'Validation RL1'!RC[2])"
+        lastRow = Sheets("Validation Z").Cells(Sheets("Validation Z").Rows.Count, 3).End(xlUp).row
+        lastCol = Sheets("Validation Z").Cells(2, Sheets("Validation Z").Columns.Count).End(xlToLeft).Column
+        Sheets("Validation Z").Range("A3:A" & lastRow) = "=COUNTIF('PT Z After-values'!C[1],'Validation Z'!RC[2])"
 '
 '        'Coloca el resto de las formulas
-'        lastRow = Sheets("Validation RL1").Cells(Sheets("Validation RL1").Rows.Count, 3).End(xlUp).row
-'        Sheets("Validation RL1").Range("N3:N" & lastRow) = "=VLOOKUP(RC[-12],'PT RL1 After-values'!C1:C12,7,0)"
-'        Sheets("Validation RL1").Range("O3:O" & lastRow) = "=VLOOKUP(RC[-13],'PT RL1 After-values'!C1:C12,8,0)"
-'        Sheets("Validation RL1").Range("P3:P" & lastRow) = "=VLOOKUP(RC[-14],'PT RL1 After-values'!C1:C12,9,0)"
-'        Sheets("Validation RL1").Range("Q3:Q" & lastRow) = "=VLOOKUP(RC[-15],'PT RL1 After-values'!C1:C12,10,0)"
-'        Sheets("Validation RL1").Range("R3:R" & lastRow) = "=VLOOKUP(RC[-16],'PT RL1 After-values'!C1:C12,11,0)"
-'        Sheets("Validation RL1").Range("S3:S" & lastRow) = "=VLOOKUP(RC[-17],'PT RL1 After-values'!C1:C12,12,0)"
-'        Sheets("Validation RL1").Range("T3:T" & lastRow) = "=RC[-6]-RC[-12]"
-'        Sheets("Validation RL1").Range("U3:U" & lastRow) = "=RC[-6]-RC[-12]"
-'        Sheets("Validation RL1").Range("V3:V" & lastRow) = "=RC[-6]-RC[-12]"
-'        Sheets("Validation RL1").Range("W3:W" & lastRow) = "=RC[-6]-RC[-12]"
-'        Sheets("Validation RL1").Range("X3:X" & lastRow) = "=RC[-6]-RC[-12]"
-'        Sheets("Validation RL1").Range("Y3:Y" & lastRow) = "=RC[-6]-RC[-12]"
-'        Sheets("Validation RL1").Range("Z3:Z" & lastRow) = "=VLOOKUP(RC[-23],'BoxJ entry'!C1:C4,4,0)"
-'        Sheets("Validation RL1").Range("AA3:AA" & lastRow) = "=ROUND(IF(RC[-7]=0,0,RC[-7]-RC[-1]),2)"
-'        Sheets("Validation RL1").Range("AB3:AB" & lastRow) = "=ROUND(IF(RC[-7]=0,0,RC[-7]-RC[-2]),2)"
-'        Sheets("Validation RL1").Range("AC3:AC" & lastRow) = "=ROUND(IF(RC[-7]=0,0,RC[-7]-RC[-3]),2)"
-'        Sheets("Validation RL1").Range("AD3:AD" & lastRow) = "=IF((RC[-9]+RC[-8])=RC[-7],0,RC[-7])"
-'        Sheets("Validation RL1").Range("AE3:AE" & lastRow) = "=ROUND(IF(RC[-7]=0,0,RC[-7]-RC[-5]),2)"
-'        Sheets("Validation RL1").Range("AF3:AF" & lastRow) = "=ROUND(IF(RC[-7]=0,0,RC[-7]-RC[-6]),2)"
-'        Sheets("Validation RL1").Range("AG3:AG" & lastRow) = "=VLOOKUP(RC[-30],'BoxJ entry'!C1:C2,2,0)"
-        Sheets("Validation RL1").Range("AH3:AH" & lastRow) = "=RC[-1]-RC[-15]"
+'        lastRow = Sheets("Validation Z").Cells(Sheets("Validation Z").Rows.Count, 3).End(xlUp).row
+'        Sheets("Validation Z").Range("N3:N" & lastRow) = "=VLOOKUP(RC[-12],'PT Z After-values'!C1:C12,7,0)"
+'        Sheets("Validation Z").Range("O3:O" & lastRow) = "=VLOOKUP(RC[-13],'PT Z After-values'!C1:C12,8,0)"
+'        Sheets("Validation Z").Range("P3:P" & lastRow) = "=VLOOKUP(RC[-14],'PT Z After-values'!C1:C12,9,0)"
+'        Sheets("Validation Z").Range("Q3:Q" & lastRow) = "=VLOOKUP(RC[-15],'PT Z After-values'!C1:C12,10,0)"
+'        Sheets("Validation Z").Range("R3:R" & lastRow) = "=VLOOKUP(RC[-16],'PT Z After-values'!C1:C12,11,0)"
+'        Sheets("Validation Z").Range("S3:S" & lastRow) = "=VLOOKUP(RC[-17],'PT Z After-values'!C1:C12,12,0)"
+'        Sheets("Validation Z").Range("T3:T" & lastRow) = "=RC[-6]-RC[-12]"
+'        Sheets("Validation Z").Range("U3:U" & lastRow) = "=RC[-6]-RC[-12]"
+'        Sheets("Validation Z").Range("V3:V" & lastRow) = "=RC[-6]-RC[-12]"
+'        Sheets("Validation Z").Range("W3:W" & lastRow) = "=RC[-6]-RC[-12]"
+'        Sheets("Validation Z").Range("X3:X" & lastRow) = "=RC[-6]-RC[-12]"
+'        Sheets("Validation Z").Range("Y3:Y" & lastRow) = "=RC[-6]-RC[-12]"
+'        Sheets("Validation Z").Range("Z3:Z" & lastRow) = "=VLOOKUP(RC[-23],'CaseJ entry'!C1:C4,4,0)"
+'        Sheets("Validation Z").Range("AA3:AA" & lastRow) = "=ROUND(IF(RC[-7]=0,0,RC[-7]-RC[-1]),2)"
+'        Sheets("Validation Z").Range("AB3:AB" & lastRow) = "=ROUND(IF(RC[-7]=0,0,RC[-7]-RC[-2]),2)"
+'        Sheets("Validation Z").Range("AC3:AC" & lastRow) = "=ROUND(IF(RC[-7]=0,0,RC[-7]-RC[-3]),2)"
+'        Sheets("Validation Z").Range("AD3:AD" & lastRow) = "=IF((RC[-9]+RC[-8])=RC[-7],0,RC[-7])"
+'        Sheets("Validation Z").Range("AE3:AE" & lastRow) = "=ROUND(IF(RC[-7]=0,0,RC[-7]-RC[-5]),2)"
+'        Sheets("Validation Z").Range("AF3:AF" & lastRow) = "=ROUND(IF(RC[-7]=0,0,RC[-7]-RC[-6]),2)"
+'        Sheets("Validation Z").Range("AG3:AG" & lastRow) = "=VLOOKUP(RC[-30],'CaseJ entry'!C1:C2,2,0)"
+        Sheets("Validation Z").Range("AH3:AH" & lastRow) = "=RC[-1]-RC[-15]"
         Columns("A:AH").AutoFit
 
 
-        '------ Crea la hoja de validacion del T4
+        '------ Crea la hoja de validacion del X
 
-        'Copia los datos de la hoja de before del T4
-        Sheets("Validation T4").Activate
-        lastRow = Sheets("PT T4 Before-values").Cells(Sheets("PT T4 Before-values").Rows.Count, 1).End(xlUp).row
-        lastCol = Sheets("PT T4 Before-values").Cells(1, Sheets("PT T4 Before-values").Columns.Count).End(xlToLeft).Column
-        Set rng = wbauditoria.Sheets("PT T4 Before-values").Range(wbauditoria.Sheets("PT T4 Before-values").Cells(1, 1), wbauditoria.Sheets("PT T4 Before-values").Cells(lastRow, lastCol))
-        wbauditoria.Sheets("Validation T4").Range("A2").Resize(rng.Rows.Count, rng.Columns.Count).Value = rng.Value
+        'Copia los datos de la hoja de before del X
+        Sheets("Validation X").Activate
+        lastRow = Sheets("PT X Before-values").Cells(Sheets("PT X Before-values").Rows.Count, 1).End(xlUp).row
+        lastCol = Sheets("PT X Before-values").Cells(1, Sheets("PT X Before-values").Columns.Count).End(xlToLeft).Column
+        Set rng = wbauditoria.Sheets("PT X Before-values").Range(wbauditoria.Sheets("PT X Before-values").Cells(1, 1), wbauditoria.Sheets("PT X Before-values").Cells(lastRow, lastCol))
+        wbauditoria.Sheets("Validation X").Range("A2").Resize(rng.Rows.Count, rng.Columns.Count).Value = rng.Value
 
         'Calcula ultima fila y columna de la hoja de validacion
         Columns("A:A").Insert Shift:=xlToRight
-        lastRow = Sheets("Validation T4").Cells(Sheets("Validation T4").Rows.Count, 3).End(xlUp).row
-        lastCol = Sheets("Validation T4").Cells(2, Sheets("Validation T4").Columns.Count).End(xlToLeft).Column
+        lastRow = Sheets("Validation X").Cells(Sheets("Validation X").Rows.Count, 3).End(xlUp).row
+        lastCol = Sheets("Validation X").Cells(2, Sheets("Validation X").Columns.Count).End(xlToLeft).Column
 
         'Coloca los titulos en la fila 2
         ThisWorkbook.Sheets("Anexxes").Range("L10:AE10").Copy
-        wbauditoria.Sheets("Validation T4").Range("A2").PasteSpecial Paste:=xlPasteValues
+        wbauditoria.Sheets("Validation X").Range("A2").PasteSpecial Paste:=xlPasteValues
         Application.CutCopyMode = False
         Columns("A:AU").AutoFit
 
@@ -2206,7 +2206,7 @@ Sub EI_boxes_validation()
 '        Range("R1:T1").Merge
 '        Range("R1").Value = "VALIDATION"
 '        Range("U1:AA1").Merge
-'        Range("U1").Value = "RL1 VALIDATION"
+'        Range("U1").Value = "Z VALIDATION"
 
         With Range("A2:G2")
             .Font.Bold = True
@@ -2258,40 +2258,40 @@ Sub EI_boxes_validation()
         Columns("A:AC").AutoFit
 
         'Formula de la columa A
-        lastRow = Sheets("Validation T4").Cells(Sheets("Validation T4").Rows.Count, 3).End(xlUp).row
-        lastCol = Sheets("Validation T4").Cells(2, Sheets("Validation T4").Columns.Count).End(xlToLeft).Column
-        Sheets("Validation T4").Range("A3:A" & lastRow) = "=COUNTIF('PT T4 After-values'!C[1],'Validation T4'!RC[2])"
+        lastRow = Sheets("Validation X").Cells(Sheets("Validation X").Rows.Count, 3).End(xlUp).row
+        lastCol = Sheets("Validation X").Cells(2, Sheets("Validation X").Columns.Count).End(xlToLeft).Column
+        Sheets("Validation X").Range("A3:A" & lastRow) = "=COUNTIF('PT X After-values'!C[1],'Validation X'!RC[2])"
 '
 '        'Coloca el resto de las formulas
-'        lastRow = Sheets("Validation T4").Cells(Sheets("Validation T4").Rows.Count, 3).End(xlUp).row
-'        Sheets("Validation T4").Range("K3:K" & lastRow) = "=VLOOKUP(RC[-9],'PT T4 After-values'!C1:C9,7,0)"
-'        Sheets("Validation T4").Range("L3:L" & lastRow) = "=VLOOKUP(RC[-10],'PT T4 After-values'!C1:C9,8,0)"
-'        Sheets("Validation T4").Range("M3:M" & lastRow) = "=VLOOKUP(RC[-11],'PT T4 After-values'!C1:C9,9,0)"
-'        Sheets("Validation T4").Range("N3:N" & lastRow) = "=RC[-3]-RC[-6]"
-'        Sheets("Validation T4").Range("O3:O" & lastRow) = "=RC[-3]-RC[-6]"
-'        Sheets("Validation T4").Range("P3:P" & lastRow) = "=RC[-3]-RC[-6]"
-'        Sheets("Validation T4").Range("Q3:Q" & lastRow) = "=VLOOKUP(RC[-14],'BoxJ entry'!C1:C4,4,0)"
-'        Sheets("Validation T4").Range("R3:R" & lastRow) = "=ROUND(IF(RC[-4]=0,0,RC[-4]-RC17),2)"
-'        Sheets("Validation T4").Range("S3:S" & lastRow) = "=ROUND(IF(RC[-4]=0,0,RC[-4]-RC17),2)"
-'        Sheets("Validation T4").Range("T3:T" & lastRow) = "=ROUND(IF(RC[-4]=0,0,RC[-4]-RC17),2)"
-'        Sheets("Validation T4").Range("U3:U" & lastRow) = "=VLOOKUP(RC[-18],'Validation RL1'!C[-18]:C[-2],13,0)"
-'        Sheets("Validation T4").Range("V3:V" & lastRow) = "=VLOOKUP(RC[-19],'Validation RL1'!C3:C19,14,0)"
-'        Sheets("Validation T4").Range("W3:W" & lastRow) = "=RC[-2]-RC[-12]"
-'        Sheets("Validation T4").Range("X3:X" & lastRow) = "=RC[-2]-RC[-12]"
-'        Sheets("Validation T4").Range("Y3:Y" & lastRow) = "=VLOOKUP(RC[-22],'Validation RL1'!C3:C19,15,0)"
-'        Sheets("Validation T4").Range("Z3:Z" & lastRow) = "=(RC[-5]+RC[-4])-RC[-1]"
-'        Sheets("Validation T4").Range("AA3:AA" & lastRow) = "=RC[-2]-RC[-6]"
+'        lastRow = Sheets("Validation X").Cells(Sheets("Validation X").Rows.Count, 3).End(xlUp).row
+'        Sheets("Validation X").Range("K3:K" & lastRow) = "=VLOOKUP(RC[-9],'PT X After-values'!C1:C9,7,0)"
+'        Sheets("Validation X").Range("L3:L" & lastRow) = "=VLOOKUP(RC[-10],'PT X After-values'!C1:C9,8,0)"
+'        Sheets("Validation X").Range("M3:M" & lastRow) = "=VLOOKUP(RC[-11],'PT X After-values'!C1:C9,9,0)"
+'        Sheets("Validation X").Range("N3:N" & lastRow) = "=RC[-3]-RC[-6]"
+'        Sheets("Validation X").Range("O3:O" & lastRow) = "=RC[-3]-RC[-6]"
+'        Sheets("Validation X").Range("P3:P" & lastRow) = "=RC[-3]-RC[-6]"
+'        Sheets("Validation X").Range("Q3:Q" & lastRow) = "=VLOOKUP(RC[-14],'CaseJ entry'!C1:C4,4,0)"
+'        Sheets("Validation X").Range("R3:R" & lastRow) = "=ROUND(IF(RC[-4]=0,0,RC[-4]-RC17),2)"
+'        Sheets("Validation X").Range("S3:S" & lastRow) = "=ROUND(IF(RC[-4]=0,0,RC[-4]-RC17),2)"
+'        Sheets("Validation X").Range("T3:T" & lastRow) = "=ROUND(IF(RC[-4]=0,0,RC[-4]-RC17),2)"
+'        Sheets("Validation X").Range("U3:U" & lastRow) = "=VLOOKUP(RC[-18],'Validation Z'!C[-18]:C[-2],13,0)"
+'        Sheets("Validation X").Range("V3:V" & lastRow) = "=VLOOKUP(RC[-19],'Validation Z'!C3:C19,14,0)"
+'        Sheets("Validation X").Range("W3:W" & lastRow) = "=RC[-2]-RC[-12]"
+'        Sheets("Validation X").Range("X3:X" & lastRow) = "=RC[-2]-RC[-12]"
+'        Sheets("Validation X").Range("Y3:Y" & lastRow) = "=VLOOKUP(RC[-22],'Validation Z'!C3:C19,15,0)"
+'        Sheets("Validation X").Range("Z3:Z" & lastRow) = "=(RC[-5]+RC[-4])-RC[-1]"
+'        Sheets("Validation X").Range("AA3:AA" & lastRow) = "=RC[-2]-RC[-6]"
 '        Columns("A:AC").AutoFit
 
         'Ordena hojas
-        Sheets("BoxJ entry").Move Before:=Sheets(1)
-        Sheets("Validation RL1").Move After:=Sheets("BoxJ entry")
-        Sheets("Validation T4").Move After:=Sheets("Validation RL1")
-        Sheets("Validation RL1").Tab.Color = RGB(250, 219, 216)
-        Sheets("Validation T4").Tab.Color = RGB(250, 229, 211)
+        Sheets("CaseJ entry").Move Before:=Sheets(1)
+        Sheets("Validation Z").Move After:=Sheets("CaseJ entry")
+        Sheets("Validation X").Move After:=Sheets("Validation Z")
+        Sheets("Validation Z").Tab.Color = RGB(250, 219, 216)
+        Sheets("Validation X").Tab.Color = RGB(250, 229, 211)
 
-        'Organiza la hoja de BoxJ entry
-        Sheets("BoxJ entry").Activate
+        'Organiza la hoja de CaseJ entry
+        Sheets("CaseJ entry").Activate
         Range("A1").Value = "SAP ID"
         Range("B1").Value = "CORRECT BOX J"
         Range("C1").Value = "BOX J TOTAL"
@@ -2306,6 +2306,6 @@ Sub EI_boxes_validation()
         'Finaliza
         wbauditoria.Save
         wbauditoria.Close
-        MsgBox "The process has been completed. Please enter the document and complete the data in the 'BoxJ entry' sheet.", vbInformation
+        MsgCase "The process has been completed. Please enter the document and complete the data in the 'CaseJ entry' sheet.", vbInformation
 
 End Sub
